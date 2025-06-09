@@ -21,21 +21,40 @@
             <div class="character-sheet row-1">
                 <div class="column">
                     <section class="section" id="basicInfoSection">
-                        <h2>Basic Information</h2>
-                        <div class="form-group">
-                            <label for="characterName">Character Name:</label>
-                            <input type="text" id="characterName" placeholder="Enter character name...">
-                        </div>
-                        <div class="form-group">
-                            <label for="characterConcept">Concept:</label>
-                            <input type="text" id="characterConcept" placeholder="e.g., Gunslinger, Scholar, Warrior...">
-                        </div>
-                        <div class="form-group">
-                            <label for="characterAncestry">Ancestry:</label>
-                            <select id="characterAncestry">
-                                <!-- Populated by JavaScript -->
-                            </select>
-                        </div>
+                       <!-- Basic Information Section -->
+<div class="section">
+    <h2>Basic Information</h2>
+    
+    <div class="form-group">
+        <label for="characterName">Name:</label>
+        <input type="text" id="characterName" placeholder="Enter character name">
+    </div>
+    
+    <div class="form-group">
+        <label for="characterConcept">Concept:</label>
+        <input type="text" id="characterConcept" placeholder="Enter character concept">
+    </div>
+    
+    <!-- Ancestry and Rank Row -->
+    <div class="ancestry-rank-row">
+        <div class="form-group ancestry-field">
+            <label for="characterAncestry">Ancestry:</label>
+            <select id="characterAncestry">
+                <!-- Options populated by JavaScript -->
+            </select>
+        </div>
+        
+        <div class="form-group rank-number-field">
+            <label for="characterRankNumber">Rank:</label>
+            <input type="text" id="characterRankNumber" value="1" readonly>
+        </div>
+        
+        <div class="form-group rank-name-field">
+            <label for="characterRankName">Rank Name:</label>
+            <input type="text" id="characterRankName" value="Novice" readonly>
+        </div>
+    </div>
+</div>
                         
                         <!-- NEW: Ancestry Info Box -->
                         <div id="ancestryInfoBox" class="ancestry-info-box" style="display: none;">
