@@ -191,12 +191,16 @@ class SWADECharacterCreator {
             this.randomizerManager.randomizeAll();
         });
 
-        document.getElementById('resetCharacter').addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset the character? This will clear all current data.')) {
-                this.characterManager.resetCharacter();
-                this.updateAllDisplays();
-            }
-        });
+       document.getElementById('resetCharacter').addEventListener('click', () => {
+    if (confirm('Are you sure you want to reset the character? This will clear all current data.')) {
+        this.characterManager.resetCharacter();
+        this.updateAllDisplays();
+        
+        // ADD THIS: Reset ancestry dropdown to blank
+        document.getElementById('characterAncestry').value = '';
+        this.updateAncestryInfoBox('');
+    }
+});
 
         document.getElementById('randomizeAttributes').addEventListener('click', () => {
             this.randomizerManager.randomizeAttributes();
