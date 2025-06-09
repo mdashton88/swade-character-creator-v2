@@ -176,13 +176,26 @@ export class EdgesHindrancesManager {
         }
     }
 
-    moveHindranceToSelected(sourceItem, hindranceId, points) {
-        const targetContainer = document.getElementById('selected-hindrances');
-        if (!targetContainer) return;
-
-        const selectedItem = this.createSelectedItem(sourceItem, hindranceId, points, 'hindrance');
-        targetContainer.appendChild(selectedItem);
+  moveHindranceToSelected(sourceItem, hindranceId, points) {
+    console.log('moveHindranceToSelected called:', hindranceId, points);
+    
+    const targetContainer = document.getElementById('selected-hindrances');
+    console.log('Target container found:', targetContainer);
+    
+    if (!targetContainer) {
+        console.error('ERROR: selected-hindrances container not found!');
+        return;
     }
+
+    const selectedItem = this.createSelectedItem(sourceItem, hindranceId, points, 'hindrance');
+    console.log('Created selected item:', selectedItem);
+    
+    targetContainer.appendChild(selectedItem);
+    console.log('Appended item to container');
+    
+    // Double-check it was added
+    console.log('Container now has children:', targetContainer.children.length);
+}
 
     moveEdgeToSelected(sourceItem, edgeId, cost) {
         const targetContainer = document.getElementById('selected-edges');
