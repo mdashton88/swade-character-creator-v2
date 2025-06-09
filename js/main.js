@@ -77,8 +77,9 @@ class SWADECharacterCreator {
             );
             
            this.randomizerManager = new RandomizerManager(
-               dataManager, characterManager, attributesManager, skillsManager, hindrancesManager, edgesManager, calculationsManager
-);
+               dataManager, characterManager, attributesManager, 
+               skillsManager, hindrancesManager, edgesManager, calculationsManager
+            );
 
             // Set up cross-manager references
             this.setupManagerReferences();
