@@ -1,9 +1,9 @@
 // edges-hindrances-manager.js
-// Clean rebuild - no conflicts, modern UX
+// Safe version that enhances existing system without breaking it
 
 export default class EdgesHindrancesManager {
     constructor() {
-        console.log('=== Clean EdgesHindrancesManager starting ===');
+        console.log('=== Safe EdgesHindrancesManager starting ===');
         
         // Our state
         this.hindrancePoints = 0;
@@ -12,118 +12,119 @@ export default class EdgesHindrancesManager {
         this.selectedHindrances = new Map();
         this.selectedEdges = new Map();
         
-        // Initialize immediately
+        // Initialize safely
         this.init();
     }
 
     async init() {
-        console.log('Initializing clean EdgesHindrancesManager...');
+        console.log('Initializing safe EdgesHindrancesManager...');
         
-        // Wait for DOM to be ready, then take control
+        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.takeControl());
+            document.addEventListener('DOMContentLoaded', () => this.enhance());
         } else {
-            this.takeControl();
+            // Wait a bit for existing managers to load
+            setTimeout(() => this.enhance(), 2000);
         }
     }
 
-    takeControl() {
-        console.log('Taking control of edges/hindrances UI...');
+    enhance() {
+        console.log('Enhancing existing edges/hindrances UI...');
         
-        // Step 1: Completely replace the existing UI
-        this.replaceUI();
-        
-        // Step 2: Set up our event listeners
-        this.setupEventListeners();
-        
-        // Step 3: Load data and populate
-        this.loadAndPopulate();
-        
-        console.log('Clean EdgesHindrancesManager ready!');
+        try {
+            // Step 1: Hide checkboxes with CSS
+            this.hideCheckboxes();
+            
+            // Step 2: Enhance existing items to be clickable
+            this.makeItemsClickable();
+            
+            // Step 3: Set up event listeners
+            this.setupEventListeners();
+            
+            // Step 4: Update info bars
+            this.updateInfoBars();
+            
+            console.log('Safe enhancement complete!');
+        } catch (error) {
+            console.error('Enhancement failed:', error);
+        }
     }
 
-    replaceUI() {
-        // Replace hindrances section
-        const hindrancesSection = document.querySelector('#hindrancesList').closest('.section');
-        if (hindrancesSection) {
-            hindrancesSection.innerHTML = `
-                <h2>
-                    Hindrances
-                    <button class="section-title-button" onclick="window.edgesHindrancesManager.randomizeHindrances()">🎲 Randomize</button>
-                    <button class="section-title-button" onclick="window.edgesHindrancesManager.clearHindrances()">🗑️ Clear</button>
-                </h2>
-                
-                <div class="info-note">
-                    Take up to 4 points of Hindrances for extra skill points and Edges.
-                </div>
-                
-                <div class="hindrance-info-bar">
-                    Hindrance Points: <span id="hindrance-points">0</span> of 4
-                </div>
+    hideCheckboxes() {
+        // Add CSS to hide checkboxes immediately
+        const style = document.createElement('style');
+        style.id = 'hide-checkboxes-style';
+        style.textContent = `
+            #hindrancesList input[type="checkbox"],
+            #edgesList input[type="checkbox"] {
+                display: none !important;
+            }
+            
+            #hindrancesList .checkbox-item,
+            #edgesList .checkbox-item {
+                cursor: pointer !important;
+                user-select: none !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            #hindrancesList .checkbox-item:hover,
+            #edgesList .checkbox-item:hover {
+                background: #f0f0f0 !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 2px 4px rgba(139, 0, 0, 0.1) !important;
+            }
+        `;
+        document.head.appendChild(style);
+        console.log('Checkboxes hidden with CSS');
+    }
 
-                <div class="content-area">
-                    <div class="column">
-                        <div class="column-header">Available Hindrances</div>
-                        <div class="hindrances-list" id="available-hindrances">
-                            <div class="loading">Loading hindrances...</div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="column-header">Selected Hindrances</div>
-                        <div class="selected-hindrances-list" id="selected-hindrances">
-                            <!-- Selected items appear here -->
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Replace edges section
-        const edgesSection = document.querySelector('#edgesList').closest('.section');
-        if (edgesSection) {
-            edgesSection.innerHTML = `
-                <h2>
-                    Edges
-                    <button class="section-title-button" onclick="window.edgesHindrancesManager.randomizeEdges()">🎲 Randomize</button>
-                    <button class="section-title-button" onclick="window.edgesHindrancesManager.clearEdges()">🗑️ Clear</button>
-                </h2>
-                
-                <div class="info-note">
-                    Choose Edges based on your character's rank and prerequisites.
-                </div>
-                
-                <div class="edge-info-bar">
-                    Available Edge Points: <span id="edge-points">0</span>
-                </div>
-
-                <div class="content-area">
-                    <div class="column">
-                        <div class="column-header">Available Edges</div>
-                        <div class="edges-list" id="available-edges">
-                            <div class="loading">Loading edges...</div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="column-header">Selected Edges</div>
-                        <div class="selected-edges-list" id="selected-edges">
-                            <!-- Selected items appear here -->
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        console.log('UI replaced with clean version');
+    makeItemsClickable() {
+        // Add clickable styling to all items
+        const items = document.querySelectorAll('#hindrancesList .checkbox-item, #edgesList .checkbox-item');
+        items.forEach(item => {
+            item.style.cursor = 'pointer';
+            item.style.userSelect = 'none';
+            
+            // Add data attributes if missing
+            if (!item.dataset.id) {
+                const title = item.querySelector('.checkbox-title');
+                if (title) {
+                    item.dataset.id = title.textContent.trim();
+                }
+            }
+            
+            // Set points if missing
+            if (!item.dataset.points) {
+                const meta = item.querySelector('.checkbox-meta');
+                if (meta && meta.textContent.includes('MAJOR')) {
+                    item.dataset.points = '2';
+                } else {
+                    item.dataset.points = '1';
+                }
+            }
+        });
+        
+        console.log('Made', items.length, 'items clickable');
     }
 
     setupEventListeners() {
-        // Single click handler for everything
+        // Single event listener for all clicks
         document.addEventListener('click', (e) => {
-            // Handle clickable items
-            if (e.target.closest('.clickable-item')) {
-                const item = e.target.closest('.clickable-item');
-                this.handleItemClick(item);
-                return;
+            // Handle hindrance/edge item clicks
+            const item = e.target.closest('.checkbox-item');
+            if (item) {
+                const hindrancesList = item.closest('#hindrancesList');
+                const edgesList = item.closest('#edgesList');
+                
+                if (hindrancesList) {
+                    this.handleHindranceClick(item);
+                    return;
+                }
+                
+                if (edgesList) {
+                    this.handleEdgeClick(item);
+                    return;
+                }
             }
             
             // Handle remove buttons
@@ -138,110 +139,48 @@ export default class EdgesHindrancesManager {
         console.log('Event listeners set up');
     }
 
-    async loadAndPopulate() {
-        // Load hindrances data (we'll create mock data since we don't have access to the original)
-        await this.populateHindrances();
-        await this.populateEdges();
+    updateInfoBars() {
+        // Update info bar format to "X of Y" style
+        const hindranceInfo = document.getElementById('hindranceInfo');
+        if (hindranceInfo) {
+            hindranceInfo.innerHTML = 'Hindrance Points: <span id="hindrance-points">0</span> of 4';
+        }
+        
+        const edgeInfo = document.getElementById('edgeInfo');
+        if (edgeInfo) {
+            edgeInfo.innerHTML = 'Available Edge Points: <span id="edge-points">0</span>';
+        }
+        
+        console.log('Info bars updated');
     }
 
-    async populateHindrances() {
-        const container = document.getElementById('available-hindrances');
-        
-        // Mock hindrances data - replace with actual data loading
-        const hindrances = {
-            'Arrogant': { points: 2, type: 'Major', description: 'Must humiliate opponent, challenge the most powerful foe' },
-            'Bad Eyes': { points: 1, type: 'Minor', description: 'The character is physically unattractive and subtracts 1 from Persuasion rolls' },
-            'Bad Luck': { points: 2, type: 'Major', description: 'The character gets one less Benny per session' },
-            'Vengeful': { points: 1, type: 'Minor', description: 'The adventurer seeks payback for slights against her (minor)' },
-            'Vow': { points: 1, type: 'Minor', description: 'The individual has sworn an oath of some sort' },
-            'Wanted': { points: 1, type: 'Minor', description: 'The character is a minor criminal' },
-            'Bloodthirsty': { points: 2, type: 'Major', description: 'Never takes prisoners unless under the direct supervision of a superior' }
-        };
-
-        let html = '';
-        Object.entries(hindrances).forEach(([name, data]) => {
-            html += this.createClickableItem(name, data, 'hindrance');
-        });
-        
-        container.innerHTML = html;
-        console.log('Populated hindrances');
-    }
-
-    async populateEdges() {
-        const container = document.getElementById('available-edges');
-        
-        // Mock edges data - replace with actual data loading
-        const edges = {
-            'Alertness': { points: 2, description: '+2 to Notice rolls', requirements: 'Novice' },
-            'Ambidextrous': { points: 2, description: 'Ignore -2 penalty for using off-hand', requirements: 'Novice, Agility d8+' },
-            'Block': { points: 2, description: '+1 Parry, ignore 1 point of Gang Up bonus', requirements: 'Seasoned, Fighting d8+' },
-            'Brawler': { points: 2, description: 'Toughness +1, add d4 to damage from fists', requirements: 'Novice, Strength d8+, Vigor d8+' },
-            'Combat Reflexes': { points: 2, description: '+2 Spirit to recover from being Shaken', requirements: 'Seasoned' }
-        };
-
-        let html = '';
-        Object.entries(edges).forEach(([name, data]) => {
-            html += this.createClickableItem(name, data, 'edge');
-        });
-        
-        container.innerHTML = html;
-        console.log('Populated edges');
-    }
-
-    createClickableItem(name, data, type) {
-        const points = data.points || (type === 'edge' ? 2 : 1);
-        const typeText = data.type ? `${data.type.toUpperCase()} • ${points} point${points !== 1 ? 's' : ''}` : '';
-        const requirements = data.requirements ? `Requirements: ${data.requirements}` : '';
-        
-        return `
-            <div class="clickable-item" data-id="${name}" data-points="${points}" data-type="${type}">
-                <div class="item-content">
-                    <div class="item-title">${name}</div>
-                    <div class="item-description">${data.description}</div>
-                    ${typeText ? `<div class="item-meta">${typeText}</div>` : ''}
-                    ${requirements ? `<div class="item-requirements">${requirements}</div>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    createSelectedItem(name, data, type) {
-        const points = data.points || (type === 'edge' ? 2 : 1);
-        const typeText = data.type ? `${data.type.toUpperCase()} • ${points} point${points !== 1 ? 's' : ''}` : '';
-        const requirements = data.requirements ? `Requirements: ${data.requirements}` : '';
-        
-        return `
-            <div class="selected-item" data-id="${name}" data-points="${points}" data-type="${type}">
-                <div class="item-content">
-                    <div class="item-title">${name}</div>
-                    <div class="item-description">${data.description}</div>
-                    ${typeText ? `<div class="item-meta">${typeText}</div>` : ''}
-                    ${requirements ? `<div class="item-requirements">${requirements}</div>` : ''}
-                    <button class="remove-btn" data-item-id="${name}" data-type="${type}" data-points="${points}">
-                        Remove
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    handleItemClick(item) {
+    handleHindranceClick(item) {
         const id = item.dataset.id;
-        const type = item.dataset.type;
-        const points = parseInt(item.dataset.points);
+        const points = parseInt(item.dataset.points || '1');
         
-        if (type === 'hindrance') {
-            if (this.selectedHindrances.has(id)) {
-                this.deselectHindrance(id);
-            } else {
-                this.selectHindrance(id, item, points);
-            }
-        } else if (type === 'edge') {
-            if (this.selectedEdges.has(id)) {
-                this.deselectEdge(id);
-            } else {
-                this.selectEdge(id, item, points);
-            }
+        console.log('Hindrance clicked:', id, points);
+        
+        if (this.selectedHindrances.has(id)) {
+            // Deselect
+            this.deselectHindrance(id, item);
+        } else {
+            // Select
+            this.selectHindrance(id, item, points);
+        }
+    }
+
+    handleEdgeClick(item) {
+        const id = item.dataset.id;
+        const points = parseInt(item.dataset.points || '2');
+        
+        console.log('Edge clicked:', id, points);
+        
+        if (this.selectedEdges.has(id)) {
+            // Deselect
+            this.deselectEdge(id, item);
+        } else {
+            // Select
+            this.selectEdge(id, item, points);
         }
     }
 
@@ -252,22 +191,22 @@ export default class EdgesHindrancesManager {
             return;
         }
 
-        // Add to our tracking
-        this.selectedHindrances.set(id, {
-            element: item,
-            points: points,
-            data: this.getItemData(item)
-        });
-
+        // Add to tracking
+        this.selectedHindrances.set(id, { item, points });
+        
         // Update points
         this.hindrancePoints += points;
         this.edgePoints += points;
 
-        // Update visuals
+        // Visual feedback
         item.classList.add('selected');
-        this.addToSelectedPanel(id, item, 'hindrance');
-        this.updateDisplays();
+        item.style.backgroundColor = '#e8f4fd';
+        item.style.border = '2px solid #8b0000';
+
+        // Add to selected panel
+        this.addToSelectedPanel(id, item, points, 'hindrance');
         
+        this.updateDisplays();
         console.log(`Selected hindrance: ${id} (${points} pts)`);
     }
 
@@ -278,76 +217,139 @@ export default class EdgesHindrancesManager {
             return;
         }
 
-        // Add to our tracking
-        this.selectedEdges.set(id, {
-            element: item,
-            points: points,
-            data: this.getItemData(item)
-        });
-
+        // Add to tracking
+        this.selectedEdges.set(id, { item, points });
+        
         // Update points
         this.edgePoints -= points;
 
-        // Update visuals
+        // Visual feedback
         item.classList.add('selected');
-        item.style.display = 'none';
-        this.addToSelectedPanel(id, item, 'edge');
-        this.updateDisplays();
+        item.style.backgroundColor = '#e8f4fd';
+        item.style.border = '2px solid #8b0000';
+        item.style.display = 'none'; // Hide from available list
+
+        // Add to selected panel
+        this.addToSelectedPanel(id, item, points, 'edge');
         
+        this.updateDisplays();
         console.log(`Selected edge: ${id} (${points} pts)`);
     }
 
-    deselectHindrance(id) {
-        const hindrance = this.selectedHindrances.get(id);
-        if (!hindrance) return;
-
-        // Update points
-        this.hindrancePoints -= hindrance.points;
-        this.edgePoints -= hindrance.points;
+    deselectHindrance(id, item) {
+        const data = this.selectedHindrances.get(id);
+        if (!data) return;
 
         // Remove from tracking
         this.selectedHindrances.delete(id);
-
-        // Update visuals
-        hindrance.element.classList.remove('selected');
-        this.removeFromSelectedPanel(id, 'hindrance');
-        this.updateDisplays();
         
+        // Update points
+        this.hindrancePoints -= data.points;
+        this.edgePoints -= data.points;
+
+        // Visual feedback
+        item.classList.remove('selected');
+        item.style.backgroundColor = '';
+        item.style.border = '';
+
+        // Remove from selected panel
+        this.removeFromSelectedPanel(id, 'hindrance');
+        
+        this.updateDisplays();
         console.log(`Deselected hindrance: ${id}`);
     }
 
-    deselectEdge(id) {
-        const edge = this.selectedEdges.get(id);
-        if (!edge) return;
-
-        // Update points
-        this.edgePoints += edge.points;
+    deselectEdge(id, item) {
+        const data = this.selectedEdges.get(id);
+        if (!data) return;
 
         // Remove from tracking
         this.selectedEdges.delete(id);
-
-        // Update visuals
-        edge.element.classList.remove('selected');
-        edge.element.style.display = 'block';
-        this.removeFromSelectedPanel(id, 'edge');
-        this.updateDisplays();
         
+        // Update points
+        this.edgePoints += data.points;
+
+        // Visual feedback
+        item.classList.remove('selected');
+        item.style.backgroundColor = '';
+        item.style.border = '';
+        item.style.display = 'block'; // Show in available list
+
+        // Remove from selected panel
+        this.removeFromSelectedPanel(id, 'edge');
+        
+        this.updateDisplays();
         console.log(`Deselected edge: ${id}`);
     }
 
-    addToSelectedPanel(id, item, type) {
-        const container = document.getElementById(type === 'hindrance' ? 'selected-hindrances' : 'selected-edges');
-        const data = this.getItemData(item);
+    addToSelectedPanel(id, sourceItem, points, type) {
+        // Find or create selected panel
+        let selectedPanel = document.getElementById(type === 'hindrance' ? 'selected-hindrances' : 'selected-edges');
         
-        const selectedHtml = this.createSelectedItem(id, data, type);
-        container.insertAdjacentHTML('beforeend', selectedHtml);
+        if (!selectedPanel) {
+            // Create selected panel if it doesn't exist
+            const infoPanel = document.getElementById(type === 'hindrance' ? 'hindrancesInfoPanel' : 'edgesInfoPanel');
+            if (infoPanel) {
+                selectedPanel = document.createElement('div');
+                selectedPanel.id = type === 'hindrance' ? 'selected-hindrances' : 'selected-edges';
+                selectedPanel.style.marginTop = '10px';
+                selectedPanel.style.padding = '10px';
+                selectedPanel.style.backgroundColor = '#f8f9fa';
+                selectedPanel.style.borderRadius = '4px';
+                selectedPanel.style.border = '1px solid #dee2e6';
+                
+                const header = document.createElement('h5');
+                header.textContent = type === 'hindrance' ? 'Selected Hindrances:' : 'Selected Edges:';
+                header.style.marginBottom = '10px';
+                header.style.color = '#8b0000';
+                
+                selectedPanel.appendChild(header);
+                infoPanel.appendChild(selectedPanel);
+            }
+        }
+
+        if (selectedPanel) {
+            // Create selected item
+            const selectedItem = this.createSelectedItem(id, sourceItem, points, type);
+            selectedPanel.appendChild(selectedItem);
+        }
+    }
+
+    createSelectedItem(id, sourceItem, points, type) {
+        const div = document.createElement('div');
+        div.className = 'selected-item';
+        div.dataset.id = id;
+        div.dataset.points = points;
+        div.dataset.type = type;
+        
+        // Get info from source item
+        const title = sourceItem.querySelector('.checkbox-title')?.textContent || id;
+        const description = sourceItem.querySelector('.checkbox-description')?.textContent || '';
+        const meta = sourceItem.querySelector('.checkbox-meta')?.textContent || '';
+        
+        div.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-weight: bold; font-size: 14px; color: #333;">${title}</div>
+                ${description ? `<div style="font-size: 12px; color: #666; line-height: 1.4;">${description}</div>` : ''}
+                ${meta ? `<div style="font-size: 11px; color: #8b0000; font-weight: bold;">${meta}</div>` : ''}
+                <button class="remove-btn" data-item-id="${id}" data-type="${type}" data-points="${points}" 
+                        style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; 
+                               cursor: pointer; font-size: 11px; margin-top: 8px; align-self: flex-start;">
+                    Remove
+                </button>
+            </div>
+        `;
+        
+        return div;
     }
 
     removeFromSelectedPanel(id, type) {
-        const container = document.getElementById(type === 'hindrance' ? 'selected-hindrances' : 'selected-edges');
-        const item = container.querySelector(`[data-id="${id}"]`);
-        if (item) {
-            item.remove();
+        const selectedPanel = document.getElementById(type === 'hindrance' ? 'selected-hindrances' : 'selected-edges');
+        if (selectedPanel) {
+            const item = selectedPanel.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.remove();
+            }
         }
     }
 
@@ -355,24 +357,23 @@ export default class EdgesHindrancesManager {
         const id = button.dataset.itemId;
         const type = button.dataset.type;
         
+        console.log('Remove clicked:', id, type);
+        
         if (type === 'hindrance') {
-            this.deselectHindrance(id);
+            const data = this.selectedHindrances.get(id);
+            if (data) {
+                this.deselectHindrance(id, data.item);
+            }
         } else if (type === 'edge') {
-            this.deselectEdge(id);
+            const data = this.selectedEdges.get(id);
+            if (data) {
+                this.deselectEdge(id, data.item);
+            }
         }
     }
 
-    getItemData(item) {
-        return {
-            points: parseInt(item.dataset.points),
-            description: item.querySelector('.item-description')?.textContent || '',
-            type: item.querySelector('.item-meta')?.textContent.includes('MAJOR') ? 'Major' : 'Minor',
-            requirements: item.querySelector('.item-requirements')?.textContent.replace('Requirements: ', '') || ''
-        };
-    }
-
     updateDisplays() {
-        // Update point displays
+        // Update new format displays
         const hindrancePointsSpan = document.getElementById('hindrance-points');
         const edgePointsSpan = document.getElementById('edge-points');
         
@@ -384,15 +385,15 @@ export default class EdgesHindrancesManager {
             edgePointsSpan.textContent = this.edgePoints;
         }
 
-        // Update old compatibility displays if they exist
+        // Update old format displays for compatibility
         const hindranceInfo = document.getElementById('hindranceInfo');
         const edgeInfo = document.getElementById('edgeInfo');
         
-        if (hindranceInfo) {
+        if (hindranceInfo && !hindranceInfo.innerHTML.includes('of 4')) {
             hindranceInfo.textContent = `Hindrance Points: ${this.hindrancePoints} of 4`;
         }
         
-        if (edgeInfo) {
+        if (edgeInfo && !edgeInfo.innerHTML.includes('edge-points')) {
             edgeInfo.textContent = `Available Edge Points: ${this.edgePoints}`;
         }
     }
@@ -400,33 +401,38 @@ export default class EdgesHindrancesManager {
     // Public methods for buttons
     clearHindrances() {
         const ids = Array.from(this.selectedHindrances.keys());
-        ids.forEach(id => this.deselectHindrance(id));
+        ids.forEach(id => {
+            const data = this.selectedHindrances.get(id);
+            if (data) {
+                this.deselectHindrance(id, data.item);
+            }
+        });
     }
 
     clearEdges() {
         const ids = Array.from(this.selectedEdges.keys());
-        ids.forEach(id => this.deselectEdge(id));
+        ids.forEach(id => {
+            const data = this.selectedEdges.get(id);
+            if (data) {
+                this.deselectEdge(id, data.item);
+            }
+        });
     }
 
     randomizeHindrances() {
         // Clear existing
         this.clearHindrances();
         
-        // Select random hindrances up to 4 points
-        const available = document.querySelectorAll('#available-hindrances .clickable-item');
-        const items = Array.from(available);
+        // Get available hindrances
+        const available = Array.from(document.querySelectorAll('#hindrancesList .checkbox-item'));
         
-        let pointsUsed = 0;
-        const maxAttempts = 10;
         let attempts = 0;
-        
-        while (pointsUsed < this.maxHindrancePoints && attempts < maxAttempts) {
-            const randomItem = items[Math.floor(Math.random() * items.length)];
-            const points = parseInt(randomItem.dataset.points);
+        while (this.hindrancePoints < this.maxHindrancePoints && attempts < 20) {
+            const randomItem = available[Math.floor(Math.random() * available.length)];
+            const points = parseInt(randomItem.dataset.points || '1');
             
-            if (pointsUsed + points <= this.maxHindrancePoints) {
-                this.handleItemClick(randomItem);
-                pointsUsed = this.hindrancePoints;
+            if (this.hindrancePoints + points <= this.maxHindrancePoints) {
+                this.handleHindranceClick(randomItem);
             }
             attempts++;
         }
@@ -436,18 +442,19 @@ export default class EdgesHindrancesManager {
         // Clear existing
         this.clearEdges();
         
-        // Select random edges based on available points
-        const available = document.querySelectorAll('#available-edges .clickable-item:not(.selected)');
-        const items = Array.from(available);
+        // Select random edges
+        const available = Array.from(document.querySelectorAll('#edgesList .checkbox-item')).filter(item => 
+            !item.classList.contains('selected')
+        );
         
-        while (this.edgePoints >= 2 && items.length > 0) {
-            const randomIndex = Math.floor(Math.random() * items.length);
-            const randomItem = items[randomIndex];
+        while (this.edgePoints >= 2 && available.length > 0) {
+            const randomIndex = Math.floor(Math.random() * available.length);
+            const randomItem = available[randomIndex];
             const points = parseInt(randomItem.dataset.points || '2');
             
             if (this.edgePoints >= points) {
-                this.handleItemClick(randomItem);
-                items.splice(randomIndex, 1); // Remove from available
+                this.handleEdgeClick(randomItem);
+                available.splice(randomIndex, 1);
             } else {
                 break;
             }
