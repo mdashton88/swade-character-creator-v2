@@ -108,12 +108,29 @@ export class EdgesHindrancesManager {
     }
 
     handleHindranceChange(checkbox, item) {
-        if (checkbox.checked) {
-            this.selectHindrance(item);
+    console.log('=== handleHindranceChange called ===');
+    console.log('Checkbox checked:', checkbox.checked);
+    console.log('Item:', item);
+    
+    if (checkbox.checked) {
+        console.log('Calling selectHindrance...');
+        this.selectHindrance(item);
+    } else {
+        console.log('Handling deselection...');
+        // Handle deselection by finding and removing the selected item
+        const hindranceId = item.dataset.id || this.getItemId(item);
+        console.log('Unchecking hindrance:', hindranceId);
+        
+        const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
+        if (selectedItem) {
+            const points = parseInt(selectedItem.dataset.points);
+            console.log('Found selected item, removing with points:', points);
+            this.removeHindrance(hindranceId, points);
         } else {
-            this.deselectHindrance(item);
+            console.log('No selected item found for:', hindranceId);
         }
     }
+}
 
     handleEdgeChange(checkbox, item) {
         if (checkbox.checked) {
@@ -124,7 +141,10 @@ export class EdgesHindrancesManager {
     }
 
     selectHindrance(item) {
-        const hindranceId = item.dataset.id || this.getItemId(item);
+    console.log('=== selectHindrance called ===');
+    console.log('Item received:', item);
+    
+    const hindranceId = item.dataset.id || this.getItemId(item);
         const points = parseInt(item.dataset.points) || this.getHindrancePoints(item);
         
         if (this.hindrancePoints + points <= this.maxHindrancePoints && !this.selectedHindrances.has(hindranceId)) {
