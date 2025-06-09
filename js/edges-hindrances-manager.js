@@ -10,6 +10,7 @@ export default class EdgesHindrancesManager {
         this.selectedHindrances = new Set();
         this.selectedEdges = new Set();
         this.edgesData = null;
+        this.pauseMonitoring = false; // Flag to pause monitoring during operations
         
         console.log('Constructor finished, calling init...');
         this.init();
@@ -99,6 +100,11 @@ export default class EdgesHindrancesManager {
     }
 
     syncWithExistingSystem() {
+        // Skip monitoring if we're in the middle of a remove operation
+        if (this.pauseMonitoring) {
+            return;
+        }
+        
         // Check all hindrance items for changes
         const hindranceItems = document.querySelectorAll('#hindrancesList .checkbox-item');
         
@@ -267,6 +273,9 @@ export default class EdgesHindrancesManager {
     removeHindrance(hindranceId, points) {
         console.log(`Removing hindrance: ${hindranceId}, points: ${points}`);
         
+        // Temporarily pause monitoring to prevent re-adding
+        this.pauseMonitoring = true;
+        
         // Update points
         this.hindrancePoints -= points;
         this.edgePoints -= points;
@@ -283,11 +292,25 @@ export default class EdgesHindrancesManager {
         if (availableItem) {
             const checkbox = availableItem.querySelector('input[type="checkbox"]');
             if (checkbox && checkbox.checked) {
-                checkbox.click(); // Trigger the existing system's handling
+                // Force uncheck and trigger change event
+                checkbox.checked = false;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // Also try clicking as backup
+                setTimeout(() => {
+                    if (checkbox.checked) {
+                        checkbox.click();
+                    }
+                }, 100);
             }
         }
 
         this.updateDisplays();
+        
+        // Resume monitoring after a short delay
+        setTimeout(() => {
+            this.pauseMonitoring = false;
+        }, 1000);
     }
 
     removeEdge(edgeId, cost) {
