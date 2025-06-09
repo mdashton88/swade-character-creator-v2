@@ -105,22 +105,62 @@ try {
             await this.initializeUI();
 
             // Set up event listeners
-            this.setupEventListeners();
+setupEventListeners() {
+    console.log('Setting up event listeners for EdgesHindrancesManager');
+    
+    // Wait a moment for existing managers to finish, then attach direct listeners
+    setTimeout(() => {
+        this.attachDirectListeners();
+    }, 2000);
 
-            // Initialize character with defaults
-            this.characterManager.initializeCharacter();
-
-            // Hide loading indicator
-            this.hideLoading();
-
-            this.isInitialized = true;
-            console.log('SWADE Character Creator v2 initialized successfully');
-
-        } catch (error) {
-            console.error('Failed to initialize SWADE Character Creator:', error);
-            this.showError('Failed to load character creator. Please refresh the page.');
+    // Setup remove button event delegation
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.handleRemoveClick(e.target);
         }
-    }
+    });
+}
+
+attachDirectListeners() {
+    console.log('Attaching direct listeners to checkboxes...');
+    
+    // Find all hindrance checkboxes and attach listeners directly
+    const hindranceCheckboxes = document.querySelectorAll('#hindrancesList input[type="checkbox"]');
+    console.log('Found hindrance checkboxes:', hindranceCheckboxes.length);
+    
+    hindranceCheckboxes.forEach((checkbox, index) => {
+        console.log(`Attaching listener to checkbox ${index}`);
+        
+        checkbox.addEventListener('change', (e) => {
+            console.log('=== DIRECT CHECKBOX EVENT ===');
+            e.stopPropagation(); // Prevent other listeners
+            
+            const item = e.target.closest('.checkbox-item');
+            if (item) {
+                console.log('Calling handleHindranceChange');
+                this.handleHindranceChange(e.target, item);
+            }
+        });
+    });
+    
+    // Do the same for edges
+    const edgeCheckboxes = document.querySelectorAll('#edgesList input[type="checkbox"]');
+    console.log('Found edge checkboxes:', edgeCheckboxes.length);
+    
+    edgeCheckboxes.forEach((checkbox, index) => {
+        checkbox.addEventListener('change', (e) => {
+            console.log('=== DIRECT EDGE CHECKBOX EVENT ===');
+            e.stopPropagation();
+            
+            const item = e.target.closest('.checkbox-item');
+            if (item) {
+                this.handleEdgeChange(e.target, item);
+            }
+        });
+    });
+}
 
     setupManagerReferences() {
         // Allow managers to reference each other as needed
