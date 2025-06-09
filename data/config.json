@@ -10,7 +10,8 @@
     "skillMaxAtCreation": 12,
     "dieTypes": [4, 6, 8, 10, 12]
   },
- "ancestries": {
+
+"ancestries": {
     "Androids": {
       "description": "Semi-organic beings created by advanced technology with artificial intelligence",
       "abilities": [
@@ -214,6 +215,7 @@
       ]
     }
   },
+
   "costs": {
     "attributeIncrease": 1,
     "skillBelowAttribute": 1,
