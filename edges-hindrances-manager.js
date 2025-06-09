@@ -89,20 +89,32 @@ export class EdgesHindrancesManager {
     }
 
     handleHindranceChange(checkbox, item) {
-        if (checkbox.checked) {
-            this.selectHindrance(item);
-        } else {
-            this.deselectHindrance(item);
+    if (checkbox.checked) {
+        this.selectHindrance(item);
+    } else {
+        // Handle deselection by finding and removing the selected item
+        const hindranceId = item.dataset.id || this.getItemId(item);
+        const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
+        if (selectedItem) {
+            const points = parseInt(selectedItem.dataset.points);
+            this.removeHindrance(hindranceId, points);
         }
     }
+}
 
-    handleEdgeChange(checkbox, item) {
-        if (checkbox.checked) {
-            this.selectEdge(item);
-        } else {
-            this.deselectEdge(item);
+  handleEdgeChange(checkbox, item) {
+    if (checkbox.checked) {
+        this.selectEdge(item);
+    } else {
+        // Handle deselection by finding and removing the selected item
+        const edgeId = item.dataset.id || this.getItemId(item);
+        const selectedItem = document.querySelector(`#selected-edges [data-id="${edgeId}"]`);
+        if (selectedItem) {
+            const cost = parseInt(selectedItem.dataset.points || '2');
+            this.removeEdge(edgeId, cost);
         }
     }
+}
 
     selectHindrance(item) {
         const hindranceId = item.dataset.id || this.getItemId(item);
