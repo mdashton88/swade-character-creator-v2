@@ -47,7 +47,7 @@ body {
 }
 
 .header .title {
-    font-family: 'Oswald', sans-serif;
+   font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
     color: #cccccc;
     font-size: 1.1rem;
     font-weight: 600;
@@ -59,7 +59,7 @@ body {
 }
 
 .header .subtitle {
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
     color: #999999;
     font-size: 1rem;
     font-style: normal;
