@@ -45,6 +45,9 @@ export default class EdgesHindrancesManager {
     setupEventListeners() {
         console.log('Setting up event listeners for EdgesHindrancesManager');
         
+        // Hide checkboxes immediately with CSS
+        this.hideCheckboxesWithCSS();
+        
         // Make entire hindrance/edge containers clickable
         document.addEventListener('click', (e) => {
             const item = e.target.closest('.checkbox-item');
@@ -69,19 +72,27 @@ export default class EdgesHindrancesManager {
             }
         });
         
-        // Hide all checkboxes since we don't need them anymore
-        setTimeout(() => {
-            this.hideCheckboxes();
-        }, 1000);
+        // Hide any remaining checkboxes periodically
+        setInterval(() => {
+            this.hideCheckboxesWithCSS();
+        }, 500);
     }
 
-    hideCheckboxes() {
-        // Hide checkboxes in both hindrances and edges lists
-        const checkboxes = document.querySelectorAll('#hindrancesList input[type="checkbox"], #edgesList input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.style.display = 'none';
-        });
-        console.log('Hidden', checkboxes.length, 'checkboxes');
+    hideCheckboxesWithCSS() {
+        // Use CSS to hide all checkboxes permanently
+        let styleSheet = document.getElementById('hide-checkboxes-style');
+        if (!styleSheet) {
+            styleSheet = document.createElement('style');
+            styleSheet.id = 'hide-checkboxes-style';
+            styleSheet.textContent = `
+                #hindrancesList input[type="checkbox"],
+                #edgesList input[type="checkbox"] {
+                    display: none !important;
+                }
+            `;
+            document.head.appendChild(styleSheet);
+            console.log('Added CSS to hide checkboxes');
+        }
     }
 
     toggleHindrance(item) {
@@ -121,18 +132,41 @@ export default class EdgesHindrancesManager {
 
     addSelectedStyling(item) {
         // Add visual styling to show item is selected
+        console.log('Adding selected styling to:', item);
+        
         item.classList.add('selected');
         item.style.backgroundColor = '#e8f4fd';
         item.style.border = '2px solid #8b0000';
         item.style.cursor = 'pointer';
+        item.style.boxShadow = '0 2px 8px rgba(139, 0, 0, 0.2)';
+        
+        console.log('Added styling - classes:', item.className);
+        console.log('Added styling - background:', item.style.backgroundColor);
+        console.log('Added styling - border:', item.style.border);
     }
 
     removeSelectedStyling(item) {
-        // Remove visual styling
+        // Remove visual styling with detailed logging
+        console.log('Removing selected styling from:', item);
+        console.log('Item has classes before:', item.className);
+        
         item.classList.remove('selected');
         item.style.backgroundColor = '';
         item.style.border = '';
         item.style.cursor = 'pointer';
+        item.style.boxShadow = '';
+        
+        // Force remove any inline styles that might be lingering
+        if (item.style.backgroundColor === '#e8f4fd') {
+            item.style.backgroundColor = '';
+        }
+        if (item.style.border.includes('#8b0000')) {
+            item.style.border = '';
+        }
+        
+        console.log('Item has classes after:', item.className);
+        console.log('Item background color after:', item.style.backgroundColor);
+        console.log('Item border after:', item.style.border);
     }
 
     doInitialSync() {
@@ -399,9 +433,16 @@ export default class EdgesHindrancesManager {
     }
 
     getItemId(item) {
-        // Helper to extract ID from item
-        const titleElement = item.querySelector('.checkbox-title');
-        return titleElement ? titleElement.textContent.trim() : 'unknown';
+        // Helper to extract ID from item - try multiple methods
+        let id = item.dataset.id;
+        
+        if (!id) {
+            const titleElement = item.querySelector('.checkbox-title');
+            id = titleElement ? titleElement.textContent.trim() : 'unknown';
+        }
+        
+        console.log('getItemId result:', id, 'for item:', item);
+        return id;
     }
 
     getHindrancePoints(item) {
