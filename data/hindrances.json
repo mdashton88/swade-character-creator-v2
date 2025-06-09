@@ -1,0 +1,389 @@
+{
+  "hindrances": {
+    "All Thumbs": {
+      "type": "minor",
+      "points": 1,
+      "description": "-2 to use mechanical or electrical devices"
+    },
+    "Anemic": {
+      "type": "minor", 
+      "points": 1,
+      "description": "-2 to Vigor rolls to resist Fatigue"
+    },
+    "Arrogant": {
+      "type": "major",
+      "points": 2,
+      "description": "Must humiliate opponent, challenge the most powerful foe"
+    },
+    "Bad Eyes (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "-1 to all Trait rolls dependent on vision, or -2 if glasses are broken/lost"
+    },
+    "Bad Eyes (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "-2 to all Trait rolls dependent on vision, or -4 if glasses are broken/lost"
+    },
+    "Bad Luck": {
+      "type": "major",
+      "points": 2,
+      "description": "The character gets one less Benny per session"
+    },
+    "Big Mouth": {
+      "type": "minor",
+      "points": 1,
+      "description": "Unable to keep secrets and constantly gives away information"
+    },
+    "Blind": {
+      "type": "major",
+      "points": 2,
+      "description": "-6 to all tasks that require vision, -2 to most other actions"
+    },
+    "Bloodthirsty": {
+      "type": "major",
+      "points": 2,
+      "description": "Never takes prisoners unless under the direct supervision of a superior"
+    },
+    "Can't Swim": {
+      "type": "minor",
+      "points": 1,
+      "description": "-2 to Athletics (swimming) rolls and each inch moved in water costs 3 inches of Pace"
+    },
+    "Cautious": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character is overly careful"
+    },
+    "Clueless": {
+      "type": "major",
+      "points": 2,
+      "description": "-1 to Common Knowledge and Notice rolls"
+    },
+    "Code of Honor": {
+      "type": "major",
+      "points": 2,
+      "description": "The character keeps his word and acts like a gentleman"
+    },
+    "Curious": {
+      "type": "major",
+      "points": 2,
+      "description": "The character wants to know about everything"
+    },
+    "Death Wish": {
+      "type": "minor",
+      "points": 1,
+      "description": "The hero wants to die after or while completing some epic task"
+    },
+    "Delusional (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual believes something that is quite simply not true"
+    },
+    "Delusional (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The individual believes something that is quite simply not true (major)"
+    },
+    "Doubting Thomas": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character doesn't believe in the supernatural until forced to"
+    },
+    "Driven (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The hero feels compelled to pursue some short-term goal"
+    },
+    "Driven (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The hero feels compelled to pursue some long-term goal"
+    },
+    "Elderly": {
+      "type": "major",
+      "points": 2,
+      "description": "Pace -1, Strength and Vigor drop a die type, 5 extra skill points"
+    },
+    "Enemy (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character has a recurring nemesis of some sort"
+    },
+    "Enemy (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character has a powerful recurring nemesis"
+    },
+    "Greedy (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual is obsessed with wealth and material possessions"
+    },
+    "Greedy (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The individual is obsessed with wealth and material possessions (major)"
+    },
+    "Habit (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "Drinking, drugs, or other physical addiction"
+    },
+    "Habit (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "Drinking, drugs, or other physical addiction (major)"
+    },
+    "Hard of Hearing (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "-2 to Notice sounds"
+    },
+    "Hard of Hearing (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "-4 to Notice sounds"
+    },
+    "Heroic": {
+      "type": "major",
+      "points": 2,
+      "description": "The character always helps those in need"
+    },
+    "Hesitant": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character draws two Action Cards and acts on the lower of the two"
+    },
+    "Illiterate": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character cannot read or write"
+    },
+    "Impulsive": {
+      "type": "major",
+      "points": 2,
+      "description": "The hero leaps before he looks"
+    },
+    "Jealous (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual covets what others have"
+    },
+    "Jealous (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The individual covets what others have (major)"
+    },
+    "Loyal": {
+      "type": "minor",
+      "points": 1,
+      "description": "The hero is extremely loyal to his friends"
+    },
+    "Mean": {
+      "type": "minor",
+      "points": 1,
+      "description": "-1 to Persuasion rolls"
+    },
+    "Mild Mannered": {
+      "type": "minor",
+      "points": 1,
+      "description": "-2 to Intimidation rolls"
+    },
+    "Mute": {
+      "type": "major",
+      "points": 2,
+      "description": "The hero cannot speak"
+    },
+    "Obese": {
+      "type": "minor",
+      "points": 1,
+      "description": "Size +1, Pace -1, d4 running die. Treat Str as one die type lower for Athletics"
+    },
+    "Obligation (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character has a weekly obligation of some sort"
+    },
+    "Obligation (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character has a daily obligation of some sort"
+    },
+    "One Arm": {
+      "type": "major",
+      "points": 2,
+      "description": "-4 to tasks requiring two hands"
+    },
+    "One Eye": {
+      "type": "major",
+      "points": 2,
+      "description": "-2 to actions requiring depth perception"
+    },
+    "Outsider": {
+      "type": "minor",
+      "points": 1,
+      "description": "-2 to Persuasion with those of the dominant society"
+    },
+    "Overconfident": {
+      "type": "major",
+      "points": 2,
+      "description": "The hero believes she can do anything"
+    },
+    "Pacifist (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character fights only in self-defense and never kills"
+    },
+    "Pacifist (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character won't fight living characters"
+    },
+    "Phobia (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "-1 to all Trait rolls in the presence of the phobia"
+    },
+    "Phobia (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "-2 to all Trait rolls in the presence of the phobia"
+    },
+    "Poverty": {
+      "type": "minor",
+      "points": 1,
+      "description": "Half starting funds, unable to hang onto more than pocket change"
+    },
+    "Quirk": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual has some minor foible or strange mannerism"
+    },
+    "Ruthless (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character does what it takes to get her way"
+    },
+    "Ruthless (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character does what it takes to get her way (major)"
+    },
+    "Secret (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The hero has a secret that causes minor embarrassment"
+    },
+    "Secret (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The hero has a secret that causes major life problems"
+    },
+    "Shamed": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual is haunted by some tragic event from her past"
+    },
+    "Slow (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "Pace -1, running die is reduced one step. Neither may take the Fleet-Footed Edge"
+    },
+    "Slow (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "Pace -2, running die is reduced two steps. Neither may take the Fleet-Footed Edge"
+    },
+    "Small": {
+      "type": "minor",
+      "points": 1,
+      "description": "Size and Toughness are reduced by 1. Size cannot be reduced below -1"
+    },
+    "Stubborn": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character wants his way and rarely admits his mistakes"
+    },
+    "Suspicious (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual is paranoid (minor)"
+    },
+    "Suspicious (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The individual is paranoid. Allies subtract 2 when rolling to Support him"
+    },
+    "Thin Skinned (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character is particularly susceptible to personal attacks. Subtracts two when resisting Taunt attacks"
+    },
+    "Thin Skinned (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character is particularly susceptible to personal attacks. Subtracts four when resisting Taunt attacks"
+    },
+    "Timid": {
+      "type": "major",
+      "points": 2,
+      "description": "-2 to Fear checks and resisting Intimidation"
+    },
+    "Tongue-Tied": {
+      "type": "major",
+      "points": 2,
+      "description": "The character often misspeaks or can't get her words out. -1 to Intimidation, Persuasion, and Taunt rolls"
+    },
+    "Ugly (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character is physically unattractive and subtracts 1 from Persuasion rolls"
+    },
+    "Ugly (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character is physically unattractive and subtracts 2 from Persuasion rolls"
+    },
+    "Vengeful (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The adventurer seeks payback for slights against her (minor)"
+    },
+    "Vengeful (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The adventurer seeks payback for slights against her (major)"
+    },
+    "Vow (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The individual has sworn an oath of some sort"
+    },
+    "Vow (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The individual has sworn a major oath"
+    },
+    "Wanted (Minor)": {
+      "type": "minor",
+      "points": 1,
+      "description": "The character is a minor criminal"
+    },
+    "Wanted (Major)": {
+      "type": "major",
+      "points": 2,
+      "description": "The character is a major criminal"
+    },
+    "Yellow": {
+      "type": "major",
+      "points": 2,
+      "description": "-2 to Fear checks and resisting Intimidation"
+    },
+    "Young": {
+      "type": "major",
+      "points": 2,
+      "description": "3 attribute points instead of 5, 10 skill points instead of 12, +1 Benny per session"
+    }
+  }
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWADE Character Creator v2</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="title">SAVAGE WORLDS</div>
+            <div class="subtitle">Adventure Edition Character Creator v2</div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Row 1: Basic Info & Attributes -->
+            <div class="character-sheet row-1">
+                <div class="column">
+                    <section class="section" id="basicInfoSection">
+                        <h2>Basic Information</h2>
+                        <div class="form-group">
+                            <label for="characterName">Character Name:</label>
+                            <input type="text" id="characterName" placeholder="Enter character name...">
+                        </div>
+                        <div class="form-group">
+                            <label for="characterConcept">Concept:</label>
+                            <input type="text" id="characterConcept" placeholder="e.g., Gunslinger, Scholar, Warrior...">
+                        </div>
+                        <div class="form-group">
+                            <label for="characterAncestry">Ancestry:</label>
+                            <select id="characterAncestry">
+                                <!-- Populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="character-actions">
+                            <button class="action-button" id="randomizeAll">🎲 Randomize All</button>
+                            <button class="action-button" id="resetCharacter">🔄 Reset</button>
+                        </div>
+                    </section>
+                </div>
+                
+                <div class="column">
+                    <section class="section" id="attributesSection">
+                        <h2>
+                            Attributes
+                            <button class="section-title-button" id="randomizeAttributes">🎲 Randomize</button>
+                        </h2>
+                        <div class="info-note" id="attributeInfo">
+                            You have 5 Attribute points. Attributes start at d4 and cost 1 point per step.
+                        </div>
+                        <div class="points-remaining" id="attributePoints">
+                            Attribute Points Remaining: 5
+                        </div>
+                        <div class="attributes-grid" id="attributesGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <div class="derived-stats" id="derivedStats">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Row 2: Hindrances & Edges -->
+            <div class="character-sheet row-2">
+                <div class="column">
+                    <section class="section">
+                        <h2>
+                            Hindrances
+                            <button class="section-title-button" id="randomizeHindrances">🎲 Randomize</button>
+                        </h2>
+                        <div class="info-note">
+                            Take up to 4 points of Hindrances for extra skill points and Edges.
+                        </div>
+                        <div class="points-info" id="hindranceInfo">
+                            Hindrance Points: 0/4 | Bonus: +0 skill points, +0 Edges
+                        </div>
+                        <div class="content-area">
+                            <div class="hindrances-list" id="hindrancesList">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                            <div class="info-panel" id="hindrancesInfoPanel">
+                                <h4>Selected Hindrances:</h4>
+                                <div id="selectedHindrances">[None selected]</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <div class="column">
+                    <section class="section">
+                        <h2>
+                            Edges
+                            <button class="section-title-button" id="randomizeEdges">🎲 Randomize</button>
+                        </h2>
+                        <div class="info-note">
+                            Choose Edges based on your character's rank and prerequisites.
+                        </div>
+                        <div class="points-info" id="edgeInfo">
+                            Available Edges: 1 (Human bonus) + 0 (from Hindrances)
+                        </div>
+                        <div class="content-area">
+                            <div class="edges-list" id="edgesList">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                            <div class="info-panel" id="edgesInfoPanel">
+                                <h4>Selected Edges:</h4>
+                                <div id="selectedEdges">[None selected]</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Row 3: Skills -->
+            <div class="character-sheet row-3">
+                <div class="column full-width">
+                    <section class="section">
+                        <h2>
+                            Skills
+                            <button class="section-title-button" id="randomizeSkills">🎲 Randomize</button>
+                        </h2>
+                        <div class="info-note" id="skillsInfo">
+                            You have 12 Skill points + 0 shared points from Hindrances. Skills cost 1 point per step up to their linked Attribute, then 2 points per step beyond that.
+                        </div>
+                        <div class="points-remaining" id="skillPoints">
+                            Skill Points Remaining: 12
+                        </div>
+                        <div class="skills-grid" id="skillsGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        
+                        <div class="custom-section">
+                            <h4>Add Custom Skill:</h4>
+                            <div class="custom-skill-inputs">
+                                <div>
+                                    <label for="customSkillName">Skill Name:</label>
+                                    <input type="text" id="customSkillName" placeholder="Enter skill name...">
+                                </div>
+                                <div>
+                                    <label for="customSkillAttr">Linked Attribute:</label>
+                                    <select id="customSkillAttr">
+                                        <option value="agility">Agility</option>
+                                        <option value="smarts">Smarts</option>
+                                        <option value="spirit">Spirit</option>
+                                        <option value="strength">Strength</option>
+                                        <option value="vigor">Vigor</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="action-button" id="addCustomSkill">+ Add Custom Skill</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Row 4: Additional Details -->
+            <div class="character-sheet row-4">
+                <div class="column">
+                    <section class="section">
+                        <h2>Equipment & Gear</h2>
+                        <div class="form-group">
+                            <label for="startingFunds">Starting Funds:</label>
+                            <input type="text" id="startingFunds" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="equipment">Equipment:</label>
+                            <textarea id="equipment" rows="6" placeholder="List your character's equipment and gear..."></textarea>
+                        </div>
+                    </section>
+                </div>
+                
+                <div class="column">
+                    <section class="section">
+                        <h2>Background & Notes</h2>
+                        <div class="form-group">
+                            <label for="background">Character Background:</label>
+                            <textarea id="background" rows="3" placeholder="Describe your character's history and motivations..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="specialAbilities">Special Abilities:</label>
+                            <textarea id="specialAbilities" rows="3" placeholder="List racial traits, powers, and special abilities..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Notes:</label>
+                            <textarea id="notes" rows="3" placeholder="Additional notes and reminders..."></textarea>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="export-section">
+                <h3>Export Character</h3>
+                <div class="export-buttons">
+                    <button class="export-button" id="exportText">📄 Export as Text</button>
+                    <button class="export-button" id="exportJSON">💾 Export as JSON</button>
+                    <button class="export-button" id="printCharacter">🖨️ Print Character</button>
+                    <button class="export-button" id="loadCharacter">📂 Load Character</button>
+                    <input type="file" id="loadCharacterFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

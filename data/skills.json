@@ -1,0 +1,139 @@
+{
+  "coreSkills": [
+    "Athletics",
+    "Common Knowledge", 
+    "Notice",
+    "Persuasion",
+    "Stealth"
+  ],
+  "skills": {
+    "Academics": {
+      "attribute": "smarts",
+      "description": "Archaeology, History, Literature, Philosophy, Theology, etc."
+    },
+    "Athletics": {
+      "attribute": "agility", 
+      "description": "Climbing, jumping, swimming, throwing, catching"
+    },
+    "Battle": {
+      "attribute": "smarts",
+      "description": "Strategy, tactics, and understanding of military operations"
+    },
+    "Boating": {
+      "attribute": "agility",
+      "description": "Sailing and motor boats, ships, etc."
+    },
+    "Common Knowledge": {
+      "attribute": "smarts",
+      "description": "General knowledge of a character's world and culture"
+    },
+    "Driving": {
+      "attribute": "agility",
+      "description": "Automobiles, motorcycles, etc."
+    },
+    "Electronics": {
+      "attribute": "smarts",
+      "description": "Operating and repairing electronic devices"
+    },
+    "Faith": {
+      "attribute": "spirit",
+      "description": "Strength of religious conviction and divine favor"
+    },
+    "Fighting": {
+      "attribute": "agility",
+      "description": "Armed and unarmed melee combat"
+    },
+    "Focus": {
+      "attribute": "spirit",
+      "description": "Mental concentration and inner strength"
+    },
+    "Gambling": {
+      "attribute": "smarts",
+      "description": "Card games, dice, betting, bluffing"
+    },
+    "Hacking": {
+      "attribute": "smarts",
+      "description": "Breaking into computer systems and networks"
+    },
+    "Healing": {
+      "attribute": "smarts",
+      "description": "Treating wounds, disease, poison, etc."
+    },
+    "Intimidation": {
+      "attribute": "spirit",
+      "description": "Threatening others through fear"
+    },
+    "Language": {
+      "attribute": "smarts",
+      "description": "Speaking and understanding foreign languages"
+    },
+    "Notice": {
+      "attribute": "smarts",
+      "description": "General awareness and perception"
+    },
+    "Occult": {
+      "attribute": "smarts",
+      "description": "Knowledge of supernatural, magic, monsters"
+    },
+    "Performance": {
+      "attribute": "spirit",
+      "description": "Singing, dancing, acting, playing instruments"
+    },
+    "Persuasion": {
+      "attribute": "spirit",
+      "description": "Convincing others through reason, bargaining, fast-talk"
+    },
+    "Piloting": {
+      "attribute": "agility",
+      "description": "Flying aircraft, spacecraft, etc."
+    },
+    "Psionics": {
+      "attribute": "smarts",
+      "description": "Using psychic powers and mental abilities"
+    },
+    "Repair": {
+      "attribute": "smarts",
+      "description": "Fixing mechanical and electrical devices"
+    },
+    "Research": {
+      "attribute": "smarts",
+      "description": "Finding information through investigation"
+    },
+    "Riding": {
+      "attribute": "agility",
+      "description": "Horses and other riding animals"
+    },
+    "Science": {
+      "attribute": "smarts",
+      "description": "Biology, Chemistry, Engineering, Physics, etc."
+    },
+    "Shooting": {
+      "attribute": "agility",
+      "description": "Bows, firearms, and other ranged weapons"
+    },
+    "Spellcasting": {
+      "attribute": "smarts",
+      "description": "Casting magical spells and rituals"
+    },
+    "Stealth": {
+      "attribute": "agility",
+      "description": "Moving quietly and hiding"
+    },
+    "Survival": {
+      "attribute": "smarts",
+      "description": "Finding food, water, shelter in the wilderness"
+    },
+    "Taunt": {
+      "attribute": "smarts",
+      "description": "Insulting and enraging opponents"
+    },
+    "Thievery": {
+      "attribute": "agility",
+      "description": "Lockpicking, pickpocketing, sleight of hand"
+    },
+    "Weird Science": {
+      "attribute": "smarts",
+      "description": "Mad science and strange inventions"
+    }
+  }
+}
