@@ -388,7 +388,7 @@ class SWADECharacterCreator {
         `;
         document.body.appendChild(errorOverlay);
     }
-    updateAncestryInfoBox(ancestryName) {
+updateAncestryInfoBox(ancestryName) {
         const infoBox = document.getElementById('ancestryInfoBox');
         const titleElement = document.getElementById('ancestryInfoTitle');
         const descriptionElement = document.getElementById('ancestryInfoDescription');
@@ -442,6 +442,7 @@ class SWADECharacterCreator {
             this.updateAncestryInfoBox(currentAncestry);
         }
     }
+}
 }
 }
 // Initialize the application when the DOM is ready
