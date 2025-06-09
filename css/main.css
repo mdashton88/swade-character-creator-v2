@@ -655,3 +655,173 @@ input[readonly] {
     color: #0066cc;
     font-weight: bold;
 }
+
+/* 1. Make columns equal width instead of 2fr 1fr */
+.content-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Changed from 2fr 1fr to equal widths */
+    gap: 20px;
+}
+
+/* 2. Updated info bar styling to match your theme */
+.hindrance-info-bar,
+.edge-info-bar {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px solid #8b0000;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+    color: #8b0000;
+    font-size: 1rem;
+}
+
+/* 3. Reduced font sizes by 1 point throughout */
+.checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 13px; /* Reduced from 14px */
+}
+
+.checkbox-title {
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 4px;
+    font-size: 14px; /* Reduced from 15px */
+}
+
+.checkbox-description {
+    font-size: 12px; /* Reduced from 13px */
+    color: #666666;
+    line-height: 1.4;
+}
+
+.checkbox-meta {
+    font-size: 11px; /* Reduced from 12px */
+    color: #8b0000;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+/* 4. Style selected items identically to available items */
+.selected-hindrances-list,
+.selected-edges-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #ffffff;
+}
+
+.selected-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: #e8f4fd; /* Slightly different background to show it's selected */
+    border: 1px solid #8b0000;
+    font-size: 13px; /* Matching reduced font size */
+}
+
+.selected-item .checkbox-title {
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 4px;
+    font-size: 14px; /* Matching reduced font size */
+}
+
+.selected-item .checkbox-description {
+    font-size: 12px; /* Matching reduced font size */
+    color: #666666;
+    line-height: 1.4;
+}
+
+.selected-item .checkbox-meta {
+    font-size: 11px; /* Matching reduced font size */
+    color: #8b0000;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+/* 5. Remove button styling for selected items */
+.remove-btn {
+    background: linear-gradient(135deg, #8b0000, #a52a2a);
+    border: none;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Roboto', 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 11px; /* Reduced font size */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-top: 8px;
+    margin-left: auto;
+}
+
+.remove-btn:hover {
+    background: linear-gradient(135deg, #a52a2a, #dc143c);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+/* 6. Ensure equal height containers */
+.hindrances-list,
+.edges-list,
+.selected-hindrances-list,
+.selected-edges-list {
+    min-height: 400px;
+    max-height: 400px;
+}
+
+/* 7. Column headers for better organization */
+.column-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dddddd;
+    border-radius: 4px 4px 0 0;
+    padding: 10px;
+    margin: -10px -10px 10px -10px;
+    font-weight: bold;
+    color: #555555;
+    text-align: center;
+    font-size: 14px; /* Reduced font size */
+}
+
+/* 8. Responsive updates for mobile */
+@media (max-width: 768px) {
+    .content-area {
+        grid-template-columns: 1fr; /* Stack columns on mobile */
+        gap: 15px;
+    }
+    
+    .hindrance-info-bar,
+    .edge-info-bar {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+    
+    .checkbox-item,
+    .selected-item {
+        font-size: 12px; /* Further reduced for mobile */
+    }
+    
+    .checkbox-title,
+    .selected-item .checkbox-title {
+        font-size: 13px; /* Further reduced for mobile */
+    }
+    
+    .checkbox-description,
+    .selected-item .checkbox-description {
+        font-size: 11px; /* Further reduced for mobile */
+    }
+}
