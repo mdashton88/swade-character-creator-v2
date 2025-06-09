@@ -1,3 +1,4 @@
+console.log('=== main.js file loaded ===');
 // SWADE Character Creator v2 - Main Application Entry Point
 
 import { DataManager } from './modules/dataManager.js';
