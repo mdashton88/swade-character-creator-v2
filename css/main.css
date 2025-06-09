@@ -34,6 +34,45 @@ body {
     overflow: hidden;
 }
 
+/* Ancestry and Rank Row Styling */
+.ancestry-rank-row {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1.5fr;
+    gap: 20px;
+    align-items: end;
+    margin-bottom: 15px;
+}
+
+.ancestry-field {
+    margin-bottom: 0;
+}
+
+.rank-number-field,
+.rank-name-field {
+    margin-bottom: 0;
+}
+
+.rank-number-field input,
+.rank-name-field input {
+    background-color: #f8f9fa;
+    color: #666666;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Responsive: Stack on smaller screens */
+@media (max-width: 768px) {
+    .ancestry-rank-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .ancestry-field,
+    .rank-number-field,
+    .rank-name-field {
+        margin-bottom: 15px;
+    }
+}
 .header::before {
     content: '';
     position: absolute;
