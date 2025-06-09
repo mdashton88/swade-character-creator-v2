@@ -129,23 +129,49 @@ class SWADECharacterCreator {
     }
 
   async initializeUI() {
+   // DEBUG: Check what methods are available
+    console.log('DataManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.dataManager)));
+    
+    // DEBUG: Try different ways to get ancestry data
+    console.log('getAncestries():', this.dataManager.getAncestries ? this.dataManager.getAncestries() : 'Method not found');
+    console.log('Full config:', this.dataManager.getConfig ? this.dataManager.getConfig() : 'getConfig not found');
+    
     // Populate ancestries dropdown
-    const ancestries = this.dataManager.getAncestries();
+    let ancestries;
+    
+    // Try multiple methods to get ancestry data
+    if (this.dataManager.getAncestries) {
+        ancestries = this.dataManager.getAncestries();
+    } else if (this.dataManager.getConfig) {
+        const config = this.dataManager.getConfig();
+        ancestries = config.ancestries || config.ancestry || {};
+    } else {
+        console.error('Cannot find ancestry data');
+        ancestries = {};
+    }
+    
+    console.log('Final ancestries data:', ancestries);
+    
     const ancestrySelect = document.getElementById('characterAncestry');
     
-    // ADD THIS: Add blank default option
+    // Add blank default option
     const blankOption = document.createElement('option');
     blankOption.value = '';
     blankOption.textContent = '-- Select Ancestry --';
     ancestrySelect.appendChild(blankOption);
     
-    Object.keys(ancestries).forEach(ancestry => {
-        const option = document.createElement('option');
-        option.value = ancestry;
-        option.textContent = ancestry;
-        ancestrySelect.appendChild(option);
-    });
-
+    // Add ancestries if we have any
+    if (ancestries && typeof ancestries === 'object') {
+        Object.keys(ancestries).forEach(ancestry => {
+            const option = document.createElement('option');
+            option.value = ancestry;
+            option.textContent = ancestry;
+            ancestrySelect.appendChild(option);
+            console.log('Added ancestry:', ancestry);
+        });
+    } else {
+        console.error('No valid ancestry data found');
+    }
         // Initialize all UI components
         await this.attributesManager.initializeUI();
         await this.skillsManager.initializeUI();
