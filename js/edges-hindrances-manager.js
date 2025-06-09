@@ -11,6 +11,7 @@ export default class EdgesHindrancesManager {
         this.selectedEdges = new Set();
         this.edgesData = null;
         this.pauseMonitoring = false; // Flag to pause monitoring during operations
+        this.manuallyRemoved = new Set(); // Track items we manually removed
         
         console.log('Constructor finished, calling init...');
         this.init();
@@ -114,6 +115,11 @@ export default class EdgesHindrancesManager {
             const isChecked = checkbox && checkbox.checked;
             const isInOurSet = this.selectedHindrances.has(hindranceId);
             
+            // Skip items we manually removed
+            if (this.manuallyRemoved.has(hindranceId)) {
+                return;
+            }
+            
             if (isChecked && !isInOurSet) {
                 // Item was selected by existing system but not in our tracking
                 console.log('Detected new hindrance selection:', hindranceId);
@@ -135,6 +141,9 @@ export default class EdgesHindrancesManager {
             this.edgePoints += points;
             this.selectedHindrances.add(hindranceId);
             
+            // Clear from manually removed set since it's now selected again
+            this.manuallyRemoved.delete(hindranceId);
+            
             console.log('Synced hindrance selection - Points:', this.hindrancePoints, 'Edge points:', this.edgePoints);
             
             // Add to selected panel
@@ -148,6 +157,9 @@ export default class EdgesHindrancesManager {
                 this.hindrancePoints -= points;
                 this.edgePoints -= points;
                 this.selectedHindrances.delete(hindranceId);
+                
+                // Clear from manually removed set since it was naturally deselected
+                this.manuallyRemoved.delete(hindranceId);
                 
                 console.log('Synced hindrance deselection - Points:', this.hindrancePoints, 'Edge points:', this.edgePoints);
                 
@@ -273,44 +285,39 @@ export default class EdgesHindrancesManager {
     removeHindrance(hindranceId, points) {
         console.log(`Removing hindrance: ${hindranceId}, points: ${points}`);
         
-        // Temporarily pause monitoring to prevent re-adding
-        this.pauseMonitoring = true;
+        // Mark this item as manually removed so monitoring ignores it
+        this.manuallyRemoved.add(hindranceId);
         
-        // Update points
+        // Update our points
         this.hindrancePoints -= points;
         this.edgePoints -= points;
         this.selectedHindrances.delete(hindranceId);
 
-        // Remove from selected panel
+        // Remove from our selected panel
         const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
         if (selectedItem) {
             selectedItem.remove();
         }
 
-        // Uncheck in available panel (let existing system handle the rest)
+        // Try to uncheck the checkbox in the existing system
         const availableItem = document.querySelector(`#hindrancesList [data-id="${hindranceId}"]`);
         if (availableItem) {
+            // Remove the "selected" class that the existing system uses
+            availableItem.classList.remove('selected');
+            
+            // Uncheck the checkbox
             const checkbox = availableItem.querySelector('input[type="checkbox"]');
-            if (checkbox && checkbox.checked) {
-                // Force uncheck and trigger change event
+            if (checkbox) {
                 checkbox.checked = false;
-                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-                
-                // Also try clicking as backup
-                setTimeout(() => {
-                    if (checkbox.checked) {
-                        checkbox.click();
-                    }
-                }, 100);
             }
         }
 
         this.updateDisplays();
         
-        // Resume monitoring after a short delay
+        // Clear the manual removal flag after a longer delay
         setTimeout(() => {
-            this.pauseMonitoring = false;
-        }, 1000);
+            this.manuallyRemoved.delete(hindranceId);
+        }, 5000); // 5 seconds should be enough
     }
 
     removeEdge(edgeId, cost) {
@@ -460,4 +467,4 @@ window.clearEdges = function() {
     if (window.edgesHindrancesManager) {
         window.edgesHindrancesManager.clearEdges();
     }
-};
+};    
