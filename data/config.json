@@ -8,8 +8,7 @@
     "attributeStartingValue": 4,
     "attributeMaxAtCreation": 12,
     "skillMaxAtCreation": 12,
-    "dieTypes": [4, 6, 8, 10, 12]
-  
+    "dieTypes": [4, 6, 8, 10, 12],
 {
   "ancestries": {
     "Android": {
