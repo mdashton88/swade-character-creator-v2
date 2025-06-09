@@ -144,7 +144,8 @@ class SWADECharacterCreator {
         
         // Initialize other UI elements
         this.updateStartingFunds();
-    }
+        this.initializeAncestryInfoBox();
+        }
 
     setupEventListeners() {
         // Basic character info
@@ -156,8 +157,9 @@ class SWADECharacterCreator {
             this.characterManager.updateCharacter('concept', e.target.value);
         });
 
-        document.getElementById('characterAncestry').addEventListener('change', (e) => {
+       document.getElementById('characterAncestry').addEventListener('change', (e) => {
             this.characterManager.updateCharacter('ancestry', e.target.value);
+            this.updateAncestryInfoBox(e.target.value);
             this.updateAllDisplays();
         });
 
@@ -386,6 +388,61 @@ class SWADECharacterCreator {
         `;
         document.body.appendChild(errorOverlay);
     }
+    updateAncestryInfoBox(ancestryName) {
+        const infoBox = document.getElementById('ancestryInfoBox');
+        const titleElement = document.getElementById('ancestryInfoTitle');
+        const descriptionElement = document.getElementById('ancestryInfoDescription');
+        const abilitiesContainer = document.getElementById('ancestryInfoAbilities');
+        
+        // Hide info box if no ancestry selected
+        if (!ancestryName || ancestryName === '') {
+            infoBox.style.display = 'none';
+            return;
+        }
+        
+        // Get ancestry data
+        const ancestries = this.dataManager.getConfig().ancestries;
+        const ancestryData = ancestries[ancestryName];
+        
+        if (!ancestryData) {
+            infoBox.style.display = 'none';
+            return;
+        }
+        
+        // Update title and description
+        titleElement.textContent = ancestryName;
+        descriptionElement.textContent = ancestryData.description;
+        
+        // Clear previous abilities
+        abilitiesContainer.innerHTML = '';
+        
+        // Add abilities
+        if (ancestryData.abilities && ancestryData.abilities.length > 0) {
+            ancestryData.abilities.forEach(ability => {
+                const abilityElement = document.createElement('div');
+                abilityElement.className = 'ability-item';
+                
+                abilityElement.innerHTML = `
+                    <span class="ability-name">${ability.name}</span>
+                    <p class="ability-description">${ability.description}</p>
+                `;
+                
+                abilitiesContainer.appendChild(abilityElement);
+            });
+        }
+        
+        // Show the info box
+        infoBox.style.display = 'block';
+    }
+
+    initializeAncestryInfoBox() {
+        const currentAncestry = this.characterManager.getCharacter().ancestry;
+        
+        if (currentAncestry) {
+            this.updateAncestryInfoBox(currentAncestry);
+        }
+    }
+}
 }
 // Initialize the application when the DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
