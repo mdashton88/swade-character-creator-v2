@@ -10,6 +10,7 @@ import { EdgesManager } from './modules/edgesManager.js';
 import { CalculationsManager } from './modules/calculationsManager.js';
 import { ExportManager } from './modules/exportManager.js';
 import { RandomizerManager } from './modules/randomizerManager.js';
+import EdgesHindrancesManager from './edges-hindrances-manager.js';
 
 class SWADECharacterCreator {
     constructor() {
@@ -70,6 +71,9 @@ class SWADECharacterCreator {
                 this.calculationsManager, 
                 this.uiManager
             );
+            
+            // Initialize the enhanced edges/hindrances manager after core managers are ready
+            window.edgesHindrancesManager = new EdgesHindrancesManager();
             
             this.exportManager = new ExportManager(
                 this.dataManager,
