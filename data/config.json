@@ -11,40 +11,34 @@
     "dieTypes": [4, 6, 8, 10, 12]
   },
   "ancestries": {
-    "Android": {
+    "Androids": {
       "description": "Semi-organic beings created by advanced technology with artificial intelligence"
     },
-    "Aquarian": {
+    "Aquarians": {
       "description": "Aquatic folk from the crushing ocean depths, sturdy beneath the waves"
     },
-    "Avion": {
+    "Avions": {
       "description": "Humanoids with wings and hollow bones, capable of flight"
     },
-    "Celestial": {
-      "description": "Angels with divine powers and a mission to protect humanity"
-    },
-    "Dwarf": {
+    "Dwarves": {
       "description": "Short but stout, hardy people from caverns and mountains"
     },
-    "Elf": {
+    "Elves": {
       "description": "Graceful and long-lived magical beings with pointed ears"
     },
-    "Guardian": {
-      "description": "Human champions who serve the Heavenly Choir"
-    },
-    "Half-Elf": {
+    "Half-Elves": {
       "description": "Children of human and elf parents, with heritage of both worlds"
     },
     "Half-Folk": {
       "description": "Small, optimistic people with a 'never say die' attitude"
     },
-    "Human": {
+    "Humans": {
       "description": "Versatile and adaptable, the most common ancestry"
     },
-    "Rakashan": {
+    "Rakashans": {
       "description": "Humanoid felines with claws, fangs, and a predatory nature"
     },
-    "Saurian": {
+    "Saurians": {
       "description": "Lizard folk from steaming jungles with scaly skin and keen senses"
     }
   },
