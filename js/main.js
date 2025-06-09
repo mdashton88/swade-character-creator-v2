@@ -72,8 +72,15 @@ class SWADECharacterCreator {
                 this.uiManager
             );
             
-            // Initialize the enhanced edges/hindrances manager after core managers are ready
-            window.edgesHindrancesManager = new EdgesHindrancesManager();
+// Initialize the enhanced edges/hindrances manager after core managers are ready
+console.log('About to create EdgesHindrancesManager...');
+console.log('EdgesHindrancesManager class:', EdgesHindrancesManager);
+try {
+    window.edgesHindrancesManager = new EdgesHindrancesManager();
+    console.log('EdgesHindrancesManager created successfully:', window.edgesHindrancesManager);
+} catch (error) {
+    console.error('Error creating EdgesHindrancesManager:', error);
+}
             
             this.exportManager = new ExportManager(
                 this.dataManager,
