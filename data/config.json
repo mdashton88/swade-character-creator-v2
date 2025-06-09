@@ -8,8 +8,8 @@
     "attributeStartingValue": 4,
     "attributeMaxAtCreation": 12,
     "skillMaxAtCreation": 12,
-    "dieTypes": [4, 6, 8, 10, 12],
-{
+    "dieTypes": [4, 6, 8, 10, 12]
+  },
   "ancestries": {
     "Android": {
       "description": "Semi-organic beings created by advanced technology with artificial intelligence"
@@ -47,8 +47,7 @@
     "Saurian": {
       "description": "Lizard folk from steaming jungles with scaly skin and keen senses"
     }
-  }
-}
+  },
   "costs": {
     "attributeIncrease": 1,
     "skillBelowAttribute": 1,
