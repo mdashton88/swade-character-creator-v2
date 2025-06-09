@@ -269,7 +269,7 @@ export class RandomizerManager {
     }
 
     generateScholarCharacter() {
-        // Scholar-type ancestries (removed Celestial, Guardian - corrected names, added Aquarians)
+        // Scholar-type ancestries
         const scholarAncestries = ['Humans', 'Androids', 'Elves', 'Half-Elves', 'Aquarians'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(scholarAncestries));
         
@@ -283,7 +283,7 @@ export class RandomizerManager {
     }
 
     generateLeaderCharacter() {
-        // Leader-type ancestries (removed Guardian, Celestial - corrected names)
+        // Leader-type ancestries
         const leaderAncestries = ['Humans', 'Dwarves', 'Half-Elves'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(leaderAncestries));
         
@@ -297,7 +297,7 @@ export class RandomizerManager {
     }
 
     generateRogueCharacter() {
-        // Rogue-type ancestries (corrected names)
+        // Rogue-type ancestries
         const rogueAncestries = ['Humans', 'Elves', 'Half-Elves', 'Half-Folk', 'Rakashans', 'Avions'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(rogueAncestries));
         
@@ -311,7 +311,7 @@ export class RandomizerManager {
     }
 
     generateMysticCharacter() {
-        // Mystic-type ancestries (removed Celestial - corrected names)
+        // Mystic-type ancestries
         const mysticAncestries = ['Humans', 'Elves', 'Half-Elves', 'Saurians'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(mysticAncestries));
         
