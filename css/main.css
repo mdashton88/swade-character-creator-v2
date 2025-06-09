@@ -166,16 +166,16 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Section headers to match the theme */
 .section h2 {
-    color: #8b0000;
-    border-bottom: 2px solid #8b0000;
+    color: #6b1518;
+    border-bottom: 2px solid #d4af37;
     padding-bottom: 10px;
     margin-bottom: 15px;
-    font-size: 1.3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-size: 1.4rem;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
     font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.2);
 }
 
 /* Button Styles */
@@ -254,18 +254,22 @@ input[readonly] {
     color: #0c5460;
 }
 
+/* Points displays to match */
 .points-remaining,
 .points-info {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border: 2px solid #8b0000;
+    background: linear-gradient(135deg, #f8f6f0, #f4e4bc);
+    border: 2px solid #6b1518;
     border-radius: 6px;
     padding: 12px;
     margin-bottom: 15px;
     font-weight: bold;
     text-align: center;
-    color: #8b0000;
+    color: #6b1518;
     font-size: 1rem;
-}
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    box-shadow: 
+        0 2px 4px rgba(107, 21, 24, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 
 /* Grid Layouts */
 .attributes-grid {
