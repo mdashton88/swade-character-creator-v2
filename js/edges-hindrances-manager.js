@@ -45,25 +45,17 @@ export default class EdgesHindrancesManager {
     setupEventListeners() {
         console.log('Setting up event listeners for EdgesHindrancesManager');
         
-        // Listen for clicks on ALL checkboxes using delegation
+        // Make entire hindrance/edge containers clickable
         document.addEventListener('click', (e) => {
-            if (e.target.type === 'checkbox') {
-                const item = e.target.closest('.checkbox-item');
-                if (item) {
-                    // Check if it's in hindrances or edges list
-                    const hindrancesList = item.closest('#hindrancesList');
-                    const edgesList = item.closest('#edgesList');
-                    
-                    if (hindrancesList) {
-                        // Let the click happen, then process after a short delay
-                        setTimeout(() => {
-                            this.processHindranceClick(e.target, item);
-                        }, 100);
-                    } else if (edgesList) {
-                        setTimeout(() => {
-                            this.processEdgeClick(e.target, item);
-                        }, 100);
-                    }
+            const item = e.target.closest('.checkbox-item');
+            if (item) {
+                const hindrancesList = item.closest('#hindrancesList');
+                const edgesList = item.closest('#edgesList');
+                
+                if (hindrancesList) {
+                    this.toggleHindrance(item);
+                } else if (edgesList) {
+                    this.toggleEdge(item);
                 }
             }
         });
@@ -76,57 +68,109 @@ export default class EdgesHindrancesManager {
                 this.handleRemoveClick(e.target);
             }
         });
+        
+        // Hide all checkboxes since we don't need them anymore
+        setTimeout(() => {
+            this.hideCheckboxes();
+        }, 1000);
+    }
+
+    hideCheckboxes() {
+        // Hide checkboxes in both hindrances and edges lists
+        const checkboxes = document.querySelectorAll('#hindrancesList input[type="checkbox"], #edgesList input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.style.display = 'none';
+        });
+        console.log('Hidden', checkboxes.length, 'checkboxes');
+    }
+
+    toggleHindrance(item) {
+        console.log('=== toggleHindrance called ===');
+        
+        const hindranceId = item.dataset.id || this.getItemId(item);
+        const isSelected = this.selectedHindrances.has(hindranceId);
+        
+        if (isSelected) {
+            // Remove it
+            console.log('Removing hindrance:', hindranceId);
+            this.removeHindranceFromOurList(hindranceId);
+            this.removeSelectedStyling(item);
+        } else {
+            // Add it
+            console.log('Adding hindrance:', hindranceId);
+            this.addHindranceToOurList(item, hindranceId);
+        }
+    }
+
+    toggleEdge(item) {
+        console.log('=== toggleEdge called ===');
+        
+        const edgeId = item.dataset.id || this.getItemId(item);
+        const isSelected = this.selectedEdges.has(edgeId);
+        
+        if (isSelected) {
+            // Remove it
+            this.removeEdgeFromOurList(edgeId);
+            this.removeSelectedStyling(item);
+            item.style.display = 'block'; // Show it again
+        } else {
+            // Add it
+            this.addEdgeToOurList(item, edgeId);
+        }
+    }
+
+    addSelectedStyling(item) {
+        // Add visual styling to show item is selected
+        item.classList.add('selected');
+        item.style.backgroundColor = '#e8f4fd';
+        item.style.border = '2px solid #8b0000';
+        item.style.cursor = 'pointer';
+    }
+
+    removeSelectedStyling(item) {
+        // Remove visual styling
+        item.classList.remove('selected');
+        item.style.backgroundColor = '';
+        item.style.border = '';
+        item.style.cursor = 'pointer';
     }
 
     doInitialSync() {
-        // Sync with any items that are already selected when we start
-        const selectedHindrances = document.querySelectorAll('#hindrancesList .checkbox-item input[type="checkbox"]:checked');
-        selectedHindrances.forEach(checkbox => {
-            const item = checkbox.closest('.checkbox-item');
-            if (item) {
-                this.processHindranceClick(checkbox, item);
-            }
+        // Since we're hiding checkboxes, we start with a clean state
+        // The user will click to select items as needed
+        console.log('Starting with clean state - no checkboxes to sync');
+        
+        // Add clickable styling to all items
+        this.addClickableStyling();
+    }
+
+    addClickableStyling() {
+        // Make all hindrance and edge items look clickable
+        const items = document.querySelectorAll('#hindrancesList .checkbox-item, #edgesList .checkbox-item');
+        items.forEach(item => {
+            item.style.cursor = 'pointer';
+            item.style.transition = 'all 0.2s ease';
+            item.style.border = '1px solid #dddddd';
+            item.style.borderRadius = '4px';
+            
+            // Add hover effect
+            item.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('selected')) {
+                    item.style.backgroundColor = '#f0f0f0';
+                }
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                if (!item.classList.contains('selected')) {
+                    item.style.backgroundColor = '';
+                }
+            });
         });
-
-        const selectedEdges = document.querySelectorAll('#edgesList .checkbox-item input[type="checkbox"]:checked');
-        selectedEdges.forEach(checkbox => {
-            const item = checkbox.closest('.checkbox-item');
-            if (item) {
-                this.processEdgeClick(checkbox, item);
-            }
-        });
+        
+        console.log('Added clickable styling to', items.length, 'items');
     }
 
-    processHindranceClick(checkbox, item) {
-        console.log('=== processHindranceClick called ===');
-        console.log('Checkbox checked:', checkbox.checked);
-        
-        const hindranceId = item.dataset.id || this.getItemId(item);
-        const isInOurList = this.selectedHindrances.has(hindranceId);
-        
-        if (checkbox.checked && !isInOurList) {
-            // Item was checked and we don't have it - add it
-            console.log('Adding hindrance to our tracking:', hindranceId);
-            this.addHindranceToOurList(item, hindranceId);
-        } else if (!checkbox.checked && isInOurList) {
-            // Item was unchecked and we have it - remove it
-            console.log('Removing hindrance from our tracking:', hindranceId);
-            this.removeHindranceFromOurList(hindranceId);
-        }
-    }
 
-    processEdgeClick(checkbox, item) {
-        console.log('=== processEdgeClick called ===');
-        
-        const edgeId = item.dataset.id || this.getItemId(item);
-        const isInOurList = this.selectedEdges.has(edgeId);
-        
-        if (checkbox.checked && !isInOurList) {
-            this.addEdgeToOurList(item, edgeId);
-        } else if (!checkbox.checked && isInOurList) {
-            this.removeEdgeFromOurList(edgeId);
-        }
-    }
 
     addHindranceToOurList(item, hindranceId) {
         const points = parseInt(item.dataset.points) || this.getHindrancePoints(item);
@@ -134,9 +178,6 @@ export default class EdgesHindrancesManager {
         // Check if we can add this hindrance
         if (this.hindrancePoints + points > this.maxHindrancePoints) {
             alert(`Cannot add hindrance. Would exceed maximum of ${this.maxHindrancePoints} points.`);
-            // Uncheck the checkbox
-            const checkbox = item.querySelector('input[type="checkbox"]');
-            if (checkbox) checkbox.checked = false;
             return;
         }
 
@@ -153,6 +194,9 @@ export default class EdgesHindrancesManager {
 
         console.log('Added hindrance - Points:', this.hindrancePoints, 'Edge points:', this.edgePoints);
 
+        // Add visual styling to show it's selected
+        this.addSelectedStyling(item);
+
         // Add to our selected panel
         this.addToSelectedPanel(item, hindranceId, points, 'hindrance');
         this.updateDisplays();
@@ -164,8 +208,6 @@ export default class EdgesHindrancesManager {
         // Check if we have enough edge points
         if (this.edgePoints < cost) {
             alert(`Cannot add edge. Requires ${cost} edge points but you only have ${this.edgePoints}.`);
-            const checkbox = item.querySelector('input[type="checkbox"]');
-            if (checkbox) checkbox.checked = false;
             return;
         }
 
@@ -179,10 +221,13 @@ export default class EdgesHindrancesManager {
         // Update points
         this.edgePoints -= cost;
 
+        // Add visual styling
+        this.addSelectedStyling(item);
+
         // Add to our selected panel
         this.addToSelectedPanel(item, edgeId, cost, 'edge');
 
-        // Hide from available panel
+        // Hide from available panel for edges
         item.style.display = 'none';
 
         this.updateDisplays();
