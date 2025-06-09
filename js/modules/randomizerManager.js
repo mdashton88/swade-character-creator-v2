@@ -262,7 +262,8 @@ export class RandomizerManager {
     }
 
     generateScholarCharacter() {
-        const scholarAncestries = ['Human', 'Elf'];
+        // Scholar-type ancestries (intelligent, knowledge-focused)
+        const scholarAncestries = ['Human', 'Android', 'Elf', 'Half-Elf', 'Celestial', 'Guardian'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(scholarAncestries));
         
         const scholarConcepts = ['Scholar', 'Researcher', 'Wizard', 'Inventor', 'Sage'];
@@ -275,7 +276,8 @@ export class RandomizerManager {
     }
 
     generateLeaderCharacter() {
-        const leaderAncestries = ['Human', 'Elf'];
+        // Leader-type ancestries (charismatic, commanding)
+        const leaderAncestries = ['Human', 'Dwarf', 'Guardian', 'Celestial', 'Half-Elf'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(leaderAncestries));
         
         const leaderConcepts = ['Leader', 'Noble', 'Officer', 'Diplomat', 'Captain'];
@@ -288,7 +290,8 @@ export class RandomizerManager {
     }
 
     generateRogueCharacter() {
-        const rogueAncestries = ['Human', 'Halfling', 'Elf'];
+        // Rogue-type ancestries (stealthy, agile)
+        const rogueAncestries = ['Human', 'Elf', 'Half-Elf', 'Half-Folk', 'Rakashan', 'Avion'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(rogueAncestries));
         
         const rogueConcepts = ['Rogue', 'Thief', 'Scout', 'Spy', 'Assassin'];
@@ -301,7 +304,8 @@ export class RandomizerManager {
     }
 
     generateMysticCharacter() {
-        const mysticAncestries = ['Human', 'Elf'];
+        // Mystic-type ancestries (magical, spiritual)
+        const mysticAncestries = ['Human', 'Elf', 'Half-Elf', 'Celestial', 'Saurian'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(mysticAncestries));
         
         const mysticConcepts = ['Mystic', 'Shaman', 'Priest', 'Oracle', 'Witch'];
