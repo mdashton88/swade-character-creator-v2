@@ -63,16 +63,21 @@ export class EdgesHindrancesManager {
         }
     }
 
-   setupEventListeners() {
+setupEventListeners() {
     console.log('Setting up event listeners for EdgesHindrancesManager');
     
     // Listen for changes on existing edge/hindrance checkboxes
     document.addEventListener('change', (e) => {
-        console.log('Checkbox change detected:', e.target);
+        console.log('=== CHANGE EVENT DETECTED ===');
+        console.log('Event target:', e.target);
+        console.log('Target type:', e.target.type);
+        console.log('Target tagName:', e.target.tagName);
         
         if (e.target.type === 'checkbox') {
+            console.log('Checkbox change confirmed');
+            
             const item = e.target.closest('.checkbox-item');
-            console.log('Closest checkbox-item:', item);
+            console.log('Closest checkbox-item found:', item);
             
             if (item) {
                 const hindrancesList = item.closest('#hindrancesList');
@@ -82,30 +87,31 @@ export class EdgesHindrancesManager {
                 console.log('In edgesList:', edgesList);
                 
                 if (hindrancesList) {
-                    console.log('Handling hindrance change');
+                    console.log('Calling handleHindranceChange');
                     this.handleHindranceChange(e.target, item);
                 } else if (edgesList) {
-                    console.log('Handling edge change');
+                    console.log('Calling handleEdgeChange');
                     this.handleEdgeChange(e.target, item);
                 } else {
                     console.log('Item not in expected container');
                 }
             } else {
-                console.log('No checkbox-item found');
+                console.log('No checkbox-item parent found');
             }
+        } else {
+            console.log('Not a checkbox, ignoring');
         }
     });
-    
-    // Rest of the method...
-        // Setup remove button event delegation
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-btn')) {
-                e.preventDefault();
-                e.stopPropagation();
-                this.handleRemoveClick(e.target);
-            }
-        });
-    }
+
+    // Setup remove button event delegation
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.handleRemoveClick(e.target);
+        }
+    });
+}
 
     handleHindranceChange(checkbox, item) {
     console.log('=== handleHindranceChange called ===');
