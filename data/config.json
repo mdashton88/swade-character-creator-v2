@@ -9,97 +9,47 @@
     "attributeMaxAtCreation": 12,
     "skillMaxAtCreation": 12,
     "dieTypes": [4, 6, 8, 10, 12]
-  },
+  
+{
   "ancestries": {
-    "Human": {
-      "description": "Versatile and adaptable",
-      "bonuses": {
-        "skillPoints": 1,
-        "edges": 1
-      },
-      "restrictions": {},
-      "traits": ["Extra Edge", "Extra Skill Point"]
-    },
     "Android": {
-      "description": "Artificial beings with human-like intelligence",
-      "bonuses": {
-        "attributes": {
-          "vigor": 1
-        }
-      },
-      "restrictions": {},
-      "traits": ["Construct", "+1 to resist environmental hazards"]
+      "description": "Semi-organic beings created by advanced technology with artificial intelligence"
+    },
+    "Aquarian": {
+      "description": "Aquatic folk from the crushing ocean depths, sturdy beneath the waves"
     },
     "Avion": {
-      "description": "Winged humanoids capable of flight",
-      "bonuses": {},
-      "restrictions": {
-        "hindrances": ["Cannot have Slow (Major) hindrance"]
-      },
-      "traits": ["Flight", "Keen senses"]
+      "description": "Humanoids with wings and hollow bones, capable of flight"
+    },
+    "Celestial": {
+      "description": "Angels with divine powers and a mission to protect humanity"
     },
     "Dwarf": {
-      "description": "Short, stout, and resilient people",
-      "bonuses": {
-        "attributes": {
-          "vigor": 1
-        }
-      },
-      "restrictions": {
-        "hindrances": ["Slow (Minor) - built in"]
-      },
-      "traits": ["Slow", "Low Light Vision", "+2 vs poison/disease"]
+      "description": "Short but stout, hardy people from caverns and mountains"
     },
     "Elf": {
-      "description": "Graceful and long-lived magical beings",
-      "bonuses": {
-        "attributes": {
-          "agility": 1
-        }
-      },
-      "restrictions": {},
-      "traits": ["Low Light Vision", "Keen senses", "+2 to Notice"]
+      "description": "Graceful and long-lived magical beings with pointed ears"
+    },
+    "Guardian": {
+      "description": "Human champions who serve the Heavenly Choir"
     },
     "Half-Elf": {
-      "description": "Children of human and elf parents",
-      "bonuses": {},
-      "restrictions": {},
-      "traits": ["Low Light Vision", "Heritage abilities"]
+      "description": "Children of human and elf parents, with heritage of both worlds"
     },
-    "Halfling": {
-      "description": "Small, quick, and lucky folk",
-      "bonuses": {
-        "attributes": {
-          "agility": 1
-        }
-      },
-      "restrictions": {
-        "hindrances": ["Small - built in"]
-      },
-      "traits": ["Small", "Lucky", "+2 to resist fear"]
+    "Half-Folk": {
+      "description": "Small, optimistic people with a 'never say die' attitude"
+    },
+    "Human": {
+      "description": "Versatile and adaptable, the most common ancestry"
     },
     "Rakashan": {
-      "description": "Feline humanoids with natural agility",
-      "bonuses": {
-        "attributes": {
-          "agility": 1
-        }
-      },
-      "restrictions": {},
-      "traits": ["Bloodthirsty", "Can't Swim", "Low Light Vision", "+2 Athletics (climbing)"]
+      "description": "Humanoid felines with claws, fangs, and a predatory nature"
     },
     "Saurian": {
-      "description": "Reptilian humanoids with natural armor",
-      "bonuses": {
-        "attributes": {
-          "strength": 1,
-          "vigor": 1
-        }
-      },
-      "restrictions": {},
-      "traits": ["Armor +2", "Environmental Weakness (Cold)", "Outsider"]
+      "description": "Lizard folk from steaming jungles with scaly skin and keen senses"
     }
-  },
+  }
+}
   "costs": {
     "attributeIncrease": 1,
     "skillBelowAttribute": 1,
