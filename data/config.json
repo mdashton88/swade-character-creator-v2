@@ -10,36 +10,208 @@
     "skillMaxAtCreation": 12,
     "dieTypes": [4, 6, 8, 10, 12]
   },
-  "ancestries": {
+ "ancestries": {
     "Androids": {
-      "description": "Semi-organic beings created by advanced technology with artificial intelligence"
+      "description": "Semi-organic beings created by advanced technology with artificial intelligence",
+      "abilities": [
+        {
+          "name": "CONSTRUCT",
+          "description": "+2 to recover from being Shaken, don't breathe, ignore one level of Wound modifiers, and are immune to poison and disease. Cannot heal naturally - require Repair skill."
+        },
+        {
+          "name": "OUTSIDER (Major)",
+          "description": "Subtract 2 from Persuasion rolls when interacting with anyone besides other androids, and have no legal rights in most areas."
+        },
+        {
+          "name": "PACIFIST (Major)",
+          "description": "Unless designed for combat, most have 'Asimov Circuits' - may not injure a sapient being or allow such harm through inaction."
+        },
+        {
+          "name": "VOW (Major)",
+          "description": "Designed with a particular purpose - have a Major Vow to serve a corporation, faction, or directive."
+        }
+      ]
     },
     "Aquarians": {
-      "description": "Aquatic folk from the crushing ocean depths, sturdy beneath the waves"
+      "description": "Aquatic folk from the crushing ocean depths, sturdy beneath the waves",
+      "abilities": [
+        {
+          "name": "AQUATIC",
+          "description": "Cannot drown in water and move at full Pace when swimming."
+        },
+        {
+          "name": "DEPENDENCY",
+          "description": "Must immerse in water one hour out of every 24 or become automatically Fatigued each day until Incapacitated."
+        },
+        {
+          "name": "LOW LIGHT VISION",
+          "description": "Ignore penalties for Dim and Dark Illumination."
+        },
+        {
+          "name": "TOUGHNESS",
+          "description": "Add +1 to Toughness due to tough, resilient flesh."
+        }
+      ]
     },
     "Avions": {
-      "description": "Humanoids with wings and hollow bones, capable of flight"
+      "description": "Humanoids with wings and hollow bones, capable of flight",
+      "abilities": [
+        {
+          "name": "CAN'T SWIM",
+          "description": "Wings are a hazard in water. Subtract 2 from Athletics (swimming) rolls and each inch moved in water costs 3″ of Pace."
+        },
+        {
+          "name": "FLIGHT",
+          "description": "Fly at Pace 12 per round. Use Athletics when maneuvering."
+        },
+        {
+          "name": "FRAIL",
+          "description": "−1 Toughness due to hollow bones."
+        },
+        {
+          "name": "KEEN SENSES",
+          "description": "Begin with a d6 in Notice (instead of d4) and may raise the skill to d12 + 1."
+        },
+        {
+          "name": "REDUCED PACE",
+          "description": "Dependence on flight makes them slower when walking. Decrease walking Pace by 1 and running die by one step."
+        }
+      ]
     },
     "Dwarves": {
-      "description": "Short but stout, hardy people from caverns and mountains"
+      "description": "Short but stout, hardy people from caverns and mountains",
+      "abilities": [
+        {
+          "name": "LOW LIGHT VISION",
+          "description": "Dwarven eyes are accustomed to the dark. Ignore penalties for Dim and Dark Illumination."
+        },
+        {
+          "name": "REDUCED PACE",
+          "description": "Short legs compared to most. Decrease Pace by 1 and running die one die type."
+        },
+        {
+          "name": "TOUGH",
+          "description": "Stout and tough. Start with a d6 Vigor instead of a d4. This increases maximum Vigor to d12 + 1."
+        }
+      ]
     },
     "Elves": {
-      "description": "Graceful and long-lived magical beings with pointed ears"
+      "description": "Graceful and long-lived magical beings with pointed ears",
+      "abilities": [
+        {
+          "name": "AGILE",
+          "description": "Graceful and agile. Start with a d6 in Agility instead of a d4. This increases maximum Agility to d12 + 1."
+        },
+        {
+          "name": "ALL THUMBS",
+          "description": "Have an inherent dislike of mechanical objects, and thus have the All Thumbs Hindrance."
+        },
+        {
+          "name": "LOW LIGHT VISION",
+          "description": "Elven eyes amplify light. Ignore penalties for Dim and Dark Illumination."
+        }
+      ]
     },
     "Half-Elves": {
-      "description": "Children of human and elf parents, with heritage of both worlds"
+      "description": "Children of human and elf parents, with heritage of both worlds",
+      "abilities": [
+        {
+          "name": "HERITAGE",
+          "description": "May either start with a free Novice Edge of choice OR a d6 in Agility instead of a d4 (which increases Agility maximum to d12 + 1)."
+        },
+        {
+          "name": "LOW LIGHT VISION",
+          "description": "Ignore penalties for Dim and Dark Illumination."
+        },
+        {
+          "name": "OUTSIDER (Minor)",
+          "description": "Never quite comfortable in human or elven society. Subtract 2 from Persuasion rolls with all but others of their kind."
+        }
+      ]
     },
     "Half-Folk": {
-      "description": "Small, optimistic people with a 'never say die' attitude"
+      "description": "Small, optimistic people with a 'never say die' attitude",
+      "abilities": [
+        {
+          "name": "LUCK",
+          "description": "Draw one additional Benny per game session."
+        },
+        {
+          "name": "REDUCED PACE",
+          "description": "Decrease Pace by 1 and running die one die type."
+        },
+        {
+          "name": "SIZE −1",
+          "description": "Average about four feet tall, reducing Size (and therefore Toughness) by 1."
+        },
+        {
+          "name": "SPIRITED",
+          "description": "Generally optimistic beings. Start with a d6 Spirit instead of a d4. This increases maximum Spirit to d12 + 1."
+        }
+      ]
     },
     "Humans": {
-      "description": "Versatile and adaptable, the most common ancestry"
+      "description": "Versatile and adaptable, the most common ancestry",
+      "abilities": [
+        {
+          "name": "ADAPTABLE",
+          "description": "Begin play with any Novice Edge of their choosing. They must meet its Requirements as usual."
+        }
+      ]
     },
     "Rakashans": {
-      "description": "Humanoid felines with claws, fangs, and a predatory nature"
+      "description": "Humanoid felines with claws, fangs, and a predatory nature",
+      "abilities": [
+        {
+          "name": "AGILE",
+          "description": "Feline grace gives a d6 Agility attribute instead of a d4. This increases maximum Agility to d12 + 1."
+        },
+        {
+          "name": "BITE/CLAWS",
+          "description": "Fangs and claws are Natural Weapons that cause Strength+d4 damage."
+        },
+        {
+          "name": "BLOODTHIRSTY",
+          "description": "Can be cruel to their foes, often toying with them. They rarely take prisoners and feel little compunction about punishing captured foes."
+        },
+        {
+          "name": "CAN'T SWIM",
+          "description": "Actually can swim, they just shun it. Subtract 2 from Athletics (swimming) rolls and each inch of movement in water uses 3″ of Pace."
+        },
+        {
+          "name": "LOW LIGHT VISION",
+          "description": "Eyes amplify light. Ignore penalties for Dim and Dark Illumination."
+        },
+        {
+          "name": "ANCESTRAL ENEMY",
+          "description": "Pick a common ancestry in your setting. Members of each culture subtract 2 from Persuasion when dealing with each other and often attack on sight."
+        }
+      ]
     },
     "Saurians": {
-      "description": "Lizard folk from steaming jungles with scaly skin and keen senses"
+      "description": "Lizard folk from steaming jungles with scaly skin and keen senses",
+      "abilities": [
+        {
+          "name": "ARMOR +2",
+          "description": "Scaly skin that acts as leather armor."
+        },
+        {
+          "name": "BITE",
+          "description": "Fangs are Natural Weapons that cause Strength+d4 damage."
+        },
+        {
+          "name": "ENVIRONMENTAL WEAKNESS",
+          "description": "Though not truly cold-blooded, poorly suited for frigid conditions. Suffer a −4 penalty to resist cold environmental effects, and suffer +4 damage from cold-based attacks."
+        },
+        {
+          "name": "KEEN SENSES",
+          "description": "Have acute senses, giving them the Alertness Edge."
+        },
+        {
+          "name": "OUTSIDER (Minor)",
+          "description": "Most species distrust saurians. Subtract 2 from Persuasion rolls with all but others of their kind."
+        }
+      ]
     }
   },
   "costs": {
