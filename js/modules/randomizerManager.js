@@ -1,13 +1,14 @@
-// SWADE Character Creator v2 - Randomizer Manager Module
+// SWADE Character Creator v2 - Randomizer Manager Module (Corrected)
 
 export class RandomizerManager {
-    constructor(dataManager, characterManager, attributesManager, skillsManager, hindrancesManager, edgesManager) {
+    constructor(dataManager, characterManager, attributesManager, skillsManager, hindrancesManager, edgesManager, calculationsManager) {
         this.dataManager = dataManager;
         this.characterManager = characterManager;
         this.attributesManager = attributesManager;
         this.skillsManager = skillsManager;
         this.hindrancesManager = hindrancesManager;
         this.edgesManager = edgesManager;
+        this.calculationsManager = calculationsManager; // Added missing dependency
         
         this.randomizationSettings = {
             ensureCoreSkills: true,
@@ -53,6 +54,12 @@ export class RandomizerManager {
                 break;
             case 'mystic':
                 this.generateMysticCharacter();
+                break;
+            case 'aquatic':
+                this.generateAquaticCharacter();
+                break;
+            case 'aerial':
+                this.generateAerialCharacter();
                 break;
             default:
                 this.generateBalancedCharacter();
@@ -242,10 +249,10 @@ export class RandomizerManager {
         this.characterManager.updateCharacter('notes', notes);
     }
 
-    // Themed character generators
+    // Themed character generators (CORRECTED - removed Celestials/Guardians, fixed ancestry names)
     generateWarriorCharacter() {
-        // Set appropriate ancestry
-        const warriorAncestries = ['Human', 'Dwarf', 'Saurian'];
+        // Set appropriate ancestry (corrected names)
+        const warriorAncestries = ['Humans', 'Dwarves', 'Saurians'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(warriorAncestries));
         
         // Set concept
@@ -262,8 +269,8 @@ export class RandomizerManager {
     }
 
     generateScholarCharacter() {
-        // Scholar-type ancestries (intelligent, knowledge-focused)
-        const scholarAncestries = ['Human', 'Android', 'Elf', 'Half-Elf', 'Celestial', 'Guardian'];
+        // Scholar-type ancestries (removed Celestial, Guardian - corrected names, added Aquarians)
+        const scholarAncestries = ['Humans', 'Androids', 'Elves', 'Half-Elves', 'Aquarians'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(scholarAncestries));
         
         const scholarConcepts = ['Scholar', 'Researcher', 'Wizard', 'Inventor', 'Sage'];
@@ -276,8 +283,8 @@ export class RandomizerManager {
     }
 
     generateLeaderCharacter() {
-        // Leader-type ancestries (charismatic, commanding)
-        const leaderAncestries = ['Human', 'Dwarf', 'Guardian', 'Celestial', 'Half-Elf'];
+        // Leader-type ancestries (removed Guardian, Celestial - corrected names)
+        const leaderAncestries = ['Humans', 'Dwarves', 'Half-Elves'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(leaderAncestries));
         
         const leaderConcepts = ['Leader', 'Noble', 'Officer', 'Diplomat', 'Captain'];
@@ -290,8 +297,8 @@ export class RandomizerManager {
     }
 
     generateRogueCharacter() {
-        // Rogue-type ancestries (stealthy, agile)
-        const rogueAncestries = ['Human', 'Elf', 'Half-Elf', 'Half-Folk', 'Rakashan', 'Avion'];
+        // Rogue-type ancestries (corrected names)
+        const rogueAncestries = ['Humans', 'Elves', 'Half-Elves', 'Half-Folk', 'Rakashans', 'Avions'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(rogueAncestries));
         
         const rogueConcepts = ['Rogue', 'Thief', 'Scout', 'Spy', 'Assassin'];
@@ -304,8 +311,8 @@ export class RandomizerManager {
     }
 
     generateMysticCharacter() {
-        // Mystic-type ancestries (magical, spiritual)
-        const mysticAncestries = ['Human', 'Elf', 'Half-Elf', 'Celestial', 'Saurian'];
+        // Mystic-type ancestries (removed Celestial - corrected names)
+        const mysticAncestries = ['Humans', 'Elves', 'Half-Elves', 'Saurians'];
         this.characterManager.updateCharacter('ancestry', this.randomChoice(mysticAncestries));
         
         const mysticConcepts = ['Mystic', 'Shaman', 'Priest', 'Oracle', 'Witch'];
@@ -315,6 +322,36 @@ export class RandomizerManager {
         this.randomizeThematicHindrances(['mental', 'social']);
         this.randomizeThematicEdges(['power', 'weird']);
         this.randomizeThematicSkills(['Faith', 'Focus', 'Healing', 'Occult']);
+    }
+
+    // NEW: Aquatic-themed character generator
+    generateAquaticCharacter() {
+        // Aquatic-themed ancestries
+        const aquaticAncestries = ['Aquarians', 'Humans', 'Saurians'];
+        this.characterManager.updateCharacter('ancestry', this.randomChoice(aquaticAncestries));
+        
+        const aquaticConcepts = ['Sea Captain', 'Pearl Diver', 'Marine Explorer', 'Tide Caller', 'Deep Hunter'];
+        this.characterManager.updateCharacter('concept', this.randomChoice(aquaticConcepts));
+        
+        this.randomizeAttributesWithPriorities(['vigor', 'strength', 'spirit', 'agility', 'smarts']);
+        this.randomizeThematicHindrances(['physical', 'environmental']);
+        this.randomizeThematicEdges(['professional', 'background']);
+        this.randomizeThematicSkills(['Athletics', 'Survival', 'Notice', 'Boating']);
+    }
+
+    // NEW: Aerial-themed character generator
+    generateAerialCharacter() {
+        // Aerial-themed ancestries  
+        const aerialAncestries = ['Avions', 'Humans', 'Elves'];
+        this.characterManager.updateCharacter('ancestry', this.randomChoice(aerialAncestries));
+        
+        const aerialConcepts = ['Sky Rider', 'Wind Walker', 'Storm Caller', 'Cloud Dancer', 'Aerial Scout'];
+        this.characterManager.updateCharacter('concept', this.randomChoice(aerialConcepts));
+        
+        this.randomizeAttributesWithPriorities(['agility', 'spirit', 'vigor', 'smarts', 'strength']);
+        this.randomizeThematicHindrances(['physical', 'environmental']);
+        this.randomizeThematicEdges(['professional', 'background']);
+        this.randomizeThematicSkills(['Athletics', 'Notice', 'Survival', 'Piloting']);
     }
 
     generateBalancedCharacter() {
@@ -371,6 +408,8 @@ export class RandomizerManager {
                         return description.includes('mental') || description.includes('smarts') || description.includes('knowledge');
                     case 'physical':
                         return description.includes('physical') || description.includes('vigor') || description.includes('strength');
+                    case 'environmental':
+                        return description.includes('environmental') || description.includes('weather') || description.includes('climate');
                     default:
                         return true;
                 }
