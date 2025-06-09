@@ -73,22 +73,22 @@ class SWADECharacterCreator {
                 this.uiManager
             );
             
-// Initialize the enhanced edges/hindrances manager after core managers are ready
-console.log('About to create EdgesHindrancesManager...');
-console.log('EdgesHindrancesManager class:', EdgesHindrancesManager);
-try {
-    window.edgesHindrancesManager = new EdgesHindrancesManager();
-    console.log('EdgesHindrancesManager created successfully:', window.edgesHindrancesManager);
-} catch (error) {
-    console.error('Error creating EdgesHindrancesManager:', error);
-}
+            // Initialize the enhanced edges/hindrances manager after core managers are ready
+            console.log('About to create EdgesHindrancesManager...');
+            console.log('EdgesHindrancesManager class:', EdgesHindrancesManager);
+            try {
+                window.edgesHindrancesManager = new EdgesHindrancesManager();
+                console.log('EdgesHindrancesManager created successfully:', window.edgesHindrancesManager);
+            } catch (error) {
+                console.error('Error creating EdgesHindrancesManager:', error);
+            }
             
             this.exportManager = new ExportManager(
                 this.dataManager,
                 this.characterManager
             );
             
-           this.randomizerManager = new RandomizerManager(
+            this.randomizerManager = new RandomizerManager(
                 this.dataManager,
                 this.characterManager, 
                 this.attributesManager,
@@ -105,62 +105,19 @@ try {
             await this.initializeUI();
 
             // Set up event listeners
-setupEventListeners() {
-    console.log('Setting up event listeners for EdgesHindrancesManager');
-    
-    // Wait a moment for existing managers to finish, then attach direct listeners
-    setTimeout(() => {
-        this.attachDirectListeners();
-    }, 2000);
+            this.setupEventListeners();
 
-    // Setup remove button event delegation
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-btn')) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.handleRemoveClick(e.target);
+            // Hide loading and mark as initialized
+            this.hideLoading();
+            this.isInitialized = true;
+
+            console.log('=== SWADECharacterCreator initialized successfully ===');
+
+        } catch (error) {
+            console.error('Failed to initialize SWADE Character Creator:', error);
+            this.showError('Failed to load the character creator. Please refresh the page and try again.');
         }
-    });
-}
-
-attachDirectListeners() {
-    console.log('Attaching direct listeners to checkboxes...');
-    
-    // Find all hindrance checkboxes and attach listeners directly
-    const hindranceCheckboxes = document.querySelectorAll('#hindrancesList input[type="checkbox"]');
-    console.log('Found hindrance checkboxes:', hindranceCheckboxes.length);
-    
-    hindranceCheckboxes.forEach((checkbox, index) => {
-        console.log(`Attaching listener to checkbox ${index}`);
-        
-        checkbox.addEventListener('change', (e) => {
-            console.log('=== DIRECT CHECKBOX EVENT ===');
-            e.stopPropagation(); // Prevent other listeners
-            
-            const item = e.target.closest('.checkbox-item');
-            if (item) {
-                console.log('Calling handleHindranceChange');
-                this.handleHindranceChange(e.target, item);
-            }
-        });
-    });
-    
-    // Do the same for edges
-    const edgeCheckboxes = document.querySelectorAll('#edgesList input[type="checkbox"]');
-    console.log('Found edge checkboxes:', edgeCheckboxes.length);
-    
-    edgeCheckboxes.forEach((checkbox, index) => {
-        checkbox.addEventListener('change', (e) => {
-            console.log('=== DIRECT EDGE CHECKBOX EVENT ===');
-            e.stopPropagation();
-            
-            const item = e.target.closest('.checkbox-item');
-            if (item) {
-                this.handleEdgeChange(e.target, item);
-            }
-        });
-    });
-}
+    }
 
     setupManagerReferences() {
         // Allow managers to reference each other as needed
@@ -176,50 +133,51 @@ attachDirectListeners() {
         });
     }
 
-  async initializeUI() {
-   // DEBUG: Check what methods are available
-    console.log('DataManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.dataManager)));
-    
-    // DEBUG: Try different ways to get ancestry data
-    console.log('getAncestries():', this.dataManager.getAncestries ? this.dataManager.getAncestries() : 'Method not found');
-    console.log('Full config:', this.dataManager.getConfig ? this.dataManager.getConfig() : 'getConfig not found');
-    
-    // Populate ancestries dropdown
-    let ancestries;
-    
-    // Try multiple methods to get ancestry data
-    if (this.dataManager.getAncestries) {
-        ancestries = this.dataManager.getAncestries();
-    } else if (this.dataManager.getConfig) {
-        const config = this.dataManager.getConfig();
-        ancestries = config.ancestries || config.ancestry || {};
-    } else {
-        console.error('Cannot find ancestry data');
-        ancestries = {};
-    }
-    
-    console.log('Final ancestries data:', ancestries);
-    
-    const ancestrySelect = document.getElementById('characterAncestry');
-    
-    // Add blank default option
-    const blankOption = document.createElement('option');
-    blankOption.value = '';
-    blankOption.textContent = '-- Select Ancestry --';
-    ancestrySelect.appendChild(blankOption);
-    
-    // Add ancestries if we have any
-    if (ancestries && typeof ancestries === 'object') {
-        Object.keys(ancestries).forEach(ancestry => {
-            const option = document.createElement('option');
-            option.value = ancestry;
-            option.textContent = ancestry;
-            ancestrySelect.appendChild(option);
-            console.log('Added ancestry:', ancestry);
-        });
-    } else {
-        console.error('No valid ancestry data found');
-    }
+    async initializeUI() {
+        // DEBUG: Check what methods are available
+        console.log('DataManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.dataManager)));
+        
+        // DEBUG: Try different ways to get ancestry data
+        console.log('getAncestries():', this.dataManager.getAncestries ? this.dataManager.getAncestries() : 'Method not found');
+        console.log('Full config:', this.dataManager.getConfig ? this.dataManager.getConfig() : 'getConfig not found');
+        
+        // Populate ancestries dropdown
+        let ancestries;
+        
+        // Try multiple methods to get ancestry data
+        if (this.dataManager.getAncestries) {
+            ancestries = this.dataManager.getAncestries();
+        } else if (this.dataManager.getConfig) {
+            const config = this.dataManager.getConfig();
+            ancestries = config.ancestries || config.ancestry || {};
+        } else {
+            console.error('Cannot find ancestry data');
+            ancestries = {};
+        }
+        
+        console.log('Final ancestries data:', ancestries);
+        
+        const ancestrySelect = document.getElementById('characterAncestry');
+        
+        // Add blank default option
+        const blankOption = document.createElement('option');
+        blankOption.value = '';
+        blankOption.textContent = '-- Select Ancestry --';
+        ancestrySelect.appendChild(blankOption);
+        
+        // Add ancestries if we have any
+        if (ancestries && typeof ancestries === 'object') {
+            Object.keys(ancestries).forEach(ancestry => {
+                const option = document.createElement('option');
+                option.value = ancestry;
+                option.textContent = ancestry;
+                ancestrySelect.appendChild(option);
+                console.log('Added ancestry:', ancestry);
+            });
+        } else {
+            console.error('No valid ancestry data found');
+        }
+
         // Initialize all UI components
         await this.attributesManager.initializeUI();
         await this.skillsManager.initializeUI();
@@ -229,7 +187,7 @@ attachDirectListeners() {
         // Initialize other UI elements
         this.updateStartingFunds();
         this.initializeAncestryInfoBox();
-        }
+    }
 
     setupEventListeners() {
         // Basic character info
@@ -241,7 +199,7 @@ attachDirectListeners() {
             this.characterManager.updateCharacter('concept', e.target.value);
         });
 
-       document.getElementById('characterAncestry').addEventListener('change', (e) => {
+        document.getElementById('characterAncestry').addEventListener('change', (e) => {
             this.characterManager.updateCharacter('ancestry', e.target.value);
             this.updateAncestryInfoBox(e.target.value);
             this.updateAllDisplays();
@@ -269,16 +227,16 @@ attachDirectListeners() {
             this.randomizerManager.randomizeAll();
         });
 
-       document.getElementById('resetCharacter').addEventListener('click', () => {
-    if (confirm('Are you sure you want to reset the character? This will clear all current data.')) {
-        this.characterManager.resetCharacter();
-        this.updateAllDisplays();
-        
-        // ADD THIS: Reset ancestry dropdown to blank
-        document.getElementById('characterAncestry').value = '';
-        this.updateAncestryInfoBox('');
-    }
-});
+        document.getElementById('resetCharacter').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset the character? This will clear all current data.')) {
+                this.characterManager.resetCharacter();
+                this.updateAllDisplays();
+                
+                // Reset ancestry dropdown to blank
+                document.getElementById('characterAncestry').value = '';
+                this.updateAncestryInfoBox('');
+            }
+        });
 
         document.getElementById('randomizeAttributes').addEventListener('click', () => {
             this.randomizerManager.randomizeAttributes();
@@ -438,7 +396,7 @@ attachDirectListeners() {
         }
     }
 
-  showError(message) {
+    showError(message) {
         // Remove loading overlay if present
         this.hideLoading();
         
@@ -529,9 +487,9 @@ attachDirectListeners() {
 // Initialize the application when the DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('=== DOMContentLoaded fired ===');
- console.log('=== About to create SWADECharacterCreator ===');
-const app = new SWADECharacterCreator();
-console.log('=== SWADECharacterCreator created ===');
+    console.log('=== About to create SWADECharacterCreator ===');
+    const app = new SWADECharacterCreator();
+    console.log('=== SWADECharacterCreator created ===');
     await app.initialize();
     
     // Make app globally available for debugging
