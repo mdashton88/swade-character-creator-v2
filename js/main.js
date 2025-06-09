@@ -488,7 +488,10 @@ try {
 
 // Initialize the application when the DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
-    const app = new SWADECharacterCreator();
+    console.log('=== DOMContentLoaded fired ===');
+ console.log('=== About to create SWADECharacterCreator ===');
+const app = new SWADECharacterCreator();
+console.log('=== SWADECharacterCreator created ===');
     await app.initialize();
     
     // Make app globally available for debugging
