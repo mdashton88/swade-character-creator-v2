@@ -1,19 +1,6 @@
 {
   "ancestries": [
     {
-      "id": "human",
-      "name": "Human",
-      "description": "Humans in most settings get one free Edge of their choice. This option reflects their versatility and adaptability compared to most other ancestries.",
-      "abilities": [
-        {
-          "name": "Adaptable",
-          "description": "Humans begin play with any Novice Edge of their choosing. They must meet its Requirements as usual.",
-          "type": "positive",
-          "mechanical_effect": "Free Novice Edge (must meet requirements)"
-        }
-      ]
-    },
-    {
       "id": "android",
       "name": "Android",
       "description": "Androids are semi-organic beings created by advanced technology. The example here mimics humans in most ways and can generally pass for them when desired (and not examined by a physician).",
@@ -113,6 +100,49 @@
       ]
     },
     {
+      "id": "celestial",
+      "name": "Celestial",
+      "description": "Angels are a great and varied lot, but all have these traits in common. (Custom ancestry example from the Core Rules)",
+      "abilities": [
+        {
+          "name": "All Thumbs",
+          "description": "Celestials are not accustomed to technology or machines.",
+          "type": "negative",
+          "mechanical_effect": "All Thumbs Hindrance (-2 to mechanical/electrical devices)"
+        },
+        {
+          "name": "Arcane Background (Miracles)",
+          "description": "Celestials can call forth a variety of blessed miracles.",
+          "type": "positive", 
+          "mechanical_effect": "Arcane Background (Miracles) Edge"
+        },
+        {
+          "name": "Faith",
+          "description": "All celestials start with a d6 in Faith. This increases their maximum to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Faith d6; max Faith d12+1"
+        },
+        {
+          "name": "Flight",
+          "description": "Angels fly at Pace 12.",
+          "type": "positive",
+          "mechanical_effect": "Fly at Pace 12"
+        },
+        {
+          "name": "Ancestral Enemy (Demons & Devils)",
+          "description": "Those who descend from above do not easily tolerate those who crawl forth from the Abyss.",
+          "type": "negative",
+          "mechanical_effect": "-2 Persuasion with demons/devils"
+        },
+        {
+          "name": "Vow (Major—Protect humanity)",
+          "description": "The blessed must protect the flock that remains on the ravaged Earth.",
+          "type": "negative",
+          "mechanical_effect": "Major Vow to protect humanity"
+        }
+      ]
+    },
+    {
       "id": "dwarf",
       "name": "Dwarf",
       "description": "Dwarves are short but stout, hardy people who come from massive caverns or high mountains. They are a proud, warlike people, usually made so by frequent contact with hostile creatures such as orcs and goblins.",
@@ -159,6 +189,37 @@
           "description": "Elven eyes amplify light. Others often claim they can see stars in the elves' eyes. They ignore penalties for Dim and Dark Illumination.",
           "type": "positive",
           "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        }
+      ]
+    },
+    {
+      "id": "guardian",
+      "name": "Guardian", 
+      "description": "Those humans who serve the Heavenly Choir are called guardians. (Custom ancestry example from the Core Rules)",
+      "abilities": [
+        {
+          "name": "Adaptable",
+          "description": "Guardians begin play with any Novice Edge of their choosing (meeting its Requirements as usual).",
+          "type": "positive",
+          "mechanical_effect": "Free Novice Edge (must meet requirements)"
+        },
+        {
+          "name": "Champions",
+          "description": "Guardians have the Champion Edge, giving them a +2 bonus to damage against supernaturally evil foes such as demons and devils.",
+          "type": "positive",
+          "mechanical_effect": "Champion Edge (+2 damage vs supernatural evil)"
+        },
+        {
+          "name": "Vigorous",
+          "description": "Those humans who have inherited this blasted Earth start the game with a d6 Vigor instead of a d4. This increases their Vigor maximum to d12 + 1.",
+          "type": "positive", 
+          "mechanical_effect": "Start with Vigor d6; max Vigor d12+1"
+        },
+        {
+          "name": "Vow (Major—Protect humanity)",
+          "description": "The blessed must protect the remaining flock on Earth.",
+          "type": "negative",
+          "mechanical_effect": "Major Vow to protect humanity"
         }
       ]
     },
@@ -215,6 +276,19 @@
           "description": "Half-folk are generally optimistic beings. They start with a d6 Spirit instead of a d4. This increases their maximum Spirit to d12 + 1.",
           "type": "positive",
           "mechanical_effect": "Start with Spirit d6; max Spirit d12+1"
+        }
+      ]
+    },
+    {
+      "id": "human",
+      "name": "Human",
+      "description": "Humans in most settings get one free Edge of their choice. This option reflects their versatility and adaptability compared to most other ancestries.",
+      "abilities": [
+        {
+          "name": "Adaptable",
+          "description": "Humans begin play with any Novice Edge of their choosing. They must meet its Requirements as usual.",
+          "type": "positive",
+          "mechanical_effect": "Free Novice Edge (must meet requirements)"
         }
       ]
     },
@@ -297,80 +371,6 @@
           "mechanical_effect": "-2 Persuasion with all but other saurians"
         }
       ]
-    },
-    {
-      "id": "celestial",
-      "name": "Celestial",
-      "description": "Angels are a great and varied lot, but all have these traits in common. (Custom ancestry example from the Core Rules)",
-      "abilities": [
-        {
-          "name": "All Thumbs",
-          "description": "Celestials are not accustomed to technology or machines.",
-          "type": "negative",
-          "mechanical_effect": "All Thumbs Hindrance (-2 to mechanical/electrical devices)"
-        },
-        {
-          "name": "Arcane Background (Miracles)",
-          "description": "Celestials can call forth a variety of blessed miracles.",
-          "type": "positive", 
-          "mechanical_effect": "Arcane Background (Miracles) Edge"
-        },
-        {
-          "name": "Faith",
-          "description": "All celestials start with a d6 in Faith. This increases their maximum to d12 + 1.",
-          "type": "positive",
-          "mechanical_effect": "Start with Faith d6; max Faith d12+1"
-        },
-        {
-          "name": "Flight",
-          "description": "Angels fly at Pace 12.",
-          "type": "positive",
-          "mechanical_effect": "Fly at Pace 12"
-        },
-        {
-          "name": "Ancestral Enemy (Demons & Devils)",
-          "description": "Those who descend from above do not easily tolerate those who crawl forth from the Abyss.",
-          "type": "negative",
-          "mechanical_effect": "-2 Persuasion with demons/devils"
-        },
-        {
-          "name": "Vow (Major—Protect humanity)",
-          "description": "The blessed must protect the flock that remains on the ravaged Earth.",
-          "type": "negative",
-          "mechanical_effect": "Major Vow to protect humanity"
-        }
-      ]
-    },
-    {
-      "id": "guardian",
-      "name": "Guardian", 
-      "description": "Those humans who serve the Heavenly Choir are called guardians. (Custom ancestry example from the Core Rules)",
-      "abilities": [
-        {
-          "name": "Adaptable",
-          "description": "Guardians begin play with any Novice Edge of their choosing (meeting its Requirements as usual).",
-          "type": "positive",
-          "mechanical_effect": "Free Novice Edge (must meet requirements)"
-        },
-        {
-          "name": "Champions",
-          "description": "Guardians have the Champion Edge, giving them a +2 bonus to damage against supernaturally evil foes such as demons and devils.",
-          "type": "positive",
-          "mechanical_effect": "Champion Edge (+2 damage vs supernatural evil)"
-        },
-        {
-          "name": "Vigorous",
-          "description": "Those humans who have inherited this blasted Earth start the game with a d6 Vigor instead of a d4. This increases their Vigor maximum to d12 + 1.",
-          "type": "positive", 
-          "mechanical_effect": "Start with Vigor d6; max Vigor d12+1"
-        },
-        {
-          "name": "Vow (Major—Protect humanity)",
-          "description": "The blessed must protect the remaining flock on Earth.",
-          "type": "negative",
-          "mechanical_effect": "Major Vow to protect humanity"
-        }
-      ]
     }
   ]
-}
+}  
