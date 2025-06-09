@@ -223,28 +223,39 @@ export class EdgesHindrancesManager {
         }
     }
 
-    removeHindrance(hindranceId, points) {
-        // Update points
-        this.hindrancePoints -= points;
-        this.edgePoints -= points;
-        this.selectedHindrances.delete(hindranceId);
+  removeHindrance(hindranceId, points) {
+    console.log(`Removing hindrance: ${hindranceId}, points: ${points}`);
+    console.log(`Before removal - Hindrance points: ${this.hindrancePoints}, Edge points: ${this.edgePoints}`);
+    
+    // Update points
+    this.hindrancePoints -= points;
+    this.edgePoints -= points;
+    this.selectedHindrances.delete(hindranceId);
 
-        // Remove from selected panel
-        const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
-        if (selectedItem) {
-            selectedItem.remove();
-        }
+    console.log(`After removal - Hindrance points: ${this.hindrancePoints}, Edge points: ${this.edgePoints}`);
 
-        // Show in available panel
-        const availableItem = document.querySelector(`#hindrancesList [data-id="${hindranceId}"]`);
-        if (availableItem) {
-            availableItem.style.display = 'block';
-            const checkbox = availableItem.querySelector('input[type="checkbox"]');
-            if (checkbox) checkbox.checked = false;
-        }
-
-        this.updateDisplays();
+    // Remove from selected panel
+    const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
+    if (selectedItem) {
+        selectedItem.remove();
+        console.log('Removed from selected panel');
     }
+
+    // Show in available panel
+    const availableItem = document.querySelector(`#hindrancesList [data-id="${hindranceId}"]`);
+    if (availableItem) {
+        availableItem.style.display = 'block';
+        const checkbox = availableItem.querySelector('input[type="checkbox"]');
+        if (checkbox) {
+            checkbox.checked = false;
+            console.log('Unchecked checkbox in available panel');
+        }
+    }
+
+    // Force update displays
+    console.log('Calling updateDisplays()');
+    this.updateDisplays();
+}
 
     removeEdge(edgeId, cost) {
         // Update points
