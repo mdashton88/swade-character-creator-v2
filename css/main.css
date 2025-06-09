@@ -8,7 +8,7 @@
 }
 
 body {
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    font-family: 'Roboto', 'Calibri', 'Arial', sans-serif;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
     line-height: 1.6;
@@ -25,17 +25,13 @@ body {
 .header {
     text-align: center;
     margin-bottom: 30px;
-    background: linear-gradient(135deg, #6b1518 0%, #8b1d20 25%, #a52a2a 50%, #8b1d20 75%, #6b1518 100%);
-    color: #f4e4bc;
-    padding: 35px 25px;
+    background: linear-gradient(135deg, #8b0000, #dc143c);
+    color: #ffffff;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 
-        0 8px 25px rgba(107, 21, 24, 0.4),
-        inset 0 1px 0 rgba(244, 228, 188, 0.1),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 25px rgba(139, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
-    border: 2px solid #d4af37;
 }
 
 .header::before {
@@ -45,79 +41,32 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-        linear-gradient(45deg, transparent 30%, rgba(244, 228, 188, 0.03) 50%, transparent 70%);
-    pointer-events: none;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
     z-index: 1;
 }
-
-.header::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 2px,
-            rgba(244, 228, 188, 0.01) 2px,
-            rgba(244, 228, 188, 0.01) 4px
-        ),
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(244, 228, 188, 0.01) 2px,
-            rgba(244, 228, 188, 0.01) 4px
-        );
-    pointer-events: none;
-    z-index: 1;
-}
-
 
 .header .title {
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-    color: #f4e4bc;
-    font-size: 2.2rem;
-    font-weight: bold;
-    letter-spacing: 4px;
+    font-family: 'Oswald', sans-serif;
+    color: #cccccc;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     position: relative;
     z-index: 2;
-    text-shadow: 
-        2px 2px 4px rgba(0, 0, 0, 0.5),
-        0 0 10px rgba(212, 175, 55, 0.3);
-    line-height: 1.1;
 }
 
 .header .subtitle {
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-    color: #d4af37;
-    font-size: 1.1rem;
-    font-style: italic;
-    font-weight: normal;
+    font-family: 'Oswald', sans-serif;
+    color: #999999;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
     letter-spacing: 2px;
     position: relative;
     z-index: 2;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-    margin-top: 8px;
-}
-
-/* Decorative border accent */
-.header .title::after {
-    content: '';
-    display: block;
-    width: 120px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #d4af37, transparent);
-    margin: 8px auto 0;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Layout Styles */
@@ -166,48 +115,51 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Section headers to match the theme */
 .section h2 {
-    color: #6b1518;
-    border-bottom: 2px solid #d4af37;
+    color: #8b0000;
+    border-bottom: 2px solid #8b0000;
     padding-bottom: 10px;
     margin-bottom: 15px;
-    font-size: 1.4rem;
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(212, 175, 55, 0.2);
 }
 
 /* Button Styles */
-/* Enhanced button styling to match */
 .section-title-button,
 .action-button,
 .export-button {
-    background: linear-gradient(135deg, #6b1518, #8b1d20, #a52a2a);
-    border: 1px solid #d4af37;
-    color: #f4e4bc;
+    background: linear-gradient(135deg, #8b0000, #a52a2a);
+    border: none;
+    color: #ffffff;
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    font-family: 'Roboto', 'Arial', sans-serif;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     transition: all 0.3s ease;
-    box-shadow: 
-        0 3px 6px rgba(107, 21, 24, 0.3),
-        inset 0 1px 0 rgba(244, 228, 188, 0.1);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.section-title-button {
+    margin-left: 10px;
+}
+
+.action-button,
+.export-button {
+    font-size: 0.9rem;
+    padding: 10px 20px;
 }
 
 .section-title-button:hover,
 .action-button:hover,
 .export-button:hover {
-    background: linear-gradient(135deg, #8b1d20, #a52a2a, #cd5c5c);
-    border-color: #f4e4bc;
+    background: linear-gradient(135deg, #a52a2a, #dc143c);
     transform: translateY(-1px);
-    box-shadow: 
-        0 4px 8px rgba(107, 21, 24, 0.4),
-        inset 0 1px 0 rgba(244, 228, 188, 0.2);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
 }
 
 /* Form Styles */
@@ -254,22 +206,18 @@ input[readonly] {
     color: #0c5460;
 }
 
-/* Points displays to match */
 .points-remaining,
 .points-info {
-    background: linear-gradient(135deg, #f8f6f0, #f4e4bc);
-    border: 2px solid #6b1518;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px solid #8b0000;
     border-radius: 6px;
     padding: 12px;
     margin-bottom: 15px;
     font-weight: bold;
     text-align: center;
-    color: #6b1518;
+    color: #8b0000;
     font-size: 1rem;
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-    box-shadow: 
-        0 2px 4px rgba(107, 21, 24, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
 
 /* Grid Layouts */
 .attributes-grid {
