@@ -63,21 +63,40 @@ export class EdgesHindrancesManager {
         }
     }
 
-    setupEventListeners() {
-        // Listen for changes on existing edge/hindrance checkboxes
-        document.addEventListener('change', (e) => {
-            if (e.target.type === 'checkbox') {
-                const item = e.target.closest('.checkbox-item');
-                if (item) {
-                    if (item.closest('#hindrancesList')) {
-                        this.handleHindranceChange(e.target, item);
-                    } else if (item.closest('#edgesList')) {
-                        this.handleEdgeChange(e.target, item);
-                    }
+   setupEventListeners() {
+    console.log('Setting up event listeners for EdgesHindrancesManager');
+    
+    // Listen for changes on existing edge/hindrance checkboxes
+    document.addEventListener('change', (e) => {
+        console.log('Checkbox change detected:', e.target);
+        
+        if (e.target.type === 'checkbox') {
+            const item = e.target.closest('.checkbox-item');
+            console.log('Closest checkbox-item:', item);
+            
+            if (item) {
+                const hindrancesList = item.closest('#hindrancesList');
+                const edgesList = item.closest('#edgesList');
+                
+                console.log('In hindrancesList:', hindrancesList);
+                console.log('In edgesList:', edgesList);
+                
+                if (hindrancesList) {
+                    console.log('Handling hindrance change');
+                    this.handleHindranceChange(e.target, item);
+                } else if (edgesList) {
+                    console.log('Handling edge change');
+                    this.handleEdgeChange(e.target, item);
+                } else {
+                    console.log('Item not in expected container');
                 }
+            } else {
+                console.log('No checkbox-item found');
             }
-        });
-
+        }
+    });
+    
+    // Rest of the method...
         // Setup remove button event delegation
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-btn')) {
