@@ -3,28 +3,34 @@
 
 export class EdgesHindrancesManager {
     constructor() {
-        this.hindrancePoints = 0;
-        this.edgePoints = 0;
-        this.maxHindrancePoints = 4;
-        this.selectedHindrances = new Set();
-        this.selectedEdges = new Set();
-        this.edgesData = null;
-        
-        // Initialize
-        this.init();
-    }
+    console.log('=== EdgesHindrancesManager constructor called ===');
+    this.hindrancePoints = 0;
+    this.edgePoints = 0;
+    this.maxHindrancePoints = 4;
+    this.selectedHindrances = new Set();
+    this.selectedEdges = new Set();
+    this.edgesData = null;
+    
+    console.log('Constructor finished, calling init...');
+    // Initialize
+    this.init();
+}
 
-    async init() {
-        console.log('Initializing EdgesHindrancesManager...');
-        await this.loadEdgesData();
-        this.updateDisplays();
-        this.setupEventListeners();
-        
-        // Enhance existing edges if they're already populated
-        setTimeout(() => {
-            this.enhanceExistingEdges();
-        }, 1000);
-    }
+async init() {
+    console.log('=== EdgesHindrancesManager init called ===');
+    await this.loadEdgesData();
+    console.log('Data loaded, calling updateDisplays...');
+    this.updateDisplays();
+    console.log('Displays updated, calling setupEventListeners...');
+    this.setupEventListeners();
+    console.log('Event listeners set up');
+    
+    // Enhance existing edges if they're already populated
+    setTimeout(() => {
+        console.log('Enhancing existing edges...');
+        this.enhanceExistingEdges();
+    }, 1000);
+}
 
     async loadEdgesData() {
         try {
