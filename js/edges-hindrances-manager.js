@@ -1,5 +1,5 @@
 // edges-hindrances-manager.js
-// Complete working version for enhanced edges and hindrances functionality
+// Compatible version that works alongside existing managers
 
 export default class EdgesHindrancesManager {
     constructor() {
@@ -24,11 +24,11 @@ export default class EdgesHindrancesManager {
         this.setupEventListeners();
         console.log('Event listeners set up');
         
-        // Enhance existing edges if they're already populated
+        // Start monitoring the existing system
         setTimeout(() => {
-            console.log('Enhancing existing edges...');
-            this.enhanceExistingEdges();
-        }, 1000);
+            console.log('Starting to monitor existing system...');
+            this.startMonitoring();
+        }, 3000);
     }
 
     async loadEdgesData() {
@@ -45,7 +45,7 @@ export default class EdgesHindrancesManager {
     setupEventListeners() {
         console.log('Setting up event listeners for EdgesHindrancesManager');
         
-        // Wait for other managers to finish, then attach our listeners
+        // Still try direct listeners for edges (which work)
         setTimeout(() => {
             this.attachDirectListeners();
         }, 2000);
@@ -61,34 +61,9 @@ export default class EdgesHindrancesManager {
     }
 
     attachDirectListeners() {
-        console.log('Attaching direct listeners to checkboxes...');
+        console.log('Attaching direct listeners to edge checkboxes...');
         
-        // Find all hindrance checkboxes and attach listeners directly
-        const hindranceCheckboxes = document.querySelectorAll('#hindrancesList input[type="checkbox"]');
-        console.log('Found hindrance checkboxes:', hindranceCheckboxes.length);
-        
-        hindranceCheckboxes.forEach((checkbox, index) => {
-            console.log(`Attaching listener to hindrance checkbox ${index}`);
-            
-            // Remove any existing listeners first
-            checkbox.removeEventListener('change', this.handleHindranceChangeWrapper);
-            
-            // Create a bound wrapper function
-            this.handleHindranceChangeWrapper = (e) => {
-                console.log('=== DIRECT HINDRANCE CHECKBOX EVENT ===');
-                e.stopPropagation();
-                
-                const item = e.target.closest('.checkbox-item');
-                if (item) {
-                    console.log('Calling handleHindranceChange');
-                    this.handleHindranceChange(e.target, item);
-                }
-            };
-            
-            checkbox.addEventListener('change', this.handleHindranceChangeWrapper);
-        });
-        
-        // Do the same for edges
+        // Only attach to edges since hindrances are handled by monitoring
         const edgeCheckboxes = document.querySelectorAll('#edgesList input[type="checkbox"]');
         console.log('Found edge checkboxes:', edgeCheckboxes.length);
         
@@ -111,28 +86,71 @@ export default class EdgesHindrancesManager {
         });
     }
 
-    handleHindranceChange(checkbox, item) {
-        console.log('=== handleHindranceChange called ===');
-        console.log('Checkbox checked:', checkbox.checked);
-        console.log('Item:', item);
+    startMonitoring() {
+        console.log('Starting monitoring system for hindrances...');
         
-        if (checkbox.checked) {
-            console.log('Calling selectHindrance...');
-            this.selectHindrance(item);
-        } else {
-            console.log('Handling deselection...');
+        // Monitor changes to the existing system every 500ms
+        this.monitoringInterval = setInterval(() => {
+            this.syncWithExistingSystem();
+        }, 500);
+        
+        // Also do an initial sync
+        this.syncWithExistingSystem();
+    }
+
+    syncWithExistingSystem() {
+        // Check all hindrance items for changes
+        const hindranceItems = document.querySelectorAll('#hindrancesList .checkbox-item');
+        
+        hindranceItems.forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
             const hindranceId = item.dataset.id || this.getItemId(item);
-            console.log('Unchecking hindrance:', hindranceId);
+            const isChecked = checkbox && checkbox.checked;
+            const isInOurSet = this.selectedHindrances.has(hindranceId);
             
+            if (isChecked && !isInOurSet) {
+                // Item was selected by existing system but not in our tracking
+                console.log('Detected new hindrance selection:', hindranceId);
+                this.syncHindranceSelection(item, hindranceId, true);
+            } else if (!isChecked && isInOurSet) {
+                // Item was deselected by existing system
+                console.log('Detected hindrance deselection:', hindranceId);
+                this.syncHindranceSelection(item, hindranceId, false);
+            }
+        });
+    }
+
+    syncHindranceSelection(item, hindranceId, isSelected) {
+        if (isSelected) {
+            // Add to our tracking and selected panel
+            const points = parseInt(item.dataset.points) || this.getHindrancePoints(item);
+            
+            this.hindrancePoints += points;
+            this.edgePoints += points;
+            this.selectedHindrances.add(hindranceId);
+            
+            console.log('Synced hindrance selection - Points:', this.hindrancePoints, 'Edge points:', this.edgePoints);
+            
+            // Add to selected panel
+            this.moveHindranceToSelected(item, hindranceId, points);
+        } else {
+            // Remove from our tracking and selected panel
             const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
             if (selectedItem) {
                 const points = parseInt(selectedItem.dataset.points);
-                console.log('Found selected item, removing with points:', points);
-                this.removeHindrance(hindranceId, points);
-            } else {
-                console.log('No selected item found for:', hindranceId);
+                
+                this.hindrancePoints -= points;
+                this.edgePoints -= points;
+                this.selectedHindrances.delete(hindranceId);
+                
+                console.log('Synced hindrance deselection - Points:', this.hindrancePoints, 'Edge points:', this.edgePoints);
+                
+                // Remove from selected panel
+                selectedItem.remove();
             }
         }
+        
+        this.updateDisplays();
     }
 
     handleEdgeChange(checkbox, item) {
@@ -148,40 +166,6 @@ export default class EdgesHindrancesManager {
                 this.removeEdge(edgeId, cost);
             }
         }
-    }
-
-    selectHindrance(item) {
-        console.log('=== selectHindrance called ===');
-        console.log('Item received:', item);
-        
-        const hindranceId = item.dataset.id || this.getItemId(item);
-        const points = parseInt(item.dataset.points) || this.getHindrancePoints(item);
-        
-        console.log('Processing hindrance:', hindranceId, 'Points:', points);
-
-        // Check if we can add this hindrance
-        if (this.hindrancePoints + points > this.maxHindrancePoints) {
-            alert(`Cannot add hindrance. Would exceed maximum of ${this.maxHindrancePoints} points.`);
-            const checkbox = item.querySelector('input[type="checkbox"]');
-            if (checkbox) checkbox.checked = false;
-            return;
-        }
-
-        // Update points and tracking
-        this.hindrancePoints += points;
-        this.edgePoints += points;
-        this.selectedHindrances.add(hindranceId);
-
-        console.log('Updated points - Hindrance:', this.hindrancePoints, 'Edge:', this.edgePoints);
-
-        // Move to selected panel
-        this.moveHindranceToSelected(item, hindranceId, points);
-
-        // Hide from available panel
-        item.style.display = 'none';
-
-        // Update displays
-        this.updateDisplays();
     }
 
     selectEdge(item) {
@@ -221,6 +205,13 @@ export default class EdgesHindrancesManager {
             return;
         }
 
+        // Check if already exists in selected panel
+        const existingItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
+        if (existingItem) {
+            console.log('Item already in selected panel, skipping');
+            return;
+        }
+
         const selectedItem = this.createSelectedItem(sourceItem, hindranceId, points, 'hindrance');
         console.log('Created selected item:', selectedItem);
         
@@ -247,6 +238,7 @@ export default class EdgesHindrancesManager {
         const description = sourceItem.querySelector('.checkbox-description')?.textContent || '';
         const requirements = sourceItem.querySelector('.requirements')?.textContent || '';
         const itemType = sourceItem.querySelector('.type')?.textContent || '';
+        const meta = sourceItem.querySelector('.checkbox-meta')?.textContent || '';
 
         // Create the selected item with identical formatting
         const selectedDiv = document.createElement('div');
@@ -261,6 +253,7 @@ export default class EdgesHindrancesManager {
                 ${description ? `<div class="checkbox-description">${description}</div>` : ''}
                 ${requirements ? `<div class="requirements">${requirements}</div>` : ''}
                 ${itemType ? `<div class="type">${itemType}</div>` : ''}
+                ${meta ? `<div class="checkbox-meta">${meta}</div>` : ''}
                 <button class="remove-btn" data-item-id="${itemId}" data-type="${type}" data-points="${points}">
                     Remove
                 </button>
@@ -273,35 +266,27 @@ export default class EdgesHindrancesManager {
 
     removeHindrance(hindranceId, points) {
         console.log(`Removing hindrance: ${hindranceId}, points: ${points}`);
-        console.log(`Before removal - Hindrance points: ${this.hindrancePoints}, Edge points: ${this.edgePoints}`);
         
         // Update points
         this.hindrancePoints -= points;
         this.edgePoints -= points;
         this.selectedHindrances.delete(hindranceId);
 
-        console.log(`After removal - Hindrance points: ${this.hindrancePoints}, Edge points: ${this.edgePoints}`);
-
         // Remove from selected panel
         const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
         if (selectedItem) {
             selectedItem.remove();
-            console.log('Removed from selected panel');
         }
 
-        // Show in available panel
+        // Uncheck in available panel (let existing system handle the rest)
         const availableItem = document.querySelector(`#hindrancesList [data-id="${hindranceId}"]`);
         if (availableItem) {
-            availableItem.style.display = 'block';
             const checkbox = availableItem.querySelector('input[type="checkbox"]');
-            if (checkbox) {
-                checkbox.checked = false;
-                console.log('Unchecked checkbox in available panel');
+            if (checkbox && checkbox.checked) {
+                checkbox.click(); // Trigger the existing system's handling
             }
         }
 
-        // Force update displays
-        console.log('Calling updateDisplays()');
         this.updateDisplays();
     }
 
@@ -351,21 +336,12 @@ export default class EdgesHindrancesManager {
         const hindrancePointsSpan = document.getElementById('hindrance-points');
         const edgePointsSpan = document.getElementById('edge-points');
         
-        console.log('hindrance-points element:', hindrancePointsSpan);
-        console.log('edge-points element:', edgePointsSpan);
-        
         if (hindrancePointsSpan) {
             hindrancePointsSpan.textContent = this.hindrancePoints;
-            console.log('Updated hindrance points display to:', this.hindrancePoints);
-        } else {
-            console.log('ERROR: hindrance-points element not found!');
         }
         
         if (edgePointsSpan) {
             edgePointsSpan.textContent = this.edgePoints;
-            console.log('Updated edge points display to:', this.edgePoints);
-        } else {
-            console.log('ERROR: edge-points element not found!');
         }
 
         // Also update old format displays if they exist (for compatibility)
@@ -393,34 +369,25 @@ export default class EdgesHindrancesManager {
     }
 
     getHindrancePoints(item) {
-        // Helper to determine hindrance points based on section
-        const section = item.closest('.hindrance-section-header');
-        if (section && section.textContent.includes('Major')) {
+        // Helper to determine hindrance points based on meta info or section
+        const meta = item.querySelector('.checkbox-meta');
+        if (meta && meta.textContent.includes('MAJOR')) {
             return 2;
         }
         return 1; // Minor hindrance
     }
 
-    enhanceExistingEdges() {
-        // Add any enhancements to existing edges/hindrances if needed
-        console.log('Enhancing existing edges/hindrances...');
-        
-        // Mark items as enhanced to avoid duplicate processing
-        const items = document.querySelectorAll('#hindrancesList .checkbox-item, #edgesList .checkbox-item');
-        items.forEach(item => {
-            if (!item.dataset.enhanced) {
-                item.dataset.enhanced = 'true';
-            }
-        });
-    }
-
     // Utility methods for external integration
     clearHindrances() {
-        this.selectedHindrances.forEach(hindranceId => {
-            const selectedItem = document.querySelector(`#selected-hindrances [data-id="${hindranceId}"]`);
-            if (selectedItem) {
-                const points = parseInt(selectedItem.dataset.points);
-                this.removeHindrance(hindranceId, points);
+        // Clear using the existing system by clicking checkboxes
+        const selectedHindrances = Array.from(this.selectedHindrances);
+        selectedHindrances.forEach(hindranceId => {
+            const availableItem = document.querySelector(`#hindrancesList [data-id="${hindranceId}"]`);
+            if (availableItem) {
+                const checkbox = availableItem.querySelector('input[type="checkbox"]');
+                if (checkbox && checkbox.checked) {
+                    checkbox.click(); // Let existing system handle it
+                }
             }
         });
     }
@@ -449,6 +416,13 @@ export default class EdgesHindrancesManager {
 
     getEdgePointsAvailable() {
         return this.edgePoints;
+    }
+
+    // Cleanup method
+    destroy() {
+        if (this.monitoringInterval) {
+            clearInterval(this.monitoringInterval);
+        }
     }
 }
 
