@@ -1,0 +1,376 @@
+{
+  "ancestries": [
+    {
+      "id": "human",
+      "name": "Human",
+      "description": "Humans in most settings get one free Edge of their choice. This option reflects their versatility and adaptability compared to most other ancestries.",
+      "abilities": [
+        {
+          "name": "Adaptable",
+          "description": "Humans begin play with any Novice Edge of their choosing. They must meet its Requirements as usual.",
+          "type": "positive",
+          "mechanical_effect": "Free Novice Edge (must meet requirements)"
+        }
+      ]
+    },
+    {
+      "id": "android",
+      "name": "Android",
+      "description": "Androids are semi-organic beings created by advanced technology. The example here mimics humans in most ways and can generally pass for them when desired (and not examined by a physician).",
+      "abilities": [
+        {
+          "name": "Pacifist (Major)",
+          "description": "Unless the android is designed for combat, most advanced societies require the installation of 'Asimov Circuits.' The artificial being may not injure a sapient being, or through action or inaction, allow such a being to be harmed.",
+          "type": "negative",
+          "mechanical_effect": "Pacifist Major Hindrance"
+        },
+        {
+          "name": "Construct", 
+          "description": "Androids add +2 to recover from being Shaken, don't breathe, ignore one level of Wound modifiers, and are immune to poison and disease. Constructs cannot heal naturally. Healing one requires the Repair skill.",
+          "type": "positive",
+          "mechanical_effect": "+2 to recover from Shaken; immune to poison/disease; ignore 1 Wound penalty; heal with Repair skill"
+        },
+        {
+          "name": "Outsider (Major)",
+          "description": "Androids subtract 2 from Persuasion rolls when interacting with anyone besides other androids, and have no legal rights in most areas (they're generally considered property).",
+          "type": "negative", 
+          "mechanical_effect": "-2 Persuasion with non-androids; no legal rights"
+        },
+        {
+          "name": "Vow (Major)",
+          "description": "Constructs are designed with a particular purpose. Player character constructs have broad directives such as serving a particular corporation or political faction.",
+          "type": "negative",
+          "mechanical_effect": "Major Vow to specific directive/purpose"
+        }
+      ]
+    },
+    {
+      "id": "aquarian",
+      "name": "Aquarian", 
+      "description": "From the crushing ocean depths come aquatic folk. They are thick and sturdy beneath the waves but often vulnerable in the dry air or searing heat of the surface.",
+      "abilities": [
+        {
+          "name": "Aquatic",
+          "description": "Aquarians cannot drown in water and move at their full Pace when swimming.",
+          "type": "positive",
+          "mechanical_effect": "Cannot drown; full Pace swimming"
+        },
+        {
+          "name": "Dependency",
+          "description": "Aquarians must immerse themselves in water one hour out of every 24 or become automatically Fatigued each day until they are Incapacitated. The day after Incapacitation from dehydration, they perish.",
+          "type": "negative",
+          "mechanical_effect": "Must immerse in water 1 hour per 24 hours or gain Fatigue"
+        },
+        {
+          "name": "Low Light Vision",
+          "description": "Aquarians are used to the darkness of the depths. They ignore penalties for Dim and Dark Illumination.",
+          "type": "positive", 
+          "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        },
+        {
+          "name": "Toughness",
+          "description": "Life in the depths of their watery worlds has made aquarian flesh tough and resilient. Add +1 to their Toughness.",
+          "type": "positive",
+          "mechanical_effect": "+1 Toughness"
+        }
+      ]
+    },
+    {
+      "id": "avion",
+      "name": "Avion",
+      "description": "Avions are humanoids with wings. They tend to be very slight of build owing to their hollow bones. Some are feathered while others are leathery or even scaled.",
+      "abilities": [
+        {
+          "name": "Can't Swim",
+          "description": "Avions' wings are a hazard in water. They subtract 2 from Athletics (swimming) rolls and each inch moved in water costs them 3″ of Pace.",
+          "type": "negative",
+          "mechanical_effect": "-2 Athletics (swimming); 3″ Pace cost per inch in water"
+        },
+        {
+          "name": "Flight",
+          "description": "Avions fly at Pace 12 per round. Use Athletics when maneuvering.",
+          "type": "positive",
+          "mechanical_effect": "Fly at Pace 12; use Athletics for maneuvering"
+        },
+        {
+          "name": "Frail",
+          "description": "Avions have −1 Toughness due to their hollow bones.",
+          "type": "negative",
+          "mechanical_effect": "-1 Toughness"
+        },
+        {
+          "name": "Keen Senses",
+          "description": "Avions are more perceptive than most. They begin with a d6 in Notice (instead of d4) and may raise the skill to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Notice d6; max Notice d12+1"
+        },
+        {
+          "name": "Reduced Pace",
+          "description": "Dependence on flight and bulky wings make avions slightly slower when walking. Decrease their walking Pace by 1 and their running die by one step.",
+          "type": "negative",
+          "mechanical_effect": "-1 Pace; running die reduced one step"
+        }
+      ]
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "description": "Dwarves are short but stout, hardy people who come from massive caverns or high mountains. They are a proud, warlike people, usually made so by frequent contact with hostile creatures such as orcs and goblins.",
+      "abilities": [
+        {
+          "name": "Low Light Vision",
+          "description": "Dwarven eyes are accustomed to the dark of the underearth. They ignore penalties for Dim and Dark Illumination.",
+          "type": "positive",
+          "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        },
+        {
+          "name": "Reduced Pace",
+          "description": "Dwarves have short legs compared to most. Decrease their Pace by 1 and their running die one die type.",
+          "type": "negative",
+          "mechanical_effect": "-1 Pace; running die reduced one step"
+        },
+        {
+          "name": "Tough",
+          "description": "Dwarves are stout and tough. They start with a d6 Vigor instead of a d4. This increases maximum Vigor to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Vigor d6; max Vigor d12+1"
+        }
+      ]
+    },
+    {
+      "id": "elf",
+      "name": "Elf",
+      "description": "Elves are tall, thin souls with pointed ears and deep-set eyes of various colors. Whether they hail from the deep forests or hidden valleys, they are all born more graceful than humans, though somewhat slighter.",
+      "abilities": [
+        {
+          "name": "Agile",
+          "description": "Elves are graceful and agile. They start with a d6 in Agility instead of a d4. This increases maximum Agility to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Agility d6; max Agility d12+1"
+        },
+        {
+          "name": "All Thumbs",
+          "description": "Elves have an inherent dislike of mechanical objects, and thus have the All Thumbs Hindrance. They shun most mechanical items and designs.",
+          "type": "negative",
+          "mechanical_effect": "All Thumbs Hindrance (-2 to mechanical/electrical devices)"
+        },
+        {
+          "name": "Low Light Vision",
+          "description": "Elven eyes amplify light. Others often claim they can see stars in the elves' eyes. They ignore penalties for Dim and Dark Illumination.",
+          "type": "positive",
+          "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        }
+      ]
+    },
+    {
+      "id": "half-elf",
+      "name": "Half-Elf",
+      "description": "Half-elves gain the elves' grace but none of their elegant frailty. Most are well-adjusted, but some are shunned by one side of the family or the other and grow resentful.",
+      "abilities": [
+        {
+          "name": "Heritage",
+          "description": "Half-elves may retain the grace of their elven parent or the adaptability of their human ancestry. A half-elf may either start with a free Novice Edge of his choice or a d6 in Agility instead of a d4 (which also increases his Agility maximum to d12 + 1).",
+          "type": "positive",
+          "mechanical_effect": "Choose: Free Novice Edge OR Agility d6 (max d12+1)"
+        },
+        {
+          "name": "Low Light Vision",
+          "description": "Half-elves ignore penalties for Dim and Dark Illumination.",
+          "type": "positive",
+          "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        },
+        {
+          "name": "Outsider (Minor)",
+          "description": "Half-elves are never quite comfortable in human or elven society, having a foot in both worlds but never fully standing in either. They subtract 2 from Persuasion rolls with all but others of their kind.",
+          "type": "negative",
+          "mechanical_effect": "-2 Persuasion with all but other half-elves"
+        }
+      ]
+    },
+    {
+      "id": "half-folk",
+      "name": "Half-Folk",
+      "description": "Half-folk are small, nimble people with fuzzy brown or black hair. Though they are frail compared to most other species, their cheerful optimism (or wily cunning) gives them a 'never say die' attitude.",
+      "abilities": [
+        {
+          "name": "Luck",
+          "description": "Half-folk draw one additional Benny per game session.",
+          "type": "positive",
+          "mechanical_effect": "+1 Benny per session"
+        },
+        {
+          "name": "Reduced Pace",
+          "description": "Decrease the character's Pace by 1 and their running die one die type.",
+          "type": "negative",
+          "mechanical_effect": "-1 Pace; running die reduced one step"
+        },
+        {
+          "name": "Size −1",
+          "description": "Half-folk average only about four feet tall, reducing their Size (and therefore Toughness) by 1.",
+          "type": "negative",
+          "mechanical_effect": "Size -1 (Toughness -1)"
+        },
+        {
+          "name": "Spirited",
+          "description": "Half-folk are generally optimistic beings. They start with a d6 Spirit instead of a d4. This increases their maximum Spirit to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Spirit d6; max Spirit d12+1"
+        }
+      ]
+    },
+    {
+      "id": "rakashan",
+      "name": "Rakashan",
+      "description": "Rakashans are humanoid felines. Some have the bright colors of tigers, the speckled hides of leopards, or the exotic look of Siamese cats. All have sharp claws and teeth, and a cruel nature when it comes to dealing with their prey.",
+      "abilities": [
+        {
+          "name": "Agile",
+          "description": "Feline grace gives rakashans a d6 Agility attribute instead of a d4. This increases maximum Agility to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Agility d6; max Agility d12+1"
+        },
+        {
+          "name": "Bite/Claws",
+          "description": "Rakashan fangs and claws are Natural Weapons that cause Strength+d4 damage.",
+          "type": "positive",
+          "mechanical_effect": "Natural Weapons: Str+d4 damage"
+        },
+        {
+          "name": "Bloodthirsty",
+          "description": "Rakashans can be cruel to their foes, often toying with them for simple amusement. They rarely take prisoners and feel little compunction about punishing captured foes.",
+          "type": "negative",
+          "mechanical_effect": "Bloodthirsty Major Hindrance"
+        },
+        {
+          "name": "Can't Swim",
+          "description": "Rakashans actually can swim, they just shun it and are not particularly good at it. They subtract 2 from Athletics (swimming) rolls and each tabletop inch of movement in water uses 3″ of Pace.",
+          "type": "negative",
+          "mechanical_effect": "-2 Athletics (swimming); 3″ Pace cost per inch in water"
+        },
+        {
+          "name": "Low Light Vision",
+          "description": "Rakashan eyes amplify light. They ignore penalties for Dim and Dark Illumination.",
+          "type": "positive",
+          "mechanical_effect": "Ignore Dim and Dark Illumination penalties"
+        },
+        {
+          "name": "Ancestral Enemy",
+          "description": "Rakashan society rose at the expense of another. Pick a common ancestry in your setting. Members of each culture subtract 2 from Persuasion when dealing with each other and often attack on sight.",
+          "type": "negative",
+          "mechanical_effect": "Choose enemy ancestry; -2 Persuasion with them"
+        }
+      ]
+    },
+    {
+      "id": "saurian", 
+      "name": "Saurian",
+      "description": "Lizard men typically come from steaming jungles or deep deserts where they have unique civilizations unknown to other sentient beings.",
+      "abilities": [
+        {
+          "name": "Armor +2",
+          "description": "Saurians have scaly skin that acts as leather armor.",
+          "type": "positive",
+          "mechanical_effect": "+2 Armor"
+        },
+        {
+          "name": "Bite",
+          "description": "A saurian's fangs are Natural Weapons that cause Strength+d4 damage.",
+          "type": "positive", 
+          "mechanical_effect": "Natural Weapons: Str+d4 damage"
+        },
+        {
+          "name": "Environmental Weakness",
+          "description": "Though not truly cold-blooded, saurians are poorly suited for frigid conditions. They suffer a −4 penalty to resist cold environmental effects, and suffer +4 damage from cold-based attacks.",
+          "type": "negative",
+          "mechanical_effect": "-4 vs cold effects; +4 damage from cold attacks"
+        },
+        {
+          "name": "Keen Senses",
+          "description": "Saurians have acute senses, giving them the Alertness Edge.",
+          "type": "positive",
+          "mechanical_effect": "Alertness Edge (+2 Notice)"
+        },
+        {
+          "name": "Outsider (Minor)",
+          "description": "Most species distrust saurians for some reason. Perhaps it is their strange ways and customs, their often-sibilant speech, or an ancient subconscious fear of their reptilian ancestors. Saurians subtract 2 from Persuasion rolls with all but others of their kind.",
+          "type": "negative",
+          "mechanical_effect": "-2 Persuasion with all but other saurians"
+        }
+      ]
+    },
+    {
+      "id": "celestial",
+      "name": "Celestial",
+      "description": "Angels are a great and varied lot, but all have these traits in common. (Custom ancestry example from the Core Rules)",
+      "abilities": [
+        {
+          "name": "All Thumbs",
+          "description": "Celestials are not accustomed to technology or machines.",
+          "type": "negative",
+          "mechanical_effect": "All Thumbs Hindrance (-2 to mechanical/electrical devices)"
+        },
+        {
+          "name": "Arcane Background (Miracles)",
+          "description": "Celestials can call forth a variety of blessed miracles.",
+          "type": "positive", 
+          "mechanical_effect": "Arcane Background (Miracles) Edge"
+        },
+        {
+          "name": "Faith",
+          "description": "All celestials start with a d6 in Faith. This increases their maximum to d12 + 1.",
+          "type": "positive",
+          "mechanical_effect": "Start with Faith d6; max Faith d12+1"
+        },
+        {
+          "name": "Flight",
+          "description": "Angels fly at Pace 12.",
+          "type": "positive",
+          "mechanical_effect": "Fly at Pace 12"
+        },
+        {
+          "name": "Ancestral Enemy (Demons & Devils)",
+          "description": "Those who descend from above do not easily tolerate those who crawl forth from the Abyss.",
+          "type": "negative",
+          "mechanical_effect": "-2 Persuasion with demons/devils"
+        },
+        {
+          "name": "Vow (Major—Protect humanity)",
+          "description": "The blessed must protect the flock that remains on the ravaged Earth.",
+          "type": "negative",
+          "mechanical_effect": "Major Vow to protect humanity"
+        }
+      ]
+    },
+    {
+      "id": "guardian",
+      "name": "Guardian", 
+      "description": "Those humans who serve the Heavenly Choir are called guardians. (Custom ancestry example from the Core Rules)",
+      "abilities": [
+        {
+          "name": "Adaptable",
+          "description": "Guardians begin play with any Novice Edge of their choosing (meeting its Requirements as usual).",
+          "type": "positive",
+          "mechanical_effect": "Free Novice Edge (must meet requirements)"
+        },
+        {
+          "name": "Champions",
+          "description": "Guardians have the Champion Edge, giving them a +2 bonus to damage against supernaturally evil foes such as demons and devils.",
+          "type": "positive",
+          "mechanical_effect": "Champion Edge (+2 damage vs supernatural evil)"
+        },
+        {
+          "name": "Vigorous",
+          "description": "Those humans who have inherited this blasted Earth start the game with a d6 Vigor instead of a d4. This increases their Vigor maximum to d12 + 1.",
+          "type": "positive", 
+          "mechanical_effect": "Start with Vigor d6; max Vigor d12+1"
+        },
+        {
+          "name": "Vow (Major—Protect humanity)",
+          "description": "The blessed must protect the remaining flock on Earth.",
+          "type": "negative",
+          "mechanical_effect": "Major Vow to protect humanity"
+        }
+      ]
+    }
+  ]
+}
