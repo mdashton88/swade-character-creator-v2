@@ -124,17 +124,23 @@ class SWADECharacterCreator {
         });
     }
 
-    async initializeUI() {
-        // Populate ancestries dropdown
-        const ancestries = this.dataManager.getAncestries();
-        const ancestrySelect = document.getElementById('characterAncestry');
-        
-        Object.keys(ancestries).forEach(ancestry => {
-            const option = document.createElement('option');
-            option.value = ancestry;
-            option.textContent = ancestry;
-            ancestrySelect.appendChild(option);
-        });
+  async initializeUI() {
+    // Populate ancestries dropdown
+    const ancestries = this.dataManager.getAncestries();
+    const ancestrySelect = document.getElementById('characterAncestry');
+    
+    // ADD THIS: Add blank default option
+    const blankOption = document.createElement('option');
+    blankOption.value = '';
+    blankOption.textContent = '-- Select Ancestry --';
+    ancestrySelect.appendChild(blankOption);
+    
+    Object.keys(ancestries).forEach(ancestry => {
+        const option = document.createElement('option');
+        option.value = ancestry;
+        option.textContent = ancestry;
+        ancestrySelect.appendChild(option);
+    });
 
         // Initialize all UI components
         await this.attributesManager.initializeUI();
