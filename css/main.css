@@ -394,7 +394,7 @@ input[readonly] {
 /* Hindrances and Edges */
 .content-area {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr; /* Equal widths */
     gap: 20px;
 }
 
