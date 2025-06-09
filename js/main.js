@@ -350,7 +350,7 @@ class SWADECharacterCreator {
         }
     }
 
-    showError(message) {
+  showError(message) {
         // Remove loading overlay if present
         this.hideLoading();
         
@@ -388,45 +388,46 @@ class SWADECharacterCreator {
         `;
         document.body.appendChild(errorOverlay);
     }
-updateAncestryInfoBox(ancestryName) {
-    const infoBox = document.getElementById('ancestryInfoBox');
-    const abilitiesContainer = document.getElementById('ancestryInfoAbilities');
-    
-    // Hide info box if no ancestry selected
-    if (!ancestryName || ancestryName === '') {
-        infoBox.style.display = 'none';
-        return;
+
+    updateAncestryInfoBox(ancestryName) {
+        const infoBox = document.getElementById('ancestryInfoBox');
+        const abilitiesContainer = document.getElementById('ancestryInfoAbilities');
+        
+        // Hide info box if no ancestry selected
+        if (!ancestryName || ancestryName === '') {
+            infoBox.style.display = 'none';
+            return;
+        }
+        
+        // Get ancestry data
+        const ancestries = this.dataManager.getConfig().ancestries;
+        const ancestryData = ancestries[ancestryName];
+        
+        if (!ancestryData) {
+            infoBox.style.display = 'none';
+            return;
+        }
+        
+        // Clear previous abilities
+        abilitiesContainer.innerHTML = '';
+        
+        // Add abilities using new subtle styling
+        if (ancestryData.abilities && ancestryData.abilities.length > 0) {
+            ancestryData.abilities.forEach(ability => {
+                const abilityElement = document.createElement('div');
+                abilityElement.className = 'ancestry-info';
+                
+                abilityElement.innerHTML = `
+                    <strong>${ability.name.toUpperCase()}:</strong> ${ability.description}
+                `;
+                
+                abilitiesContainer.appendChild(abilityElement);
+            });
+        }
+        
+        // Show the info box
+        infoBox.style.display = 'block';
     }
-    
-    // Get ancestry data
-    const ancestries = this.dataManager.getConfig().ancestries;
-    const ancestryData = ancestries[ancestryName];
-    
-    if (!ancestryData) {
-        infoBox.style.display = 'none';
-        return;
-    }
-    
-    // Clear previous abilities
-    abilitiesContainer.innerHTML = '';
-    
-    // Add abilities using new subtle styling
-    if (ancestryData.abilities && ancestryData.abilities.length > 0) {
-        ancestryData.abilities.forEach(ability => {
-            const abilityElement = document.createElement('div');
-            abilityElement.className = 'ancestry-info';
-            
-            abilityElement.innerHTML = `
-                <strong>${ability.name.toUpperCase()}:</strong> ${ability.description}
-            `;
-            
-            abilitiesContainer.appendChild(abilityElement);
-        });
-    }
-    
-    // Show the info box
-    infoBox.style.display = 'block';
-}    }
 
     initializeAncestryInfoBox() {
         const currentAncestry = this.characterManager.getCharacter().ancestry;
@@ -436,6 +437,7 @@ updateAncestryInfoBox(ancestryName) {
         }
     }
 }
+
 // Initialize the application when the DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
     const app = new SWADECharacterCreator();
