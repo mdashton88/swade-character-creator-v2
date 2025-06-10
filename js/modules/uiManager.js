@@ -1,14 +1,184 @@
-// SWADE Character Creator v2 - UIManager Module v1.0037
-// Fixed: Syntax error causing attribute controls not to display
+// SWADE Character Creator v2 - UIManager Module v1.0038
+// Fixed: Removed duplicate method causing syntax error
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0037";
+        this.VERSION = "V1.0038";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Fixed syntax error and improved debugging!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Fixed duplicate method syntax error!`);
+    }
+
+    displayVersion() {
+        // Remove any existing version displays
+        const existingVersions = document.querySelectorAll('[id*="version-display"]');
+        existingVersions.forEach(el => el.remove());
+
+        // Create version overlay (always visible)
+        const versionOverlay = document.createElement('div');
+        versionOverlay.id = 'version-display-overlay';
+        versionOverlay.textContent = this.VERSION;
+        versionOverlay.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 9999;
+            border: 2px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(versionOverlay);
+        console.log(`✅ Version ${this.VERSION} overlay displayed`);
+    }
+
+    setupWhiteHeaderText() {
+        // Target only the red header block for white text
+        const headerCSS = `
+            <style id="white-header-text">
+            [style*="background-color: #a72c2c"] *:not(button):not(input):not(select) {
+                color: white !important;
+            }
+            header[style*="background"] * {
+                color: white !important;
+            }
+            .header-title, .header-subtitle {
+                color: white !important;
+            }
+            </style>
+        `;
+        document.head.insertAdjacentHTML('beforeend', headerCSS);
+        console.log('✅ White header text CSS applied (red header only)');
+    }
+
+    patchExistingAttributeControls() {
+        // Find all existing attribute controls and add missing methods
+        console.log('🔍 Looking for existing attribute controls to patch...');
+        
+        // Try multiple selectors to find attribute controls
+        const possibleSelectors = [
+            '[data-attribute]',
+            '.attribute-control',
+            '[id*="attribute"]',
+            '.dice-control',
+            'div[data-attribute]'
+        ];
+
+        let foundControls = [];
+        
+        for (const selector of possibleSelectors) {
+            const controls = document.querySelectorAll(selector);
+            if (controls.length > 0) {
+                foundControls = Array.from(controls);
+                console.log(`✅ Found ${controls.length} controls with selector: ${selector}`);
+                break;
+            }
+        }
+
+        // If no controls found, try a delayed patch
+        if (foundControls.length === 0) {
+            console.log('⚠️ No controls found immediately, scheduling delayed patch...');
+            setTimeout(() => this.patchExistingAttributeControls(), 1000);
+            return;
+        }
+
+        // Patch each control with required methods
+        foundControls.forEach((control, index) => {
+            this.patchControl(control, index);
+        });
+
+        console.log(`🎯 Patched ${foundControls.length} existing attribute controls`);
+    }
+
+    patchControl(control, index) {
+        // Add updateValue method if it doesn't exist
+        if (!control.updateValue) {
+            control.updateValue = (newValue) => {
+                console.log(`🎯 UpdateValue called on control ${index}: ${newValue}`);
+                
+                // Try to find and update value display
+                const valueSelectors = [
+                    '.die-value',
+                    '.attribute-value', 
+                    '[data-value]',
+                    'span:contains("d")',
+                    'span'
+                ];
+                
+                for (const selector of valueSelectors) {
+                    const valueElement = control.querySelector(selector);
+                    if (valueElement && valueElement.textContent.includes('d')) {
+                        valueElement.textContent = `d${newValue}`;
+                        console.log(`✅ Updated value display to d${newValue}`);
+                        break;
+                    }
+                }
+            };
+        }
+
+        // Add getValue method if it doesn't exist
+        if (!control.getValue) {
+            control.getValue = () => {
+                const valueElement = control.querySelector('.die-value, .attribute-value, [data-value], span');
+                if (valueElement) {
+                    const match = valueElement.textContent.match(/d(\d+)/);
+                    return match ? parseInt(match[1]) : 4;
+                }
+                return 4; // Default to d4
+            };
+        }
+
+        // Add setEnabled method if it doesn't exist
+        if (!control.setEnabled) {
+            control.setEnabled = (enabled) => {
+                const buttons = control.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.disabled = !enabled;
+                    button.style.opacity = enabled ? '1' : '0.5';
+                    button.style.cursor = enabled ? 'pointer' : 'not-allowed';
+                });
+            };
+        }
+
+        console.log(`🔧 Patched control ${index} with required methods`);
+    }
+
+    addClearButton() {
+        // Find the Randomize button using proper CSS selectors
+        let randomizeButton = null;
+        
+        // Method 1: Look for buttons with "Randomize" text
+        const buttons = document.querySelectorAll('button');
+        for (const button of buttons) {
+            if (button.textContent && button.textContent.includes('Randomize')) {
+                randomizeButton = button;
+                break;
+            }
+        }
+        
+        // Method 2: Look by ID or class if method 1 fails
+        if (!randomizeButton) {
+            randomizeButton = document.querySelector('#randomize-button, .randomize-button, button[id*="randomize"]');
+        }
+
+        if (randomizeButton) {
+            const clearButton = this.createClearButton();
+            randomizeButton.parentNode.insertBefore(clearButton, randomizeButton);
+            console.log('✅ Clear button added successfully');
+        } else {
+            console.log('⚠️ Randomize button not found - Clear button not added');
+            
+            // Fallback: Try again after a short delay
+            setTimeout(() => {
+                this.addClearButton();
+            }, 1000);
+        }
     }
 
     displayVersion() {
