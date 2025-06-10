@@ -188,7 +188,7 @@ export class UIManager {
         }
     }
 
-    // Create checkbox item
+    // Create checkbox item - FIXED VERSION
     createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
         const container = this.createElement('div', 'checkbox-item');
         
@@ -222,10 +222,27 @@ export class UIManager {
         }
         
         if (onChange) {
-            checkbox.addEventListener('change', onChange);
+            checkbox.addEventListener('change', (e) => onChange(e.target.checked));
         }
         
-        return container;
+        // Return an object with the expected properties
+        return {
+            container: container,
+            checkbox: checkbox,
+            
+            setSelected: function(selected) {
+                checkbox.checked = selected;
+            },
+            
+            setAvailable: function(available) {
+                checkbox.disabled = !available;
+                if (!available) {
+                    container.classList.add('unavailable');
+                } else {
+                    container.classList.remove('unavailable');
+                }
+            }
+        };
     }
 
     // Create attribute control - CORRECTED VERSION
