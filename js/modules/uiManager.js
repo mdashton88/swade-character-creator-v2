@@ -228,57 +228,90 @@ export class UIManager {
         return container;
     }
 
-    // Create attribute control
+    // Create attribute control - SIMPLIFIED VERSION
     createAttributeControl(attribute, value, onChange) {
-        const container = this.createElement('div', 'attribute-control');
+        // Create container div using basic DOM methods
+        const container = document.createElement('div');
+        container.className = 'attribute-control';
         
-        const label = this.createElement('label', 'attribute-label', attribute);
-        container.appendChild(label);
+        // Create label
+        const label = document.createElement('label');
+        label.className = 'attribute-label';
+        label.textContent = attribute;
         
-        const controlGroup = this.createElement('div', 'control-group');
+        // Create control group div
+        const controlGroup = document.createElement('div');
+        controlGroup.className = 'control-group';
         
-        const decreaseBtn = this.createButton('-', 'attribute-btn decrease', () => {
-            onChange(attribute, -1);
-        });
+        // Create decrease button
+        const decreaseBtn = document.createElement('button');
+        decreaseBtn.className = 'attribute-btn decrease';
+        decreaseBtn.textContent = '-';
+        decreaseBtn.onclick = () => onChange(attribute, -1);
         
-        const valueDisplay = this.createElement('span', 'attribute-value', value);
+        // Create value display
+        const valueDisplay = document.createElement('span');
+        valueDisplay.className = 'attribute-value';
+        valueDisplay.textContent = value;
         
-        const increaseBtn = this.createButton('+', 'attribute-btn increase', () => {
-            onChange(attribute, 1);
-        });
+        // Create increase button
+        const increaseBtn = document.createElement('button');
+        increaseBtn.className = 'attribute-btn increase';
+        increaseBtn.textContent = '+';
+        increaseBtn.onclick = () => onChange(attribute, 1);
         
+        // Assemble the control group
         controlGroup.appendChild(decreaseBtn);
         controlGroup.appendChild(valueDisplay);
         controlGroup.appendChild(increaseBtn);
         
+        // Assemble the container
+        container.appendChild(label);
         container.appendChild(controlGroup);
         
+        // Return the container (guaranteed to be a DOM element)
         return container;
     }
 
     // Create skill control
     createSkillControl(skill, value, onChange) {
-        const container = this.createElement('div', 'skill-control');
+        // Create container using basic DOM methods
+        const container = document.createElement('div');
+        container.className = 'skill-control';
         
-        const label = this.createElement('label', 'skill-label', skill);
-        container.appendChild(label);
+        // Create label
+        const label = document.createElement('label');
+        label.className = 'skill-label';
+        label.textContent = skill;
         
-        const controlGroup = this.createElement('div', 'control-group');
+        // Create control group
+        const controlGroup = document.createElement('div');
+        controlGroup.className = 'control-group';
         
-        const decreaseBtn = this.createButton('-', 'skill-btn decrease', () => {
-            onChange(skill, -1);
-        });
+        // Create decrease button
+        const decreaseBtn = document.createElement('button');
+        decreaseBtn.className = 'skill-btn decrease';
+        decreaseBtn.textContent = '-';
+        decreaseBtn.onclick = () => onChange(skill, -1);
         
-        const valueDisplay = this.createElement('span', 'skill-value', value);
+        // Create value display
+        const valueDisplay = document.createElement('span');
+        valueDisplay.className = 'skill-value';
+        valueDisplay.textContent = value;
         
-        const increaseBtn = this.createButton('+', 'skill-btn increase', () => {
-            onChange(skill, 1);
-        });
+        // Create increase button
+        const increaseBtn = document.createElement('button');
+        increaseBtn.className = 'skill-btn increase';
+        increaseBtn.textContent = '+';
+        increaseBtn.onclick = () => onChange(skill, 1);
         
+        // Assemble control group
         controlGroup.appendChild(decreaseBtn);
         controlGroup.appendChild(valueDisplay);
         controlGroup.appendChild(increaseBtn);
         
+        // Assemble container
+        container.appendChild(label);
         container.appendChild(controlGroup);
         
         return container;
