@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0041
-// Clean version - Fixed all syntax errors + added missing DOM utility methods
+// SWADE Character Creator v2 - UIManager Module v1.0042
+// Clean version - Fixed all syntax errors + added complete DOM utility methods
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0041";
+        this.VERSION = "V1.0042";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added DOM utility methods!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added createElement method!`);
     }
 
     displayVersion() {
@@ -459,6 +459,55 @@ export class UIManager {
             // Fallback for older browsers
             return element.className.includes(className);
         }
+    }
+
+    createElement(tagName, options = {}) {
+        console.log(`🔧 createElement called: ${tagName}`);
+        
+        const element = document.createElement(tagName);
+        
+        // Set attributes if provided
+        if (options.id) {
+            element.id = options.id;
+        }
+        
+        if (options.className || options.class) {
+            element.className = options.className || options.class;
+        }
+        
+        if (options.textContent || options.text) {
+            element.textContent = options.textContent || options.text;
+        }
+        
+        if (options.innerHTML) {
+            element.innerHTML = options.innerHTML;
+        }
+        
+        // Set any other attributes
+        if (options.attributes) {
+            for (const [key, value] of Object.entries(options.attributes)) {
+                element.setAttribute(key, value);
+            }
+        }
+        
+        // Set styles if provided
+        if (options.style) {
+            if (typeof options.style === 'string') {
+                element.style.cssText = options.style;
+            } else {
+                Object.assign(element.style, options.style);
+            }
+        }
+        
+        // Add event listeners if provided
+        if (options.events) {
+            for (const [event, handler] of Object.entries(options.events)) {
+                element.addEventListener(event, handler);
+            }
+        }
+        
+        console.log(`✅ Created element: ${tagName}${element.id ? '#' + element.id : ''}${element.className ? '.' + element.className : ''}`);
+        return element;
     }
 
     toggleClass(element, className) {
