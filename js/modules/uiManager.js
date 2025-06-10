@@ -1,433 +1,428 @@
-// SWADE Character Creator v2 - UI Manager Module
-// EMERGENCY CLEAN VERSION - Minimal changes to avoid breaking anything
+// SWADE Character Creator v2 - UIManager Module v1.0027
+// Fixed CSS selector issue
 
 export class UIManager {
     constructor() {
-        this.version = 'V1.0026'; // Fixed overly broad white text CSS
-        console.log(`🎯 UIManager ${this.version} initialized - Fixed white text CSS to header only`);
-        this.notificationContainer = null;
-        this.initializeNotifications();
-        this.loadDiceIcons();
-        this.addVersionDisplay();
-        this.styleHeader();
+        this.VERSION = "V1.0027";
+        this.displayVersion();
+        this.setupWhiteHeaderText();
         this.addClearButton();
-        
-        // Initialize smart button logic after everything loads
-        setTimeout(() => this.initializeSmartButtons(), 500);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - CSS selector fixed!`);
     }
 
-    initializeNotifications() {
-        if (!document.querySelector('.notification-container')) {
-            this.notificationContainer = document.createElement('div');
-            this.notificationContainer.className = 'notification-container';
-            this.notificationContainer.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                max-width: 400px;
-            `;
-            document.body.appendChild(this.notificationContainer);
+    displayVersion() {
+        // Remove any existing version displays
+        const existingVersions = document.querySelectorAll('[id*="version-display"]');
+        existingVersions.forEach(el => el.remove());
+
+        // Create version overlay (always visible)
+        const versionOverlay = document.createElement('div');
+        versionOverlay.id = 'version-display-overlay';
+        versionOverlay.textContent = this.VERSION;
+        versionOverlay.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 9999;
+            border: 2px solid white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        document.body.appendChild(versionOverlay);
+        console.log(`✅ Version ${this.VERSION} overlay displayed`);
+    }
+
+    setupWhiteHeaderText() {
+        // Target only the red header block for white text
+        const headerCSS = `
+            <style id="white-header-text">
+            [style*="background-color: #a72c2c"] *:not(button):not(input):not(select) {
+                color: white !important;
+            }
+            header[style*="background"] * {
+                color: white !important;
+            }
+            .header-title, .header-subtitle {
+                color: white !important;
+            }
+            </style>
+        `;
+        document.head.insertAdjacentHTML('beforeend', headerCSS);
+        console.log('✅ White header text CSS applied (red header only)');
+    }
+
+    addClearButton() {
+        // Find the Randomize button using proper CSS selectors
+        let randomizeButton = null;
+        
+        // Method 1: Look for buttons with "Randomize" text
+        const buttons = document.querySelectorAll('button');
+        for (const button of buttons) {
+            if (button.textContent && button.textContent.includes('Randomize')) {
+                randomizeButton = button;
+                break;
+            }
+        }
+        
+        // Method 2: Look by ID or class if method 1 fails
+        if (!randomizeButton) {
+            randomizeButton = document.querySelector('#randomize-button, .randomize-button, button[id*="randomize"]');
+        }
+
+        if (randomizeButton) {
+            const clearButton = this.createClearButton();
+            randomizeButton.parentNode.insertBefore(clearButton, randomizeButton);
+            console.log('✅ Clear button added successfully');
         } else {
-            this.notificationContainer = document.querySelector('.notification-container');
+            console.log('⚠️ Randomize button not found - Clear button not added');
+            
+            // Fallback: Try again after a short delay
+            setTimeout(() => {
+                this.addClearButton();
+            }, 1000);
         }
     }
 
-    // Add version display to header for debugging
-    addVersionDisplay() {
-        setTimeout(() => {
-            // Remove any existing version display
-            const existingVersion = document.getElementById('version-display');
-            if (existingVersion) {
-                existingVersion.remove();
-            }
+    createClearButton() {
+        const clearButton = document.createElement('button');
+        clearButton.type = 'button';
+        clearButton.innerHTML = '🗑️ Clear';
+        clearButton.className = 'btn btn-secondary me-2'; // Bootstrap classes if available
+        
+        // Style to match Randomize button
+        clearButton.style.cssText = `
+            background-color: #6c757d;
+            border: 1px solid #5c636a;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 8px;
+        `;
 
-            // Look for red header area more aggressively
-            let header = document.querySelector('[style*="background"]') || // Look for styled backgrounds
-                        document.querySelector('.header') || 
-                        document.querySelector('header') || 
-                        document.querySelector('[class*="header"]') ||
-                        document.querySelector('h1') ||
-                        document.querySelector('.title') ||
-                        document.body.children[0]; // Fallback to first element
-            
-            // If we found a header, try to use it
-            if (header) {
-                // Create version display
-                const versionDisplay = document.createElement('div');
-                versionDisplay.id = 'version-display';
-                versionDisplay.textContent = this.version;
-                versionDisplay.style.cssText = `
-                    position: absolute;
-                    top: 10px;
-                    right: 20px;
-                    color: white !important;
-                    font-size: 16px;
-                    font-weight: bold;
-                    background: rgba(0,0,0,0.4);
-                    padding: 6px 12px;
-                    border-radius: 6px;
-                    z-index: 10000;
-                    font-family: monospace;
-                    border: 2px solid rgba(255,255,255,0.5);
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                `;
-                
-                // Make header relative if it's not already positioned
-                const headerStyle = window.getComputedStyle(header);
-                if (headerStyle.position === 'static') {
-                    header.style.position = 'relative';
-                }
-                
-                header.appendChild(versionDisplay);
-                console.log(`✅ Version ${this.version} displayed in header:`, header);
-            }
-            
-            // ALWAYS add fallback overlay version - very visible
-            const overlayVersion = document.createElement('div');
-            overlayVersion.id = 'version-display-overlay';
-            overlayVersion.textContent = this.version;
-            overlayVersion.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                color: white !important;
-                font-size: 18px;
-                font-weight: bold;
-                background: rgba(139, 0, 0, 0.9);
-                padding: 8px 16px;
-                border-radius: 8px;
-                z-index: 99999;
-                font-family: monospace;
-                border: 2px solid white;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            `;
-            
-            document.body.appendChild(overlayVersion);
-            console.log(`✅ Version ${this.version} overlay displayed - Fixed white text to header only`);
-        }, 200);
+        // Add hover effect
+        clearButton.addEventListener('mouseenter', () => {
+            clearButton.style.backgroundColor = '#5c636a';
+        });
+        
+        clearButton.addEventListener('mouseleave', () => {
+            clearButton.style.backgroundColor = '#6c757d';
+        });
+
+        // Add click functionality
+        clearButton.addEventListener('click', () => {
+            this.clearAllAttributes();
+        });
+
+        return clearButton;
     }
 
-    // Style header to make ONLY red header text white (not everything!)
-    styleHeader() {
-        setTimeout(() => {
-            // Remove any existing broad styles
-            const existingStyle = document.getElementById('header-white-text');
-            if (existingStyle) {
-                existingStyle.remove();
-            }
-            
-            // Inject SPECIFIC CSS for just the red header block
-            const style = document.createElement('style');
-            style.id = 'header-white-text';
-            style.textContent = `
-                /* ONLY target the red header block - be very specific */
-                .header,
-                header,
-                [style*="background-color: #a72c2c"],
-                [style*="background: #a72c2c"],
-                [style*="background-color:#a72c2c"],
-                [style*="background:#a72c2c"],
-                [style*="background-color: rgb(167, 44, 44)"],
-                [style*="background: rgb(167, 44, 44)"] {
-                    color: white !important;
-                }
-                
-                /* Target children of red header specifically */
-                .header h1,
-                .header h2,
-                .header h3,
-                header h1,
-                header h2, 
-                header h3,
-                [style*="background-color: #a72c2c"] h1,
-                [style*="background-color: #a72c2c"] h2,
-                [style*="background-color: #a72c2c"] h3,
-                [style*="background: #a72c2c"] h1,
-                [style*="background: #a72c2c"] h2,
-                [style*="background: #a72c2c"] h3 {
-                    color: white !important;
-                }
-                
-                /* Be very specific - only red backgrounds */
-                [style*="background-color: #a72c2c"] *:not(button):not(input):not(select),
-                [style*="background: #a72c2c"] *:not(button):not(input):not(select) {
-                    color: white !important;
-                }
-            `;
-            
-            document.head.appendChild(style);
-            console.log('✅ Fixed header styling - ONLY red header should be white now');
-        }, 100);
-    }
-
-    // Add Clear button next to Randomize button in Attributes section
-    addClearButton() {
-        setTimeout(() => {
-            // Find the Attributes section and its Randomize button
-            const attributesSection = document.querySelector('h2, h3, .section-title')?.closest('div') || 
-                                    document.querySelector('[id*="attribute"]') ||
-                                    document.querySelector('.attributes');
-            
-            if (attributesSection) {
-                // Look for the Randomize button
-                const randomizeBtn = attributesSection.querySelector('button:contains("Randomize")') ||
-                                   attributesSection.querySelector('[onclick*="random"]') ||
-                                   attributesSection.querySelector('.btn:contains("Randomize")') ||
-                                   [...attributesSection.querySelectorAll('button')].find(btn => 
-                                       btn.textContent.toLowerCase().includes('randomize'));
-                
-                if (randomizeBtn) {
-                    // Create Clear button with same styling as Randomize
-                    const clearBtn = document.createElement('button');
-                    clearBtn.className = randomizeBtn.className; // Copy exact classes
-                    clearBtn.textContent = '🗑️ Clear';
-                    clearBtn.type = 'button';
-                    
-                    // Copy styling from Randomize button
-                    const randomizeStyle = window.getComputedStyle(randomizeBtn);
-                    clearBtn.style.cssText = `
-                        background: ${randomizeStyle.background};
-                        color: ${randomizeStyle.color};
-                        padding: ${randomizeStyle.padding};
-                        margin: ${randomizeStyle.margin};
-                        border: ${randomizeStyle.border};
-                        border-radius: ${randomizeStyle.borderRadius};
-                        font-size: ${randomizeStyle.fontSize};
-                        font-weight: ${randomizeStyle.fontWeight};
-                        cursor: pointer;
-                        margin-right: 8px;
-                    `;
-                    
-                    // Add Clear functionality
-                    clearBtn.addEventListener('click', () => {
-                        if (window.characterCreator?.attributesManager?.clearAllAttributes) {
-                            window.characterCreator.attributesManager.clearAllAttributes();
-                            this.showNotification('All attributes cleared!', 'info');
-                        } else {
-                            // Fallback: try to reset to d4
-                            this.clearAllAttributesToD4();
-                        }
-                    });
-                    
-                    // Insert Clear button immediately before Randomize button
-                    randomizeBtn.parentNode.insertBefore(clearBtn, randomizeBtn);
-                    
-                    console.log('✅ Clear button added next to Randomize button');
-                } else {
-                    console.warn('⚠️ Could not find Randomize button to add Clear button');
-                }
-            } else {
-                console.warn('⚠️ Could not find Attributes section for Clear button');
-            }
-        }, 300);
-    }
-
-    // Fallback method to clear all attributes to d4
-    clearAllAttributesToD4() {
+    clearAllAttributes() {
         try {
-            const attributeControls = document.querySelectorAll('.attribute-control');
-            
-            // Reset all displayed values to d4
-            attributeControls.forEach(control => {
-                const valueDisplay = control.querySelector('.attribute-value');
-                if (valueDisplay) {
-                    valueDisplay.textContent = 'd4';
-                }
-            });
-            
-            // Try to update character data if available
-            if (window.characterCreator?.characterManager) {
-                const character = window.characterCreator.characterManager.getCharacter();
-                if (character && character.attributes) {
-                    // Reset all attributes to 4 (d4)
-                    Object.keys(character.attributes).forEach(attr => {
-                        character.attributes[attr] = 4;
-                    });
-                    
-                    // Trigger updates
-                    if (window.characterCreator.attributesManager?.updateDisplay) {
-                        window.characterCreator.attributesManager.updateDisplay();
+            // Method 1: Use character manager if available
+            if (window.characterCreator && window.characterCreator.attributesManager) {
+                const attributeNames = ['agility', 'smarts', 'spirit', 'strength', 'vigor'];
+                attributeNames.forEach(attr => {
+                    // Reset to d4 (minimum)
+                    const character = window.characterCreator.characterManager.getCharacter();
+                    if (character && character.attributes) {
+                        character.attributes[attr] = 4; // d4 = 4
                     }
+                });
+                
+                // Refresh the UI
+                if (window.characterCreator.attributesManager.refreshDisplay) {
+                    window.characterCreator.attributesManager.refreshDisplay();
                 }
+                
+                this.showNotification('Attributes cleared!', 'success');
+            } else {
+                // Method 2: Direct UI manipulation fallback
+                const attributeControls = document.querySelectorAll('[data-attribute]');
+                attributeControls.forEach(control => {
+                    const valueElement = control.querySelector('.die-value, .attribute-value');
+                    if (valueElement) {
+                        valueElement.textContent = 'd4';
+                    }
+                });
+                
+                this.showNotification('Attributes reset to d4', 'success');
             }
             
-            this.showNotification('Attributes reset to d4!', 'success');
-            
-            // Update button states
-            setTimeout(() => this.updateAttributeButtonStates(), 100);
-            
+            console.log('🗑️ All attributes cleared');
         } catch (error) {
             console.error('Error clearing attributes:', error);
             this.showNotification('Error clearing attributes', 'error');
         }
     }
 
-    // Utility method to capitalize first letter
-    capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    createAttributeControl(attributeName, currentValue = 4, availablePoints = 5, onIncrement, onDecrement) {
+        const container = document.createElement('div');
+        container.className = 'attribute-control';
+        container.dataset.attribute = attributeName;
+        
+        // Calculate dimensions for half-width
+        container.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: calc(50% - 4px);
+            min-height: 32px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 6px;
+            margin: 2px;
+            font-size: 13px;
+        `;
+
+        // Create dice icon (32px - 200% bigger)
+        const diceIcon = this.createDiceIcon(currentValue);
+        
+        // Create attribute name (capitalized)
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = this.capitalizeFirst(attributeName);
+        nameSpan.style.cssText = `
+            font-weight: 500;
+            margin-left: 8px;
+            flex-grow: 1;
+        `;
+
+        // Create control section: - d6 +
+        const controlsDiv = document.createElement('div');
+        controlsDiv.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        `;
+
+        // Minus button (60% width = 17px)
+        const minusBtn = document.createElement('button');
+        minusBtn.textContent = '-';
+        minusBtn.style.cssText = `
+            width: 17px;
+            height: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        `;
+
+        // Die value display
+        const valueSpan = document.createElement('span');
+        valueSpan.className = 'die-value';
+        valueSpan.textContent = `d${currentValue}`;
+        valueSpan.style.cssText = `
+            min-width: 20px;
+            text-align: center;
+            font-weight: bold;
+        `;
+
+        // Plus button (60% width = 17px)
+        const plusBtn = document.createElement('button');
+        plusBtn.textContent = '+';
+        plusBtn.style.cssText = `
+            width: 17px;
+            height: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        `;
+
+        // Add event listeners
+        minusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`🎯 Decrement clicked for: ${attributeName}`);
+            if (onDecrement) onDecrement(attributeName);
+        });
+
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`🎯 Increment clicked for: ${attributeName}`);
+            if (onIncrement) onIncrement(attributeName);
+        });
+
+        // Assemble the control
+        controlsDiv.appendChild(minusBtn);
+        controlsDiv.appendChild(valueSpan);
+        controlsDiv.appendChild(plusBtn);
+
+        container.appendChild(diceIcon);
+        container.appendChild(nameSpan);
+        container.appendChild(controlsDiv);
+
+        return container;
     }
 
-    loadDiceIcons() {
-        this.diceIcons = {
-            d4: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L3 22H21L12 2Z" fill="currentColor" opacity="0.8"/>
-                <path d="M12 6L6 18H18L12 6Z" fill="currentColor" opacity="0.6"/>
-                <text x="12" y="15" text-anchor="middle" font-size="6" fill="white" font-weight="bold">4</text>
-            </svg>`,
-            d6: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor" opacity="0.8"/>
-                <rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" opacity="0.6"/>
-                <circle cx="8" cy="8" r="1.5" fill="white"/>
-                <circle cx="16" cy="8" r="1.5" fill="white"/>
-                <circle cx="8" cy="12" r="1.5" fill="white"/>
-                <circle cx="16" cy="12" r="1.5" fill="white"/>
-                <circle cx="8" cy="16" r="1.5" fill="white"/>
-                <circle cx="16" cy="16" r="1.5" fill="white"/>
-            </svg>`,
-            d8: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L22 12L12 22L2 12L12 2Z" fill="currentColor" opacity="0.8"/>
-                <path d="M12 4L19 12L12 20L5 12L12 4Z" fill="currentColor" opacity="0.6"/>
-                <text x="12" y="15" text-anchor="middle" font-size="6" fill="white" font-weight="bold">8</text>
-            </svg>`,
-            d10: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L20 8L16 22H8L4 8L12 2Z" fill="currentColor" opacity="0.8"/>
-                <path d="M12 4L18 9L15 20H9L6 9L12 4Z" fill="currentColor" opacity="0.6"/>
-                <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">10</text>
-            </svg>`,
-            d12: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L18 6L22 12L18 18L12 22L6 18L2 12L6 6L12 2Z" fill="currentColor" opacity="0.8"/>
-                <path d="M12 4L16 7L19 12L16 17L12 20L8 17L5 12L8 7L12 4Z" fill="currentColor" opacity="0.6"/>
-                <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">12</text>
-            </svg>`,
-            d20: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L20 7L22 15L12 22L2 15L4 7L12 2Z" fill="currentColor" opacity="0.8"/>
-                <path d="M12 4L18 8L19 14L12 20L5 14L6 8L12 4Z" fill="currentColor" opacity="0.6"/>
-                <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">20</text>
-            </svg>`
+    createDiceIcon(dieValue) {
+        const diceTypes = {
+            4: 'd4', 6: 'd6', 8: 'd8', 
+            10: 'd10', 12: 'd12', 20: 'd20'
         };
+        
+        const diceType = diceTypes[dieValue] || 'd6';
+        
+        // Create SVG dice icon (32px size)
+        const diceContainer = document.createElement('div');
+        diceContainer.style.cssText = `
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #fff 0%, #f0f0f0 100%);
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+        `;
+        
+        diceContainer.textContent = diceType;
+        return diceContainer;
     }
 
-    getDiceIcon(dieType) {
-        const cleanType = dieType.toString().toLowerCase().replace('d', '');
-        return this.diceIcons[`d${cleanType}`] || this.diceIcons.d6;
-    }
+    createAttributePointsDisplay(totalPoints, standardPoints, hindrancePoints, spentPoints) {
+        const container = document.createElement('div');
+        container.className = 'attribute-points-display';
+        container.style.cssText = `
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        `;
 
-    clearElement(element) {
-        try {
-            if (element) {
-                element.innerHTML = '';
-            }
-        } catch (error) {
-            console.error('Error clearing element:', error);
+        // Create first line
+        const firstLine = document.createElement('div');
+        if (hindrancePoints > 0) {
+            firstLine.textContent = `You have ${totalPoints} Attribute points (${standardPoints} standard plus ${hindrancePoints} from Hindrances).`;
+        } else {
+            firstLine.textContent = `You have ${totalPoints} Attribute points.`;
         }
+
+        // Create second line
+        const secondLine = document.createElement('div');
+        secondLine.textContent = `Spent: ${spentPoints} points`;
+        secondLine.style.marginTop = '4px';
+
+        container.appendChild(firstLine);
+        container.appendChild(secondLine);
+
+        // Add update method
+        container.updateDisplay = (newTotal, newStandard, newHindrance, newSpent) => {
+            if (newHindrance > 0) {
+                firstLine.textContent = `You have ${newTotal} Attribute points (${newStandard} standard plus ${newHindrance} from Hindrances).`;
+            } else {
+                firstLine.textContent = `You have ${newTotal} Attribute points.`;
+            }
+            secondLine.textContent = `Spent: ${newSpent} points`;
+        };
+
+        return container;
     }
 
+    capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            max-width: 300px;
+        `;
+
+        const colors = {
+            success: '#28a745',
+            error: '#dc3545',
+            warning: '#ffc107',
+            info: '#17a2b8'
+        };
+
+        notification.style.backgroundColor = colors[type] || colors.info;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // All the other methods remain the same...
     createElement(tagName, className = '', textContent = '') {
-        try {
-            const element = document.createElement(tagName);
-            if (className) {
-                element.className = className;
-            }
-            if (textContent) {
-                element.textContent = textContent;
-            }
-            return element;
-        } catch (error) {
-            console.error('Error creating element:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = textContent || 'Error creating element';
-            return fallback;
-        }
+        const element = document.createElement(tagName);
+        if (className) element.className = className;
+        if (textContent) element.textContent = textContent;
+        return element;
     }
 
-    createSelect(options, className = '', selectedValue = '') {
-        try {
-            const select = document.createElement('select');
-            if (className) {
-                select.className = className;
+    createSelect(options, selectedValue = '', className = '') {
+        const select = document.createElement('select');
+        if (className) select.className = className;
+        
+        options.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option.value || option;
+            optionElement.textContent = option.text || option;
+            if (optionElement.value === selectedValue) {
+                optionElement.selected = true;
             }
-
-            options.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.text;
-                if (option.value === selectedValue) {
-                    optionElement.selected = true;
-                }
-                select.appendChild(optionElement);
-            });
-
-            return select;
-        } catch (error) {
-            console.error('Error creating select:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = 'Error creating select';
-            return fallback;
-        }
-    }
-
-    showNotification(message, type = 'info', duration = 3000) {
-        try {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.textContent = message;
-            
-            notification.style.cssText = `
-                background: ${type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : type === 'error' ? '#f44336' : '#2196F3'};
-                color: white;
-                padding: 12px 16px;
-                margin-bottom: 10px;
-                border-radius: 4px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                opacity: 0;
-                transform: translateX(100%);
-                transition: all 0.3s ease;
-            `;
-
-            this.notificationContainer.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.opacity = '1';
-                notification.style.transform = 'translateX(0)';
-            }, 10);
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, duration);
-
-        } catch (error) {
-            console.error('Error showing notification:', error);
-            alert(message);
-        }
+            select.appendChild(optionElement);
+        });
+        
+        return select;
     }
 
     addClass(element, className) {
-        if (element && element.classList) {
+        if (element && className) {
             element.classList.add(className);
         }
     }
 
     removeClass(element, className) {
-        if (element && element.classList) {
+        if (element && className) {
             element.classList.remove(className);
         }
     }
 
-    setTextContent(element, text) {
-        try {
-            if (element) {
-                element.textContent = text;
+    clearElement(element) {
+        if (element) {
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
             }
-        } catch (error) {
-            console.error('Error setting text content:', error);
+        }
+        console.log('🎯 clearElement called on:', element);
+    }
+
+    setTextContent(element, text) {
+        if (element) {
+            element.textContent = text;
         }
     }
 
@@ -446,343 +441,8 @@ export class UIManager {
     setEnabled(element, enabled) {
         if (element) {
             element.disabled = !enabled;
-            if (enabled) {
-                this.removeClass(element, 'disabled');
-            } else {
-                this.addClass(element, 'disabled');
-            }
+            element.style.opacity = enabled ? '1' : '0.5';
+            element.style.cursor = enabled ? 'pointer' : 'not-allowed';
         }
-    }
-
-    createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
-        try {
-            const container = document.createElement('div');
-            container.className = 'attribute-control';
-
-            const label = document.createElement('span');
-            label.className = 'attribute-label';
-            label.textContent = this.capitalizeFirstLetter(attributeName); // Fixed capitalization
-
-            const valueDisplay = document.createElement('span');
-            valueDisplay.className = 'attribute-value';
-            valueDisplay.textContent = `d${currentValue}`;
-
-            const decrementBtn = document.createElement('button');
-            decrementBtn.className = 'btn btn-small btn-decrement';
-            decrementBtn.textContent = '-';
-            decrementBtn.type = 'button';
-
-            const incrementBtn = document.createElement('button');
-            incrementBtn.className = 'btn btn-small btn-increment';
-            incrementBtn.textContent = '+';
-            incrementBtn.type = 'button';
-
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'attribute-controls';
-            controlsDiv.appendChild(decrementBtn);
-            controlsDiv.appendChild(valueDisplay);
-            controlsDiv.appendChild(incrementBtn);
-
-            container.appendChild(label);
-            container.appendChild(controlsDiv);
-
-            // Enhanced event listeners with smart button state management
-            incrementBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (onIncrement) {
-                    onIncrement();
-                    // Update button states after action
-                    setTimeout(() => this.updateAttributeButtonStates(), 50);
-                }
-            });
-
-            decrementBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (onDecrement) {
-                    onDecrement();
-                    // Update button states after action
-                    setTimeout(() => this.updateAttributeButtonStates(), 50);
-                }
-            });
-
-            return {
-                container: container,
-                incrementBtn: incrementBtn,
-                decrementBtn: decrementBtn,
-                updateValue: function(newValue) {
-                    valueDisplay.textContent = `d${newValue}`;
-                    // Update button states when value changes
-                    setTimeout(() => this.updateAttributeButtonStates(), 50);
-                }.bind(this),
-                setEnabled: function(enabled) {
-                    // Keep the old method for compatibility, but don't use it for both buttons
-                    // Individual button logic will override this
-                }.bind(this)
-            };
-        } catch (error) {
-            console.error('Error creating attribute control:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = `${attributeName}: Error`;
-            return { container: fallback, updateValue: () => {}, setEnabled: () => {} };
-        }
-    }
-
-    // Smart button state management - allows - button even at 0 points
-    updateAttributeButtonStates() {
-        try {
-            // Get character data
-            const character = window.characterCreator?.characterManager?.getCharacter();
-            if (!character) return;
-
-            // Get remaining points
-            const availablePoints = window.characterCreator?.calculationsManager?.getAvailableAttributePoints?.(character);
-            const remainingPoints = availablePoints?.remaining || 0;
-
-            // Update each attribute control
-            const attributeControls = document.querySelectorAll('.attribute-control');
-            
-            attributeControls.forEach(control => {
-                const incrementBtn = control.querySelector('.btn-increment');
-                const decrementBtn = control.querySelector('.btn-decrement');
-                const valueDisplay = control.querySelector('.attribute-value');
-                const label = control.querySelector('.attribute-label');
-                
-                if (incrementBtn && decrementBtn && valueDisplay && label) {
-                    // Extract current value from display (d6 -> 6)
-                    const currentValueText = valueDisplay.textContent.replace('d', '');
-                    const currentValue = parseInt(currentValueText) || 4;
-                    
-                    // Smart increment logic: disabled if no points OR at maximum
-                    const canIncrement = remainingPoints > 0 && currentValue < 12;
-                    incrementBtn.disabled = !canIncrement;
-                    incrementBtn.style.opacity = canIncrement ? '1' : '0.5';
-                    incrementBtn.style.cursor = canIncrement ? 'pointer' : 'not-allowed';
-                    
-                    // Smart decrement logic: disabled ONLY if at minimum (regardless of points)
-                    const canDecrement = currentValue > 4;
-                    decrementBtn.disabled = !canDecrement;
-                    decrementBtn.style.opacity = canDecrement ? '1' : '0.5'; 
-                    decrementBtn.style.cursor = canDecrement ? 'pointer' : 'not-allowed';
-                }
-            });
-            
-            console.log('🎯 Updated button states - remaining points:', remainingPoints);
-        } catch (error) {
-            console.error('Error updating attribute button states:', error);
-        }
-    }
-
-    createSkillControl(skillName, currentValue, linkedAttribute, onIncrement, onDecrement, isCore, isExpensive) {
-        try {
-            const container = document.createElement('div');
-            container.className = `skill-item ${isCore ? 'core-skill' : ''} ${isExpensive ? 'expensive-skill' : ''}`;
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'skill-name';
-            nameSpan.textContent = skillName;
-
-            const attributeSpan = document.createElement('span');
-            attributeSpan.className = 'skill-attribute';
-            attributeSpan.textContent = `(${linkedAttribute})`;
-
-            const valueDisplay = document.createElement('span');
-            valueDisplay.className = 'skill-value';
-            valueDisplay.textContent = this.formatSkillValue(currentValue);
-
-            const decrementBtn = document.createElement('button');
-            decrementBtn.className = 'btn btn-small btn-decrement';
-            decrementBtn.textContent = '-';
-            decrementBtn.type = 'button';
-
-            const incrementBtn = document.createElement('button');
-            incrementBtn.className = 'btn btn-small btn-increment';
-            incrementBtn.textContent = '+';
-            incrementBtn.type = 'button';
-
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'skill-controls';
-            controlsDiv.appendChild(decrementBtn);
-            controlsDiv.appendChild(valueDisplay);
-            controlsDiv.appendChild(incrementBtn);
-
-            const labelDiv = document.createElement('div');
-            labelDiv.className = 'skill-label';
-            labelDiv.appendChild(nameSpan);
-            labelDiv.appendChild(attributeSpan);
-
-            container.appendChild(labelDiv);
-            container.appendChild(controlsDiv);
-
-            incrementBtn.addEventListener('click', () => {
-                if (onIncrement) onIncrement();
-            });
-
-            decrementBtn.addEventListener('click', () => {
-                if (onDecrement) onDecrement();
-            });
-
-            return {
-                container: container,
-                incrementBtn: incrementBtn,
-                decrementBtn: decrementBtn,
-                updateValue: function(newValue) {
-                    valueDisplay.textContent = this.formatSkillValue(newValue);
-                }.bind(this),
-                setEnabled: function(enabled) {
-                    incrementBtn.disabled = !enabled;
-                    decrementBtn.disabled = !enabled;
-                    if (enabled) {
-                        this.removeClass(container, 'disabled');
-                    } else {
-                        this.addClass(container, 'disabled');
-                    }
-                }.bind(this),
-                setExpensive: function(expensive) {
-                    if (expensive) {
-                        this.addClass(container, 'expensive-skill');
-                    } else {
-                        this.removeClass(container, 'expensive-skill');
-                    }
-                }.bind(this)
-            };
-        } catch (error) {
-            console.error('Error creating skill control:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = `${skillName}: Error`;
-            return { container: fallback, updateValue: () => {}, setEnabled: () => {}, setExpensive: () => {} };
-        }
-    }
-
-    formatSkillValue(value) {
-        if (value === 0) {
-            return 'd4-2';
-        } else {
-            return `d${value}`;
-        }
-    }
-
-    createCheckboxItem(name, description, meta, isSelected, isAvailable, onChange) {
-        try {
-            const container = document.createElement('div');
-            container.className = `checkbox-item ${isSelected ? 'selected' : ''} ${!isAvailable ? 'disabled' : ''}`;
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = `checkbox-${name.replace(/\s+/g, '-').toLowerCase()}`;
-            checkbox.checked = isSelected;
-            checkbox.disabled = !isAvailable;
-
-            const label = document.createElement('label');
-            label.htmlFor = checkbox.id;
-            label.className = 'checkbox-label';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'item-name';
-            nameSpan.textContent = name;
-
-            const descSpan = document.createElement('span');
-            descSpan.className = 'item-description';
-            descSpan.textContent = description;
-
-            const metaSpan = document.createElement('span');
-            metaSpan.className = 'item-meta';
-            metaSpan.textContent = meta;
-
-            label.appendChild(nameSpan);
-            label.appendChild(descSpan);
-            if (meta) {
-                label.appendChild(metaSpan);
-            }
-
-            container.appendChild(checkbox);
-            container.appendChild(label);
-
-            checkbox.addEventListener('change', (e) => {
-                if (onChange) {
-                    onChange(e.target.checked);
-                }
-            });
-
-            return {
-                container: container,
-                checkbox: checkbox,
-                setSelected: function(selected) {
-                    checkbox.checked = selected;
-                    if (selected) {
-                        this.addClass(container, 'selected');
-                    } else {
-                        this.removeClass(container, 'selected');
-                    }
-                }.bind(this),
-                setAvailable: function(available) {
-                    checkbox.disabled = !available;
-                    if (available) {
-                        this.removeClass(container, 'disabled');
-                    } else {
-                        this.addClass(container, 'disabled');
-                    }
-                }.bind(this)
-            };
-        } catch (error) {
-            console.error('Error creating checkbox item:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = `${name}: Error`;
-            return { 
-                container: fallback, 
-                checkbox: null,
-                setSelected: () => {}, 
-                setAvailable: () => {} 
-            };
-        }
-    }
-
-    createSkillGridSection(title) {
-        try {
-            const section = document.createElement('div');
-            section.className = 'skill-section';
-
-            const header = document.createElement('h3');
-            header.className = 'skill-section-header';
-            header.textContent = title;
-
-            const container = document.createElement('div');
-            container.className = 'skill-grid';
-
-            section.appendChild(header);
-            section.appendChild(container);
-
-            return {
-                section: section,
-                container: container,
-                title: header
-            };
-        } catch (error) {
-            console.error('Error creating skill grid section:', error);
-            const fallback = document.createElement('div');
-            fallback.textContent = `${title}: Error`;
-            return { section: fallback, container: fallback, title: fallback };
-        }
-    }
-
-    createSkillItem(skillName, linkedAttribute, value, onChange) {
-        return this.createSkillControl(skillName, value, linkedAttribute, 
-            () => onChange(skillName, 1), 
-            () => onChange(skillName, -1), 
-            false, false);
-    }
-
-    // Initialize smart button behavior for existing controls
-    initializeSmartButtons() {
-        // Set up periodic button state updates
-        setInterval(() => {
-            this.updateAttributeButtonStates();
-        }, 1000);
-        
-        // Initial update
-        this.updateAttributeButtonStates();
-        
-        console.log('🎯 Smart button system initialized');
     }
 }
