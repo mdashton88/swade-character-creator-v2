@@ -7,7 +7,7 @@ export class UIManager {
         this.debounceTimers = new Map();
     }
 
-    // Element creation utilities
+    // Element creation utilities - ALWAYS returns a valid DOM element
     createElement(tag, className = '', content = '') {
         const element = document.createElement(tag);
         if (className) element.className = className;
@@ -42,6 +42,7 @@ export class UIManager {
 
     // Clear all child elements
     clearElement(element) {
+        if (!element) return;
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
@@ -188,29 +189,37 @@ export class UIManager {
         }
     }
 
-    // Create checkbox item - FIXED VERSION
+    // Create checkbox item - ROBUST VERSION
     createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
-        const container = this.createElement('div', 'checkbox-item');
+        // Always create valid DOM elements using basic DOM API
+        const container = document.createElement('div');
+        container.className = 'checkbox-item';
         
-        const checkbox = this.createElement('input');
+        const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.id = `${name.toLowerCase().replace(/\s+/g, '-')}-checkbox`;
+        checkbox.id = `${(name || '').toLowerCase().replace(/\s+/g, '-')}-checkbox`;
         checkbox.checked = isSelected;
         checkbox.disabled = !isAvailable;
         
-        const label = this.createElement('label');
+        const label = document.createElement('label');
         label.htmlFor = checkbox.id;
         
-        const nameSpan = this.createElement('span', 'item-name', name);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'item-name';
+        nameSpan.textContent = name || '';
         label.appendChild(nameSpan);
         
         if (description) {
-            const descSpan = this.createElement('span', 'item-description', description);
+            const descSpan = document.createElement('span');
+            descSpan.className = 'item-description';
+            descSpan.textContent = description;
             label.appendChild(descSpan);
         }
         
         if (meta) {
-            const metaSpan = this.createElement('span', 'item-meta', meta);
+            const metaSpan = document.createElement('span');
+            metaSpan.className = 'item-meta';
+            metaSpan.textContent = meta;
             label.appendChild(metaSpan);
         }
         
@@ -221,25 +230,29 @@ export class UIManager {
             container.classList.add('unavailable');
         }
         
-        if (onChange) {
-            checkbox.addEventListener('change', (e) => onChange(e.target.checked));
+        if (onChange && typeof onChange === 'function') {
+            checkbox.addEventListener('change', (e) => {
+                onChange(e.target.checked);
+            });
         }
         
-        // Return an object with the expected properties
+        // Return an object with the expected properties - guaranteed to have valid DOM elements
         return {
             container: container,
             checkbox: checkbox,
             
             setSelected: function(selected) {
-                checkbox.checked = selected;
+                if (checkbox) checkbox.checked = selected;
             },
             
             setAvailable: function(available) {
-                checkbox.disabled = !available;
-                if (!available) {
-                    container.classList.add('unavailable');
-                } else {
-                    container.classList.remove('unavailable');
+                if (checkbox) checkbox.disabled = !available;
+                if (container) {
+                    if (!available) {
+                        container.classList.add('unavailable');
+                    } else {
+                        container.classList.remove('unavailable');
+                    }
                 }
             }
         };
@@ -379,91 +392,6 @@ export class UIManager {
     formatSkillValue(value) {
         if (value === 0 || !value) return 'd4-2';
         return `d${value}`;
-    }
-
-    // Create skill grid section
-    createSkillGridSection(title) {
-        const section = document.createElement('div');
-        section.className = 'skill-section';
-        
-        const header = document.createElement('h4');
-        header.className = 'skill-section-header';
-        header.textContent = title;
-        
-        const grid = document.createElement('div');
-        grid.className = 'skill-grid';
-        
-        section.appendChild(header);
-        section.appendChild(grid);
-        
-        return {
-            section: section,
-            grid: grid,
-            title: header,
-            
-            addSkill: function(skillElement) {
-                grid.appendChild(skillElement);
-            },
-            
-            clear: function() {
-                grid.innerHTML = '';
-            }
-        };
-    }
-    
-    // Create skill item
-    createSkillItem(skillName, linkedAttribute, value, onChange) {
-        const container = document.createElement('div');
-        container.className = 'skill-item';
-        
-        const nameLabel = document.createElement('label');
-        nameLabel.className = 'skill-name';
-        nameLabel.textContent = skillName;
-        
-        const linkedLabel = document.createElement('span');
-        linkedLabel.className = 'skill-linked';
-        linkedLabel.textContent = `(${linkedAttribute})`;
-        
-        const valueDisplay = document.createElement('span');
-        valueDisplay.className = 'skill-value';
-        valueDisplay.textContent = value || 'd4-2';
-        
-        const controls = document.createElement('div');
-        controls.className = 'skill-controls';
-        
-        const decreaseBtn = document.createElement('button');
-        decreaseBtn.className = 'skill-btn decrease';
-        decreaseBtn.textContent = '-';
-        decreaseBtn.onclick = () => onChange(skillName, -1);
-        
-        const increaseBtn = document.createElement('button');
-        increaseBtn.className = 'skill-btn increase';
-        increaseBtn.textContent = '+';
-        increaseBtn.onclick = () => onChange(skillName, 1);
-        
-        controls.appendChild(decreaseBtn);
-        controls.appendChild(valueDisplay);
-        controls.appendChild(increaseBtn);
-        
-        container.appendChild(nameLabel);
-        container.appendChild(linkedLabel);
-        container.appendChild(controls);
-        
-        return {
-            container: container,
-            valueDisplay: valueDisplay,
-            decreaseBtn: decreaseBtn,
-            increaseBtn: increaseBtn,
-            
-            updateValue: function(newValue) {
-                valueDisplay.textContent = newValue || 'd4-2';
-            },
-            
-            setEnabled: function(canIncrease, canDecrease) {
-                increaseBtn.disabled = !canIncrease;
-                decreaseBtn.disabled = !canDecrease;
-            }
-        };
     }
 
     // Create collapsible section
