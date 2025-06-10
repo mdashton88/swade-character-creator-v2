@@ -117,7 +117,7 @@ export class UIManager {
         }
     }
 
-    // Utility methods for adding/removing CSS classes
+    // Utility methods for DOM manipulation
     addClass(element, className) {
         if (element && element.classList) {
             element.classList.add(className);
@@ -127,6 +127,53 @@ export class UIManager {
     removeClass(element, className) {
         if (element && element.classList) {
             element.classList.remove(className);
+        }
+    }
+
+    // Clear element contents
+    clearElement(element) {
+        try {
+            if (element) {
+                element.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('Error clearing element:', error);
+        }
+    }
+
+    // Set element text content
+    setTextContent(element, text) {
+        try {
+            if (element) {
+                element.textContent = text;
+            }
+        } catch (error) {
+            console.error('Error setting text content:', error);
+        }
+    }
+
+    // Show/hide elements
+    showElement(element) {
+        if (element) {
+            element.style.display = '';
+        }
+    }
+
+    hideElement(element) {
+        if (element) {
+            element.style.display = 'none';
+        }
+    }
+
+    // Set element enabled/disabled state
+    setEnabled(element, enabled) {
+        if (element) {
+            element.disabled = !enabled;
+            if (enabled) {
+                this.removeClass(element, 'disabled');
+            } else {
+                this.addClass(element, 'disabled');
+            }
         }
     }
 
