@@ -3,7 +3,7 @@
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0028";
+        this.VERSION = "V1.0029";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
@@ -559,5 +559,142 @@ export class UIManager {
             element.style.opacity = enabled ? '1' : '0.5';
             element.style.cursor = enabled ? 'pointer' : 'not-allowed';
         }
+    }
+
+    createSkillControl(skillName, currentValue = 0, linkedAttribute = 'agility', onIncrement, onDecrement) {
+        const container = document.createElement('div');
+        container.className = 'skill-control';
+        container.dataset.skill = skillName;
+        
+        container.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 4px 0;
+            font-size: 14px;
+        `;
+
+        // Skill name
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = this.capitalizeFirst(skillName);
+        nameSpan.style.cssText = `
+            font-weight: 500;
+            flex-grow: 1;
+            min-width: 120px;
+        `;
+
+        // Linked attribute display
+        const attributeSpan = document.createElement('span');
+        attributeSpan.textContent = `(${this.capitalizeFirst(linkedAttribute)})`;
+        attributeSpan.style.cssText = `
+            color: #666;
+            font-size: 12px;
+            margin-right: 8px;
+        `;
+
+        // Control section: - d6 +
+        const controlsDiv = document.createElement('div');
+        controlsDiv.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        `;
+
+        // Minus button
+        const minusBtn = document.createElement('button');
+        minusBtn.textContent = '-';
+        minusBtn.style.cssText = `
+            width: 20px;
+            height: 24px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        `;
+
+        // Skill value display
+        const valueSpan = document.createElement('span');
+        valueSpan.className = 'skill-value';
+        if (currentValue === 0) {
+            valueSpan.textContent = '—';
+        } else {
+            valueSpan.textContent = `d${currentValue}`;
+        }
+        valueSpan.style.cssText = `
+            min-width: 25px;
+            text-align: center;
+            font-weight: bold;
+        `;
+
+        // Plus button
+        const plusBtn = document.createElement('button');
+        plusBtn.textContent = '+';
+        plusBtn.style.cssText = `
+            width: 20px;
+            height: 24px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        `;
+
+        // Add event listeners
+        minusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`🎯 Skill decrement clicked for: ${skillName}`);
+            if (onDecrement) onDecrement(skillName);
+        });
+
+        plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`🎯 Skill increment clicked for: ${skillName}`);
+            if (onIncrement) onIncrement(skillName);
+        });
+
+        // Assemble the control
+        controlsDiv.appendChild(minusBtn);
+        controlsDiv.appendChild(valueSpan);
+        controlsDiv.appendChild(plusBtn);
+
+        container.appendChild(nameSpan);
+        container.appendChild(attributeSpan);
+        container.appendChild(controlsDiv);
+
+        // Add required methods
+        container.updateValue = (newValue) => {
+            if (newValue === 0) {
+                valueSpan.textContent = '—';
+            } else {
+                valueSpan.textContent = `d${newValue}`;
+            }
+            console.log(`🎯 Updated ${skillName} to ${newValue === 0 ? 'untrained' : 'd' + newValue}`);
+        };
+
+        container.getValue = () => {
+            if (valueSpan.textContent === '—') return 0;
+            const match = valueSpan.textContent.match(/d(\d+)/);
+            return match ? parseInt(match[1]) : 0;
+        };
+
+        container.setEnabled = (enabled) => {
+            minusBtn.disabled = !enabled;
+            plusBtn.disabled = !enabled;
+            minusBtn.style.opacity = enabled ? '1' : '0.5';
+            plusBtn.style.opacity = enabled ? '1' : '0.5';
+        };
+
+        return container;
     }
 }
