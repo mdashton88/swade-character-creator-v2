@@ -1029,3 +1029,201 @@ input[readonly] {
         font-size: 12px;
     }
 }
+
+
+/* ===== CLICKABLE EDGE/HINDRANCE CONTAINERS (No Checkboxes) ===== */
+
+.checkbox-item {
+    border: 2px solid #8b4513;
+    border-radius: 6px;
+    margin: 8px 0;
+    padding: 12px;
+    background: #f5f5dc;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none; /* Prevent text selection when clicking */
+}
+
+/* Hover effect for available items */
+.checkbox-item:not(.unavailable):hover {
+    background: #f0e68c;
+    border-color: #b8860b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+/* Selected state */
+.checkbox-item.selected {
+    background: #daa520;
+    border-color: #b8860b;
+    box-shadow: 0 0 8px rgba(218, 165, 32, 0.3);
+}
+
+.checkbox-item.selected:hover {
+    background: #d4af37;
+}
+
+/* Unavailable state */
+.checkbox-item.unavailable {
+    background: #f5f5f5;
+    border-color: #ccc;
+    color: #888;
+    opacity: 0.6;
+}
+
+/* Content layout */
+.checkbox-content {
+    width: 100%;
+}
+
+.checkbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.checkbox-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #8b4513;
+    flex-grow: 1;
+}
+
+.checkbox-item.selected .checkbox-name {
+    color: #fff;
+}
+
+.checkbox-item.unavailable .checkbox-name {
+    color: #999;
+}
+
+/* Selection indicator (replaces checkbox) */
+.selection-indicator {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #8b4513;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #8b4513;
+    flex-shrink: 0;
+    margin-left: 10px;
+    transition: all 0.2s ease;
+}
+
+.checkbox-item.selected .selection-indicator {
+    background: #8b4513;
+    color: #fff;
+    border-color: #fff;
+}
+
+.checkbox-item.unavailable .selection-indicator {
+    border-color: #ccc;
+    background: #f5f5f5;
+    color: #ccc;
+}
+
+/* Description styling */
+.checkbox-description {
+    font-size: 0.95em;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #333;
+}
+
+.checkbox-item.selected .checkbox-description {
+    color: #fff;
+}
+
+.checkbox-item.unavailable .checkbox-description {
+    color: #888;
+}
+
+/* Meta information */
+.checkbox-meta {
+    font-size: 0.85em;
+    color: #666;
+    font-style: italic;
+    margin-top: 6px;
+    border-top: 1px solid rgba(139, 69, 19, 0.2);
+    padding-top: 6px;
+}
+
+.checkbox-item.selected .checkbox-meta {
+    color: rgba(255, 255, 255, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.3);
+}
+
+.checkbox-item.unavailable .checkbox-meta {
+    color: #aaa;
+    border-top-color: #ddd;
+}
+
+/* Special states */
+.checkbox-item.requirements-not-met {
+    border-color: #dc3545;
+    background: #f8d7da;
+}
+
+.checkbox-item.requirements-not-met .checkbox-meta {
+    color: #721c24;
+}
+
+/* Animation for selection changes */
+.selection-indicator {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkbox-item.selected .selection-indicator {
+    animation: checkmark-appear 0.3s ease-out;
+}
+
+@keyframes checkmark-appear {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .checkbox-item {
+        padding: 10px;
+        margin: 6px 0;
+    }
+    
+    .checkbox-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .selection-indicator {
+        align-self: flex-end;
+        margin-left: 0;
+    }
+}
+
+/* Ensure compatibility with existing styles */
+.checkbox-item .checkbox-title {
+    /* If your existing CSS uses .checkbox-title, redirect to .checkbox-name */
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #8b4513;
+}
+
+.checkbox-item.selected .checkbox-title {
+    color: #fff;
+}
