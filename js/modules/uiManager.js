@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0032
-// Fixed: Added setTitle method for skill tooltips
+// SWADE Character Creator v2 - UIManager Module v1.0033
+// Fixed: Added direct title property for skill controls
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0032";
+        this.VERSION = "V1.0033";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Added setTitle method for skill tooltips!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Added direct title property for skill controls!`);
     }
 
     displayVersion() {
@@ -671,8 +671,9 @@ export class UIManager {
         container.appendChild(controlsDiv);
 
         // Return an object with container property and methods (consistent with AttributesManager expectations)
-        return {
+        const controlObj = {
             container: container,
+            title: '', // Direct title property that SkillsManager can set
             updateValue: (newValue) => {
                 if (newValue === 0) {
                     valueSpan.textContent = '—';
@@ -707,9 +708,12 @@ export class UIManager {
             },
             setTitle: (title) => {
                 // Set tooltip title for skill control
-                container.title = title;
+                controlObj.title = title; // Update the title property
+                container.title = title; // Also set HTML title attribute
                 console.log(`🎯 Skill ${skillName} title set to: ${title}`);
             }
         };
+        
+        return controlObj;
     }
 }
