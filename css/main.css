@@ -310,7 +310,7 @@ input[readonly] {
     font-size: 16px;
     font-weight: 600;
     color: #333;
-    text-transform: capitalize;
+    text-transform: uppercase;
     min-width: 70px;
     text-align: left;
 }
@@ -418,25 +418,33 @@ input[readonly] {
 }
 
 .skill-button {
-    background: #8b0000;
-    color: white;
-    border: none;
-    width: 25px;
-    height: 25px;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #8B0000;
+    background: white;
+    color: #8B0000;
     border-radius: 4px;
-    cursor: pointer;
+    font-size: 18px;
     font-weight: bold;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: 'Crimson Text', serif;
 }
 
 .skill-button:hover {
-    background: #a52a2a;
+    background: #8B0000;
+    color: white;
 }
 
 .skill-button:disabled {
-    background: #cccccc;
+    opacity: 0.4;
     cursor: not-allowed;
+    background: #f5f5f5;
+    color: #ccc;
+    border-color: #ddd;
 }
 
 .skill-value {
