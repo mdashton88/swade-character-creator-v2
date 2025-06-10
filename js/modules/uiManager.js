@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0033
-// Fixed: Added direct title property for skill controls
+// SWADE Character Creator v2 - UIManager Module v1.0034
+// Fixed: Added comprehensive error handling and debugging for skill controls
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0033";
+        this.VERSION = "V1.0034";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Added direct title property for skill controls!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Added comprehensive debugging for skill controls!`);
     }
 
     displayVersion() {
@@ -560,160 +560,187 @@ export class UIManager {
     }
 
     createSkillControl(skillName, currentValue = 0, linkedAttribute = 'agility', onIncrement, onDecrement) {
-        const container = document.createElement('div');
-        container.className = 'skill-control';
-        container.dataset.skill = skillName;
-        
-        container.style.cssText = `
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 8px;
-            margin: 4px 0;
-            font-size: 14px;
-        `;
+        try {
+            console.log(`🎯 Creating skill control for: ${skillName}`);
+            
+            const container = document.createElement('div');
+            container.className = 'skill-control';
+            container.dataset.skill = skillName;
+            
+            container.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 8px;
+                margin: 4px 0;
+                font-size: 14px;
+            `;
 
-        // Skill name
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = this.capitalizeFirst(skillName);
-        nameSpan.style.cssText = `
-            font-weight: 500;
-            flex-grow: 1;
-            min-width: 120px;
-        `;
+            // Skill name
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = this.capitalizeFirst(skillName);
+            nameSpan.style.cssText = `
+                font-weight: 500;
+                flex-grow: 1;
+                min-width: 120px;
+            `;
 
-        // Linked attribute display
-        const attributeSpan = document.createElement('span');
-        attributeSpan.textContent = `(${this.capitalizeFirst(linkedAttribute)})`;
-        attributeSpan.style.cssText = `
-            color: #666;
-            font-size: 12px;
-            margin-right: 8px;
-        `;
+            // Linked attribute display
+            const attributeSpan = document.createElement('span');
+            attributeSpan.textContent = `(${this.capitalizeFirst(linkedAttribute)})`;
+            attributeSpan.style.cssText = `
+                color: #666;
+                font-size: 12px;
+                margin-right: 8px;
+            `;
 
-        // Control section: - d6 +
-        const controlsDiv = document.createElement('div');
-        controlsDiv.style.cssText = `
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        `;
+            // Control section: - d6 +
+            const controlsDiv = document.createElement('div');
+            controlsDiv.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            `;
 
-        // Minus button
-        const minusBtn = document.createElement('button');
-        minusBtn.textContent = '-';
-        minusBtn.style.cssText = `
-            width: 20px;
-            height: 24px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        `;
+            // Minus button
+            const minusBtn = document.createElement('button');
+            minusBtn.textContent = '-';
+            minusBtn.style.cssText = `
+                width: 20px;
+                height: 24px;
+                background: #dc3545;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: bold;
+            `;
 
-        // Skill value display
-        const valueSpan = document.createElement('span');
-        valueSpan.className = 'skill-value';
-        if (currentValue === 0) {
-            valueSpan.textContent = '—';
-        } else {
-            valueSpan.textContent = `d${currentValue}`;
-        }
-        valueSpan.style.cssText = `
-            min-width: 25px;
-            text-align: center;
-            font-weight: bold;
-        `;
-
-        // Plus button
-        const plusBtn = document.createElement('button');
-        plusBtn.textContent = '+';
-        plusBtn.style.cssText = `
-            width: 20px;
-            height: 24px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-        `;
-
-        // Add event listeners
-        minusBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log(`🎯 Skill decrement clicked for: ${skillName}`);
-            if (onDecrement) onDecrement(skillName);
-        });
-
-        plusBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log(`🎯 Skill increment clicked for: ${skillName}`);
-            if (onIncrement) onIncrement(skillName);
-        });
-
-        // Assemble the control
-        controlsDiv.appendChild(minusBtn);
-        controlsDiv.appendChild(valueSpan);
-        controlsDiv.appendChild(plusBtn);
-
-        container.appendChild(nameSpan);
-        container.appendChild(attributeSpan);
-        container.appendChild(controlsDiv);
-
-        // Return an object with container property and methods (consistent with AttributesManager expectations)
-        const controlObj = {
-            container: container,
-            title: '', // Direct title property that SkillsManager can set
-            updateValue: (newValue) => {
-                if (newValue === 0) {
-                    valueSpan.textContent = '—';
-                } else {
-                    valueSpan.textContent = `d${newValue}`;
-                }
-                console.log(`🎯 Updated ${skillName} to ${newValue === 0 ? 'untrained' : 'd' + newValue}`);
-            },
-            getValue: () => {
-                if (valueSpan.textContent === '—') return 0;
-                const match = valueSpan.textContent.match(/d(\d+)/);
-                return match ? parseInt(match[1]) : 0;
-            },
-            setEnabled: (enabled) => {
-                minusBtn.disabled = !enabled;
-                plusBtn.disabled = !enabled;
-                minusBtn.style.opacity = enabled ? '1' : '0.5';
-                plusBtn.style.opacity = enabled ? '1' : '0.5';
-            },
-            setExpensive: (isExpensive) => {
-                // In SWADE, skills above linked attribute cost 2 points instead of 1
-                if (isExpensive) {
-                    container.style.backgroundColor = '#fff3cd'; // Light yellow
-                    container.style.borderColor = '#ffeaa7';
-                    attributeSpan.style.color = '#856404'; // Darker yellow
-                    console.log(`🎯 Skill ${skillName} marked as expensive (2 points per step)`);
-                } else {
-                    container.style.backgroundColor = '#f8f9fa'; // Normal
-                    container.style.borderColor = '#dee2e6';
-                    attributeSpan.style.color = '#666';
-                }
-            },
-            setTitle: (title) => {
-                // Set tooltip title for skill control
-                controlObj.title = title; // Update the title property
-                container.title = title; // Also set HTML title attribute
-                console.log(`🎯 Skill ${skillName} title set to: ${title}`);
+            // Skill value display
+            const valueSpan = document.createElement('span');
+            valueSpan.className = 'skill-value';
+            if (currentValue === 0) {
+                valueSpan.textContent = '—';
+            } else {
+                valueSpan.textContent = `d${currentValue}`;
             }
-        };
-        
-        return controlObj;
+            valueSpan.style.cssText = `
+                min-width: 25px;
+                text-align: center;
+                font-weight: bold;
+            `;
+
+            // Plus button
+            const plusBtn = document.createElement('button');
+            plusBtn.textContent = '+';
+            plusBtn.style.cssText = `
+                width: 20px;
+                height: 24px;
+                background: #28a745;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: bold;
+            `;
+
+            // Add event listeners
+            minusBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`🎯 Skill decrement clicked for: ${skillName}`);
+                if (onDecrement) onDecrement(skillName);
+            });
+
+            plusBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(`🎯 Skill increment clicked for: ${skillName}`);
+                if (onIncrement) onIncrement(skillName);
+            });
+
+            // Assemble the control
+            controlsDiv.appendChild(minusBtn);
+            controlsDiv.appendChild(valueSpan);
+            controlsDiv.appendChild(plusBtn);
+
+            container.appendChild(nameSpan);
+            container.appendChild(attributeSpan);
+            container.appendChild(controlsDiv);
+
+            // Return an object with container property and methods (consistent with AttributesManager expectations)
+            const controlObj = {
+                container: container,
+                title: '', // Direct title property that SkillsManager can set
+                updateValue: (newValue) => {
+                    if (newValue === 0) {
+                        valueSpan.textContent = '—';
+                    } else {
+                        valueSpan.textContent = `d${newValue}`;
+                    }
+                    console.log(`🎯 Updated ${skillName} to ${newValue === 0 ? 'untrained' : 'd' + newValue}`);
+                },
+                getValue: () => {
+                    if (valueSpan.textContent === '—') return 0;
+                    const match = valueSpan.textContent.match(/d(\d+)/);
+                    return match ? parseInt(match[1]) : 0;
+                },
+                setEnabled: (enabled) => {
+                    minusBtn.disabled = !enabled;
+                    plusBtn.disabled = !enabled;
+                    minusBtn.style.opacity = enabled ? '1' : '0.5';
+                    plusBtn.style.opacity = enabled ? '1' : '0.5';
+                },
+                setExpensive: (isExpensive) => {
+                    // In SWADE, skills above linked attribute cost 2 points instead of 1
+                    if (isExpensive) {
+                        container.style.backgroundColor = '#fff3cd'; // Light yellow
+                        container.style.borderColor = '#ffeaa7';
+                        attributeSpan.style.color = '#856404'; // Darker yellow
+                        console.log(`🎯 Skill ${skillName} marked as expensive (2 points per step)`);
+                    } else {
+                        container.style.backgroundColor = '#f8f9fa'; // Normal
+                        container.style.borderColor = '#dee2e6';
+                        attributeSpan.style.color = '#666';
+                    }
+                },
+                setTitle: (title) => {
+                    // Set tooltip title for skill control
+                    controlObj.title = title; // Update the title property
+                    container.title = title; // Also set HTML title attribute
+                    console.log(`🎯 Skill ${skillName} title set to: ${title}`);
+                }
+            };
+            
+            // Ensure all required properties exist
+            Object.defineProperty(controlObj, 'title', {
+                value: '',
+                writable: true,
+                enumerable: true,
+                configurable: true
+            });
+            
+            console.log(`✅ Successfully created skill control for: ${skillName}`, controlObj);
+            return controlObj;
+            
+        } catch (error) {
+            console.error(`❌ Error creating skill control for ${skillName}:`, error);
+            
+            // Return a minimal fallback object to prevent undefined errors
+            return {
+                container: document.createElement('div'),
+                title: '',
+                updateValue: () => console.log(`Fallback updateValue for ${skillName}`),
+                getValue: () => 0,
+                setEnabled: () => console.log(`Fallback setEnabled for ${skillName}`),
+                setExpensive: () => console.log(`Fallback setExpensive for ${skillName}`),
+                setTitle: (title) => console.log(`Fallback setTitle for ${skillName}: ${title}`)
+            };
+        }
     }
 }
