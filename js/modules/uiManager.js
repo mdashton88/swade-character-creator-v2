@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0030
-// Fixed: Controls now return {container, methods} object structure
+// SWADE Character Creator v2 - UIManager Module v1.0031
+// Fixed: Added setExpensive method for SkillsManager
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0030";
+        this.VERSION = "V1.0031";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Fixed control object structure!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Added setExpensive method for skills!`);
     }
 
     displayVersion() {
@@ -691,6 +691,19 @@ export class UIManager {
                 plusBtn.disabled = !enabled;
                 minusBtn.style.opacity = enabled ? '1' : '0.5';
                 plusBtn.style.opacity = enabled ? '1' : '0.5';
+            },
+            setExpensive: (isExpensive) => {
+                // In SWADE, skills above linked attribute cost 2 points instead of 1
+                if (isExpensive) {
+                    container.style.backgroundColor = '#fff3cd'; // Light yellow
+                    container.style.borderColor = '#ffeaa7';
+                    attributeSpan.style.color = '#856404'; // Darker yellow
+                    console.log(`🎯 Skill ${skillName} marked as expensive (2 points per step)`);
+                } else {
+                    container.style.backgroundColor = '#f8f9fa'; // Normal
+                    container.style.borderColor = '#dee2e6';
+                    attributeSpan.style.color = '#666';
+                }
             }
         };
     }
