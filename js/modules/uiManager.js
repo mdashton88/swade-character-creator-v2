@@ -1,5 +1,5 @@
 // SWADE Character Creator v2 - UIManager Module v1.0045
-// Final version - Complete DOM utilities + robust data handling + setSelected method + setAvailable method
+// Final version - Complete DOM utilities + robust data handling + setSelected method + setAvailable method + createSelect method
 
 export class UIManager {
     constructor() {
@@ -393,16 +393,8 @@ export class UIManager {
         }
     }
 
-    /**
-     * Creates a select dropdown element with options - THE MISSING METHOD!
-     * @param {string} id - The ID for the select element
-     * @param {Array} options - Array of option objects with {value, text} properties
-     * @param {string} defaultValue - Default selected value (optional)
-     * @param {string} className - CSS class to apply (optional)
-     * @returns {HTMLSelectElement} The created select element
-     */
     createSelect(id, options = [], defaultValue = '', className = '') {
-        console.log(`🔧 createSelect called: ${id}`);
+        console.log(`🔧 createSelect called: ${id} with ${options.length} options`);
         
         try {
             // Create the select element
@@ -413,7 +405,7 @@ export class UIManager {
                 select.className = className;
             }
             
-            // Add default styling to match your UI theme
+            // Add default styling to match your SWADE theme
             select.style.cssText = `
                 padding: 5px 8px;
                 margin: 5px;
@@ -424,15 +416,32 @@ export class UIManager {
                 font-family: 'Crimson Text', serif;
                 font-size: 14px;
                 cursor: pointer;
+                min-width: 150px;
             `;
+            
+            // Add default "All" option if no default provided
+            if (!defaultValue && options.length > 0) {
+                const allOption = document.createElement('option');
+                allOption.value = '';
+                allOption.textContent = 'All';
+                allOption.selected = true;
+                select.appendChild(allOption);
+            }
             
             // Add options
             options.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option.value;
-                optionElement.textContent = option.text || option.label || option.value;
                 
-                if (option.value === defaultValue) {
+                // Handle different option formats
+                if (typeof option === 'string') {
+                    optionElement.value = option;
+                    optionElement.textContent = option;
+                } else {
+                    optionElement.value = option.value || option.key || option.id || '';
+                    optionElement.textContent = option.text || option.label || option.name || option.value || '';
+                }
+                
+                if (optionElement.value === defaultValue) {
                     optionElement.selected = true;
                 }
                 
@@ -448,6 +457,13 @@ export class UIManager {
             // Return a fallback empty select
             const fallbackSelect = document.createElement('select');
             fallbackSelect.id = id;
+            fallbackSelect.style.cssText = `
+                padding: 5px 8px;
+                margin: 5px;
+                border: 1px solid #8B0000;
+                border-radius: 3px;
+                background: white;
+            `;
             return fallbackSelect;
         }
     }
