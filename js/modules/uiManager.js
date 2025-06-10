@@ -284,48 +284,84 @@ export class UIManager {
         };
     }
 
-    // Create skill control
-    createSkillControl(skill, value, onChange) {
-        // Create container using basic DOM methods
+    // Create skill control - CORRECTED VERSION
+    createSkillControl(skillName, currentValue, linkedAttribute, onIncrement, onDecrement, isCore, isExpensive) {
+        // Create the main container
         const container = document.createElement('div');
         container.className = 'skill-control';
+        if (isCore) container.classList.add('core-skill');
+        if (isExpensive) container.classList.add('expensive-skill');
         
-        // Create label
-        const label = document.createElement('label');
-        label.className = 'skill-label';
-        label.textContent = skill;
+        // Create skill name label
+        const nameLabel = document.createElement('label');
+        nameLabel.className = 'skill-name';
+        nameLabel.textContent = skillName;
+        
+        // Create linked attribute label
+        const linkedLabel = document.createElement('span');
+        linkedLabel.className = 'skill-linked';
+        linkedLabel.textContent = `(${linkedAttribute})`;
         
         // Create control group
         const controlGroup = document.createElement('div');
         controlGroup.className = 'control-group';
         
         // Create decrease button
-        const decreaseBtn = document.createElement('button');
-        decreaseBtn.className = 'skill-btn decrease';
-        decreaseBtn.textContent = '-';
-        decreaseBtn.onclick = () => onChange(skill, -1);
+        const decrementBtn = document.createElement('button');
+        decrementBtn.className = 'skill-btn decrease';
+        decrementBtn.textContent = '-';
+        decrementBtn.onclick = onDecrement;
         
         // Create value display
         const valueDisplay = document.createElement('span');
         valueDisplay.className = 'skill-value';
-        valueDisplay.textContent = value;
+        valueDisplay.textContent = this.formatSkillValue(currentValue);
         
         // Create increase button
-        const increaseBtn = document.createElement('button');
-        increaseBtn.className = 'skill-btn increase';
-        increaseBtn.textContent = '+';
-        increaseBtn.onclick = () => onChange(skill, 1);
+        const incrementBtn = document.createElement('button');
+        incrementBtn.className = 'skill-btn increase';
+        incrementBtn.textContent = '+';
+        incrementBtn.onclick = onIncrement;
         
         // Assemble control group
-        controlGroup.appendChild(decreaseBtn);
+        controlGroup.appendChild(decrementBtn);
         controlGroup.appendChild(valueDisplay);
-        controlGroup.appendChild(increaseBtn);
+        controlGroup.appendChild(incrementBtn);
         
         // Assemble container
-        container.appendChild(label);
+        container.appendChild(nameLabel);
+        container.appendChild(linkedLabel);
         container.appendChild(controlGroup);
         
-        return container;
+        // Return an object with the expected properties and methods
+        return {
+            container: container,
+            incrementBtn: incrementBtn,
+            decrementBtn: decrementBtn,
+            
+            updateValue: function(newValue) {
+                valueDisplay.textContent = this.formatSkillValue(newValue);
+            }.bind(this),
+            
+            setEnabled: function(canIncrement, canDecrement) {
+                incrementBtn.disabled = !canIncrement;
+                decrementBtn.disabled = !canDecrement;
+            },
+            
+            setExpensive: function(isExpensive) {
+                if (isExpensive) {
+                    container.classList.add('expensive-skill');
+                } else {
+                    container.classList.remove('expensive-skill');
+                }
+            }
+        };
+    }
+
+    // Helper method to format skill values
+    formatSkillValue(value) {
+        if (value === 0 || !value) return 'd4-2';
+        return `d${value}`;
     }
 
     // Create skill grid section
