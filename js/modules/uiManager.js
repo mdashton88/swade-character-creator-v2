@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0028
-// Emergency fix: Patch existing controls instead of creating new ones
+// SWADE Character Creator v2 - UIManager Module v1.0030
+// Fixed: Controls now return {container, methods} object structure
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0029";
+        this.VERSION = "V1.0030";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Existing controls patched!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Fixed control object structure!`);
     }
 
     displayVersion() {
@@ -359,29 +359,27 @@ export class UIManager {
         container.appendChild(nameSpan);
         container.appendChild(controlsDiv);
 
-        // Add required updateValue method that AttributesManager expects
-        container.updateValue = (newValue) => {
-            valueSpan.textContent = `d${newValue}`;
-            // Update dice icon
-            const newDiceIcon = this.createDiceIcon(newValue);
-            container.replaceChild(newDiceIcon, diceIcon);
-            console.log(`🎯 Updated ${attributeName} to d${newValue}`);
+        // Return an object with container property and methods (what AttributesManager expects)
+        return {
+            container: container,
+            updateValue: (newValue) => {
+                valueSpan.textContent = `d${newValue}`;
+                // Update dice icon
+                const newDiceIcon = this.createDiceIcon(newValue);
+                container.replaceChild(newDiceIcon, diceIcon);
+                console.log(`🎯 Updated ${attributeName} to d${newValue}`);
+            },
+            getValue: () => {
+                const match = valueSpan.textContent.match(/d(\d+)/);
+                return match ? parseInt(match[1]) : 4;
+            },
+            setEnabled: (enabled) => {
+                minusBtn.disabled = !enabled;
+                plusBtn.disabled = !enabled;
+                minusBtn.style.opacity = enabled ? '1' : '0.5';
+                plusBtn.style.opacity = enabled ? '1' : '0.5';
+            }
         };
-
-        // Add other methods AttributesManager might expect
-        container.getValue = () => {
-            const match = valueSpan.textContent.match(/d(\d+)/);
-            return match ? parseInt(match[1]) : 4;
-        };
-
-        container.setEnabled = (enabled) => {
-            minusBtn.disabled = !enabled;
-            plusBtn.disabled = !enabled;
-            minusBtn.style.opacity = enabled ? '1' : '0.5';
-            plusBtn.style.opacity = enabled ? '1' : '0.5';
-        };
-
-        return container;
     }
 
     createDiceIcon(dieValue) {
@@ -672,29 +670,28 @@ export class UIManager {
         container.appendChild(attributeSpan);
         container.appendChild(controlsDiv);
 
-        // Add required methods
-        container.updateValue = (newValue) => {
-            if (newValue === 0) {
-                valueSpan.textContent = '—';
-            } else {
-                valueSpan.textContent = `d${newValue}`;
+        // Return an object with container property and methods (consistent with AttributesManager expectations)
+        return {
+            container: container,
+            updateValue: (newValue) => {
+                if (newValue === 0) {
+                    valueSpan.textContent = '—';
+                } else {
+                    valueSpan.textContent = `d${newValue}`;
+                }
+                console.log(`🎯 Updated ${skillName} to ${newValue === 0 ? 'untrained' : 'd' + newValue}`);
+            },
+            getValue: () => {
+                if (valueSpan.textContent === '—') return 0;
+                const match = valueSpan.textContent.match(/d(\d+)/);
+                return match ? parseInt(match[1]) : 0;
+            },
+            setEnabled: (enabled) => {
+                minusBtn.disabled = !enabled;
+                plusBtn.disabled = !enabled;
+                minusBtn.style.opacity = enabled ? '1' : '0.5';
+                plusBtn.style.opacity = enabled ? '1' : '0.5';
             }
-            console.log(`🎯 Updated ${skillName} to ${newValue === 0 ? 'untrained' : 'd' + newValue}`);
         };
-
-        container.getValue = () => {
-            if (valueSpan.textContent === '—') return 0;
-            const match = valueSpan.textContent.match(/d(\d+)/);
-            return match ? parseInt(match[1]) : 0;
-        };
-
-        container.setEnabled = (enabled) => {
-            minusBtn.disabled = !enabled;
-            plusBtn.disabled = !enabled;
-            minusBtn.style.opacity = enabled ? '1' : '0.5';
-            plusBtn.style.opacity = enabled ? '1' : '0.5';
-        };
-
-        return container;
     }
 }
