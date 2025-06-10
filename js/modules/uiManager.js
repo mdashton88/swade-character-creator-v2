@@ -15,615 +15,391 @@ export class UIManager {
         return element;
     }
 
-    createButton(text, className = 'action-button', onClick = null) {
+    createButton(text, className = '', onClick = null) {
         const button = this.createElement('button', className, text);
         if (onClick) button.addEventListener('click', onClick);
         return button;
     }
 
-    createInput(type = 'text', className = '', placeholder = '') {
-        const input = document.createElement('input');
+    createInput(type, className = '', placeholder = '') {
+        const input = this.createElement('input', className);
         input.type = type;
-        if (className) input.className = className;
         if (placeholder) input.placeholder = placeholder;
         return input;
     }
 
-    createSelect(options = [], className = '', defaultValue = '') {
-        const select = document.createElement('select');
-        if (className) select.className = className;
-        
+    createSelect(options, className = '', onChange = null) {
+        const select = this.createElement('select', className);
         options.forEach(option => {
-            const optElement = document.createElement('option');
-            optElement.value = option.value || option;
-            optElement.textContent = option.text || option;
-            if (option.value === defaultValue || option === defaultValue) {
-                optElement.selected = true;
-            }
-            select.appendChild(optElement);
+            const optionElement = this.createElement('option');
+            optionElement.value = option.value;
+            optionElement.textContent = option.text;
+            select.appendChild(optionElement);
         });
-        
+        if (onChange) select.addEventListener('change', onChange);
         return select;
     }
 
-    // DOM manipulation utilities
+    // Clear all child elements
     clearElement(element) {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
     }
 
-    appendChildren(parent, children) {
-        children.forEach(child => {
-            if (child) parent.appendChild(child);
-        });
-    }
-
-    setElementContent(elementId, content) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            if (typeof content === 'string') {
-                element.innerHTML = content;
-            } else {
-                this.clearElement(element);
-                element.appendChild(content);
-            }
-        }
-    }
-
-    setElementText(elementId, text) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            element.textContent = text;
-        }
-    }
-
-    // CSS class utilities
-    addClass(element, className) {
-        if (element && className) {
-            element.classList.add(className);
-        }
-    }
-
-    removeClass(element, className) {
-        if (element && className) {
-            element.classList.remove(className);
-        }
-    }
-
-    toggleClass(element, className) {
-        if (element && className) {
-            element.classList.toggle(className);
-        }
-    }
-
-    hasClass(element, className) {
-        return element && element.classList.contains(className);
-    }
-
-    // Show/hide utilities
-    show(element) {
-        if (element) {
-            element.style.display = '';
-            this.removeClass(element, 'hidden');
-        }
-    }
-
-    hide(element) {
-        if (element) {
-            element.style.display = 'none';
-            this.addClass(element, 'hidden');
-        }
-    }
-
-    toggle(element) {
-        if (element) {
-            if (element.style.display === 'none' || this.hasClass(element, 'hidden')) {
-                this.show(element);
-            } else {
-                this.hide(element);
-            }
-        }
-    }
-
-    // Attribute/skill control creators
-    createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
-        const container = this.createElement('div', 'attribute-item');
-        
-        const label = this.createElement('div', 'attribute-label', 
-            attributeName.charAt(0).toUpperCase() + attributeName.slice(1));
-        
-        const controls = this.createElement('div', 'attribute-controls');
-        
-        const decrementBtn = this.createButton('-', 'attr-button', onDecrement);
-        const valueDisplay = this.createElement('div', 'attribute-value', `d${currentValue}`);
-        const incrementBtn = this.createButton('+', 'attr-button', onIncrement);
-        
-        this.appendChildren(controls, [decrementBtn, valueDisplay, incrementBtn]);
-        this.appendChildren(container, [label, controls]);
-        
-        return {
-            container,
-            decrementBtn,
-            incrementBtn,
-            valueDisplay,
-            updateValue: (newValue) => {
-                valueDisplay.textContent = `d${newValue}`;
-            },
-            setEnabled: (increment, decrement) => {
-                incrementBtn.disabled = !increment;
-                decrementBtn.disabled = !decrement;
-            }
-        };
-    }
-
-    createSkillControl(skillName, currentValue, linkedAttribute, onIncrement, onDecrement, isCore = false, isExpensive = false) {
-        const container = this.createElement('div', 'skill-item');
-        
-        if (isCore) this.addClass(container, 'core-skill');
-        if (isExpensive) this.addClass(container, 'expensive');
-        
-        const labelContainer = this.createElement('div', 'skill-label');
-        const nameSpan = this.createElement('span', '', skillName);
-        const attrSpan = this.createElement('small', 'text-muted', ` (${linkedAttribute})`);
-        
-        this.appendChildren(labelContainer, [nameSpan, attrSpan]);
-        
-        const controls = this.createElement('div', 'skill-controls');
-        
-        const decrementBtn = this.createButton('-', 'skill-button', onDecrement);
-        const valueDisplay = this.createElement('div', 'skill-value', 
-            currentValue > 0 ? `d${currentValue}` : '—');
-        const incrementBtn = this.createButton('+', 'skill-button', onIncrement);
-        
-        this.appendChildren(controls, [decrementBtn, valueDisplay, incrementBtn]);
-        this.appendChildren(container, [labelContainer, controls]);
-        
-        return {
-            container,
-            decrementBtn,
-            incrementBtn,
-            valueDisplay,
-            updateValue: (newValue) => {
-                valueDisplay.textContent = newValue > 0 ? `d${newValue}` : '—';
-            },
-            setEnabled: (increment, decrement) => {
-                incrementBtn.disabled = !increment;
-                decrementBtn.disabled = !decrement;
-            },
-            setExpensive: (expensive) => {
-                if (expensive) {
-                    this.addClass(container, 'expensive');
-                } else {
-                    this.removeClass(container, 'expensive');
-                }
-            }
-        };
-    }
-
-    // UPDATED: No more checkboxes - clickable containers instead
-    createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
-        // Create the main container
-        const container = this.createElement('div', 'checkbox-item');
-        
-        // Add state classes
-        if (isSelected) {
-            this.addClass(container, 'selected');
+    // Debounce utility
+    debounce(func, wait, id) {
+        if (this.debounceTimers.has(id)) {
+            clearTimeout(this.debounceTimers.get(id));
         }
         
-        if (!isAvailable) {
-            this.addClass(container, 'unavailable');
-        }
+        const timeout = setTimeout(() => {
+            func();
+            this.debounceTimers.delete(id);
+        }, wait);
         
-        // Create content structure
-        const contentDiv = this.createElement('div', 'checkbox-content');
-        
-        // Create header with name
-        const headerDiv = this.createElement('div', 'checkbox-header');
-        const nameSpan = this.createElement('span', 'checkbox-name', name);
-        headerDiv.appendChild(nameSpan);
-        
-        // Add selection indicator (visual replacement for checkbox)
-        const indicator = this.createElement('div', 'selection-indicator');
-        indicator.innerHTML = isSelected ? '✓' : '';
-        headerDiv.appendChild(indicator);
-        
-        // Create description
-        const descDiv = this.createElement('div', 'checkbox-description', description);
-        
-        // Create meta info
-        let metaDiv = null;
-        if (meta) {
-            metaDiv = this.createElement('div', 'checkbox-meta', meta);
-        }
-        
-        // Assemble content
-        contentDiv.appendChild(headerDiv);
-        contentDiv.appendChild(descDiv);
-        if (metaDiv) {
-            contentDiv.appendChild(metaDiv);
-        }
-        container.appendChild(contentDiv);
-        
-        // Make the whole container clickable
-        container.style.cursor = isAvailable ? 'pointer' : 'not-allowed';
-        
-        // Add click handler
-        const handleClick = () => {
-            if (!isAvailable) return;
-            
-            const newSelected = !isSelected;
-            
-            // Update visual state
-            if (newSelected) {
-                this.addClass(container, 'selected');
-                indicator.innerHTML = '✓';
-            } else {
-                this.removeClass(container, 'selected');
-                indicator.innerHTML = '';
-            }
-            
-            isSelected = newSelected;
-            
-            // Call the change handler
-            if (onChange) onChange(newSelected);
-        };
-        
-        container.addEventListener('click', handleClick);
-        
-        // Return control object with methods for external updates
-        return {
-            container: container,
-            setSelected: (selected) => {
-                isSelected = selected;
-                if (selected) {
-                    this.addClass(container, 'selected');
-                    indicator.innerHTML = '✓';
-                } else {
-                    this.removeClass(container, 'selected');
-                    indicator.innerHTML = '';
-                }
-            },
-            setAvailable: (available) => {
-                isAvailable = available;
-                if (available) {
-                    this.removeClass(container, 'unavailable');
-                    container.style.cursor = 'pointer';
-                } else {
-                    this.addClass(container, 'unavailable');
-                    container.style.cursor = 'not-allowed';
-                }
-            }
-        };
+        this.debounceTimers.set(id, timeout);
     }
 
-    // Notification system
-    showNotification(message, type = 'info', duration = 3000) {
-        const notification = this.createElement('div', `notification notification-${type}`);
-        notification.innerHTML = `
-            <span class="notification-message">${message}</span>
-            <button class="notification-close">&times;</button>
+    // Loading states
+    showLoading(element, message = 'Loading...') {
+        this.clearElement(element);
+        const loadingDiv = this.createElement('div', 'loading');
+        loadingDiv.innerHTML = `
+            <div class="spinner"></div>
+            <p>${message}</p>
         `;
-        
-        // Add styles if not already added
-        this.ensureNotificationStyles();
-        
-        // Add to page
-        document.body.appendChild(notification);
-        
-        // Position notification
-        const index = this.notifications.length;
-        notification.style.top = `${20 + (index * 70)}px`;
-        notification.style.right = '20px';
-        
-        this.notifications.push(notification);
-        
-        // Auto-remove
-        const removeNotification = () => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-                this.notifications = this.notifications.filter(n => n !== notification);
-                this.repositionNotifications();
-            }
+        element.appendChild(loadingDiv);
+    }
+
+    hideLoading(element) {
+        const loadingDiv = element.querySelector('.loading');
+        if (loadingDiv) loadingDiv.remove();
+    }
+
+    // Error display
+    showError(element, message) {
+        const errorDiv = this.createElement('div', 'error-message', message);
+        element.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000);
+    }
+
+    // Notifications
+    showNotification(message, type = 'info', duration = 3000) {
+        const notification = {
+            id: Date.now(),
+            message,
+            type,
+            duration
         };
-        
-        // Close button
-        notification.querySelector('.notification-close').addEventListener('click', removeNotification);
-        
-        // Auto-hide
+
+        this.notifications.push(notification);
+        this.renderNotification(notification);
+
         if (duration > 0) {
-            setTimeout(removeNotification, duration);
+            setTimeout(() => this.removeNotification(notification.id), duration);
         }
-        
-        // Animate in
-        setTimeout(() => this.addClass(notification, 'notification-show'), 10);
-        
-        return notification;
+
+        return notification.id;
     }
 
-    repositionNotifications() {
-        this.notifications.forEach((notification, index) => {
-            notification.style.top = `${20 + (index * 70)}px`;
-        });
-    }
-
-    ensureNotificationStyles() {
-        if (!document.getElementById('notification-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'notification-styles';
-            styles.textContent = `
-                .notification {
-                    position: fixed;
-                    z-index: 10000;
-                    background: white;
-                    border-radius: 4px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                    padding: 15px;
-                    min-width: 300px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    opacity: 0;
-                    transform: translateX(100%);
-                    transition: all 0.3s ease;
-                }
-                .notification-show {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-                .notification-info { border-left: 4px solid #17a2b8; }
-                .notification-success { border-left: 4px solid #28a745; }
-                .notification-warning { border-left: 4px solid #ffc107; }
-                .notification-error { border-left: 4px solid #dc3545; }
-                .notification-message { flex: 1; }
-                .notification-close {
-                    background: none;
-                    border: none;
-                    font-size: 18px;
-                    cursor: pointer;
-                    margin-left: 10px;
-                    opacity: 0.5;
-                }
-                .notification-close:hover { opacity: 1; }
-            `;
-            document.head.appendChild(styles);
+    renderNotification(notification) {
+        let container = document.getElementById('notification-container');
+        if (!container) {
+            container = this.createElement('div', 'notification-container');
+            container.id = 'notification-container';
+            document.body.appendChild(container);
         }
+
+        const notificationElement = this.createElement('div', `notification ${notification.type}`);
+        notificationElement.dataset.notificationId = notification.id;
+        notificationElement.innerHTML = `
+            <span>${notification.message}</span>
+            <button class="close-btn" onclick="uiManager.removeNotification(${notification.id})">&times;</button>
+        `;
+
+        container.appendChild(notificationElement);
     }
 
-    // Modal system
+    removeNotification(id) {
+        const element = document.querySelector(`[data-notification-id="${id}"]`);
+        if (element) {
+            element.classList.add('fade-out');
+            setTimeout(() => element.remove(), 300);
+        }
+        this.notifications = this.notifications.filter(n => n.id !== id);
+    }
+
+    // Modal management
     createModal(id, title, content, options = {}) {
         const modal = this.createElement('div', 'modal');
-        modal.id = id;
+        modal.id = `modal-${id}`;
         
-        modal.innerHTML = `
-            <div class="modal-backdrop"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>${title}</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer"></div>
-            </div>
+        const modalContent = this.createElement('div', 'modal-content');
+        
+        const header = this.createElement('div', 'modal-header');
+        header.innerHTML = `
+            <h2>${title}</h2>
+            <button class="close-btn" onclick="uiManager.closeModal('${id}')">&times;</button>
         `;
         
-        // Add content
-        const body = modal.querySelector('.modal-body');
+        const body = this.createElement('div', 'modal-body');
         if (typeof content === 'string') {
             body.innerHTML = content;
         } else {
             body.appendChild(content);
         }
         
-        // Add buttons
-        const footer = modal.querySelector('.modal-footer');
-        if (options.buttons) {
-            options.buttons.forEach(button => {
-                const btn = this.createButton(button.text, button.className || 'action-button', button.onClick);
-                footer.appendChild(btn);
-            });
+        modalContent.appendChild(header);
+        modalContent.appendChild(body);
+        
+        if (options.footer) {
+            const footer = this.createElement('div', 'modal-footer');
+            footer.appendChild(options.footer);
+            modalContent.appendChild(footer);
         }
         
-        // Event handlers
-        const closeModal = () => this.closeModal(id);
-        modal.querySelector('.modal-close').addEventListener('click', closeModal);
-        modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
         
-        this.ensureModalStyles();
         this.modals.set(id, modal);
+        
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.closeModal(id);
+        });
         
         return modal;
     }
 
-    showModal(id) {
+    openModal(id) {
         const modal = this.modals.get(id);
         if (modal) {
-            document.body.appendChild(modal);
-            setTimeout(() => this.addClass(modal, 'modal-show'), 10);
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
     }
 
     closeModal(id) {
         const modal = this.modals.get(id);
-        if (modal && modal.parentNode) {
-            this.removeClass(modal, 'modal-show');
-            setTimeout(() => {
-                if (modal.parentNode) {
-                    modal.parentNode.removeChild(modal);
-                }
-            }, 300);
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     }
 
-    ensureModalStyles() {
-        if (!document.getElementById('modal-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'modal-styles';
-            styles.textContent = `
-                .modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: 10000;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-                .modal-show { opacity: 1; }
-                .modal-backdrop {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.5);
-                }
-                .modal-content {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: white;
-                    border-radius: 8px;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-                    min-width: 400px;
-                    max-width: 90%;
-                    max-height: 90%;
-                    overflow: hidden;
-                }
-                .modal-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 20px;
-                    border-bottom: 1px solid #ddd;
-                    background: #f8f9fa;
-                }
-                .modal-header h3 { margin: 0; color: #333; }
-                .modal-close {
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    opacity: 0.5;
-                }
-                .modal-close:hover { opacity: 1; }
-                .modal-body {
-                    padding: 20px;
-                    max-height: 60vh;
-                    overflow-y: auto;
-                }
-                .modal-footer {
-                    padding: 20px;
-                    border-top: 1px solid #ddd;
-                    text-align: right;
-                    background: #f8f9fa;
-                }
-                .modal-footer button {
-                    margin-left: 10px;
-                }
-            `;
-            document.head.appendChild(styles);
-        }
-    }
-
-    // Debounced input handling
-    debounce(key, func, delay = 300) {
-        if (this.debounceTimers.has(key)) {
-            clearTimeout(this.debounceTimers.get(key));
+    // Create checkbox item
+    createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
+        const container = this.createElement('div', 'checkbox-item');
+        
+        const checkbox = this.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `${name.toLowerCase().replace(/\s+/g, '-')}-checkbox`;
+        checkbox.checked = isSelected;
+        checkbox.disabled = !isAvailable;
+        
+        const label = this.createElement('label');
+        label.htmlFor = checkbox.id;
+        
+        const nameSpan = this.createElement('span', 'item-name', name);
+        label.appendChild(nameSpan);
+        
+        if (description) {
+            const descSpan = this.createElement('span', 'item-description', description);
+            label.appendChild(descSpan);
         }
         
-        const timer = setTimeout(() => {
-            func();
-            this.debounceTimers.delete(key);
-        }, delay);
+        if (meta) {
+            const metaSpan = this.createElement('span', 'item-meta', meta);
+            label.appendChild(metaSpan);
+        }
         
-        this.debounceTimers.set(key, timer);
-    }
-
-    // Utility methods
-    formatDieValue(value) {
-        return value > 0 ? `d${value}` : '—';
-    }
-
-    formatPoints(current, max) {
-        return `${current}/${max}`;
-    }
-
-    formatCurrency(amount) {
-        return `$${amount.toLocaleString()}`;
-    }
-
-    // Height equalization for consistent layouts
-    equalizeHeights(selector) {
-        const elements = document.querySelectorAll(selector);
-        if (elements.length === 0) return;
+        container.appendChild(checkbox);
+        container.appendChild(label);
         
-        // Reset heights
-        elements.forEach(el => el.style.height = 'auto');
+        if (!isAvailable) {
+            container.classList.add('unavailable');
+        }
         
-        // Get maximum height
-        let maxHeight = 0;
-        elements.forEach(el => {
-            const height = el.offsetHeight;
-            if (height > maxHeight) maxHeight = height;
+        if (onChange) {
+            checkbox.addEventListener('change', onChange);
+        }
+        
+        return container;
+    }
+
+    // Create attribute control
+    createAttributeControl(attribute, value, onChange) {
+        const container = this.createElement('div', 'attribute-control');
+        
+        const label = this.createElement('label', 'attribute-label', attribute);
+        container.appendChild(label);
+        
+        const controlGroup = this.createElement('div', 'control-group');
+        
+        const decreaseBtn = this.createButton('-', 'attribute-btn decrease', () => {
+            onChange(attribute, -1);
         });
         
-        // Set all to maximum height
-        elements.forEach(el => el.style.height = `${maxHeight}px`);
-    }
-
-    // Responsive utilities
-    isMobile() {
-        return window.innerWidth <= 768;
-    }
-
-    isTablet() {
-        return window.innerWidth > 768 && window.innerWidth <= 1024;
-    }
-
-    isDesktop() {
-        return window.innerWidth > 1024;
-    }
-
-    // Animation utilities
-    fadeIn(element, duration = 300) {
-        element.style.opacity = '0';
-        element.style.display = '';
+        const valueDisplay = this.createElement('span', 'attribute-value', value);
         
-        const start = performance.now();
-        const animate = (timestamp) => {
-            const elapsed = timestamp - start;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            element.style.opacity = progress.toString();
-            
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        };
+        const increaseBtn = this.createButton('+', 'attribute-btn increase', () => {
+            onChange(attribute, 1);
+        });
         
-        requestAnimationFrame(animate);
+        controlGroup.appendChild(decreaseBtn);
+        controlGroup.appendChild(valueDisplay);
+        controlGroup.appendChild(increaseBtn);
+        
+        container.appendChild(controlGroup);
+        
+        return container;
     }
 
-    fadeOut(element, duration = 300) {
-        const start = performance.now();
-        const initialOpacity = parseFloat(getComputedStyle(element).opacity);
+    // Create skill control
+    createSkillControl(skill, value, onChange) {
+        const container = this.createElement('div', 'skill-control');
         
-        const animate = (timestamp) => {
-            const elapsed = timestamp - start;
-            const progress = Math.min(elapsed / duration, 1);
+        const label = this.createElement('label', 'skill-label', skill);
+        container.appendChild(label);
+        
+        const controlGroup = this.createElement('div', 'control-group');
+        
+        const decreaseBtn = this.createButton('-', 'skill-btn decrease', () => {
+            onChange(skill, -1);
+        });
+        
+        const valueDisplay = this.createElement('span', 'skill-value', value);
+        
+        const increaseBtn = this.createButton('+', 'skill-btn increase', () => {
+            onChange(skill, 1);
+        });
+        
+        controlGroup.appendChild(decreaseBtn);
+        controlGroup.appendChild(valueDisplay);
+        controlGroup.appendChild(increaseBtn);
+        
+        container.appendChild(controlGroup);
+        
+        return container;
+    }
+
+    // Create collapsible section
+    createCollapsible(title, content, isOpen = false) {
+        const container = this.createElement('div', 'collapsible');
+        
+        const header = this.createElement('div', 'collapsible-header');
+        header.innerHTML = `
+            <span>${title}</span>
+            <span class="toggle-icon">${isOpen ? '▼' : '▶'}</span>
+        `;
+        
+        const body = this.createElement('div', 'collapsible-body');
+        if (!isOpen) body.style.display = 'none';
+        
+        if (typeof content === 'string') {
+            body.innerHTML = content;
+        } else {
+            body.appendChild(content);
+        }
+        
+        header.addEventListener('click', () => {
+            const isVisible = body.style.display !== 'none';
+            body.style.display = isVisible ? 'none' : 'block';
+            header.querySelector('.toggle-icon').textContent = isVisible ? '▶' : '▼';
+        });
+        
+        container.appendChild(header);
+        container.appendChild(body);
+        
+        return container;
+    }
+
+    // Tab system
+    createTabs(tabs) {
+        const container = this.createElement('div', 'tabs-container');
+        const tabHeaders = this.createElement('div', 'tab-headers');
+        const tabContents = this.createElement('div', 'tab-contents');
+        
+        tabs.forEach((tab, index) => {
+            // Create header
+            const header = this.createElement('button', 'tab-header', tab.label);
+            if (index === 0) header.classList.add('active');
+            header.addEventListener('click', () => this.switchTab(container, index));
+            tabHeaders.appendChild(header);
             
-            element.style.opacity = (initialOpacity * (1 - progress)).toString();
-            
-            if (progress >= 1) {
-                element.style.display = 'none';
+            // Create content
+            const content = this.createElement('div', 'tab-content');
+            if (index === 0) content.classList.add('active');
+            if (typeof tab.content === 'string') {
+                content.innerHTML = tab.content;
             } else {
-                requestAnimationFrame(animate);
+                content.appendChild(tab.content);
             }
-        };
+            tabContents.appendChild(content);
+        });
         
-        requestAnimationFrame(animate);
+        container.appendChild(tabHeaders);
+        container.appendChild(tabContents);
+        
+        return container;
+    }
+
+    switchTab(container, index) {
+        container.querySelectorAll('.tab-header').forEach((header, i) => {
+            header.classList.toggle('active', i === index);
+        });
+        container.querySelectorAll('.tab-content').forEach((content, i) => {
+            content.classList.toggle('active', i === index);
+        });
+    }
+
+    // Tooltip system
+    addTooltip(element, text) {
+        element.classList.add('has-tooltip');
+        element.setAttribute('data-tooltip', text);
+    }
+
+    // Progress bar
+    createProgressBar(value, max, label = '') {
+        const container = this.createElement('div', 'progress-container');
+        
+        if (label) {
+            const labelElement = this.createElement('div', 'progress-label', label);
+            container.appendChild(labelElement);
+        }
+        
+        const progressBar = this.createElement('div', 'progress-bar');
+        const progressFill = this.createElement('div', 'progress-fill');
+        progressFill.style.width = `${(value / max) * 100}%`;
+        
+        const progressText = this.createElement('span', 'progress-text', `${value} / ${max}`);
+        
+        progressBar.appendChild(progressFill);
+        progressBar.appendChild(progressText);
+        container.appendChild(progressBar);
+        
+        return container;
+    }
+
+    updateProgressBar(container, value, max) {
+        const fill = container.querySelector('.progress-fill');
+        const text = container.querySelector('.progress-text');
+        if (fill) fill.style.width = `${(value / max) * 100}%`;
+        if (text) text.textContent = `${value} / ${max}`;
+    }
+
+    // Create a simple div wrapper
+    createWrapper(className = '') {
+        return this.createElement('div', className);
+    }
+
+    // Create a form group
+    createFormGroup(label, input) {
+        const group = this.createElement('div', 'form-group');
+        const labelElement = this.createElement('label', '', label);
+        group.appendChild(labelElement);
+        group.appendChild(input);
+        return group;
     }
 }
