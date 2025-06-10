@@ -328,6 +328,91 @@ export class UIManager {
         return container;
     }
 
+    // Create skill grid section
+    createSkillGridSection(title) {
+        const section = document.createElement('div');
+        section.className = 'skill-section';
+        
+        const header = document.createElement('h4');
+        header.className = 'skill-section-header';
+        header.textContent = title;
+        
+        const grid = document.createElement('div');
+        grid.className = 'skill-grid';
+        
+        section.appendChild(header);
+        section.appendChild(grid);
+        
+        return {
+            section: section,
+            grid: grid,
+            title: header,
+            
+            addSkill: function(skillElement) {
+                grid.appendChild(skillElement);
+            },
+            
+            clear: function() {
+                grid.innerHTML = '';
+            }
+        };
+    }
+    
+    // Create skill item
+    createSkillItem(skillName, linkedAttribute, value, onChange) {
+        const container = document.createElement('div');
+        container.className = 'skill-item';
+        
+        const nameLabel = document.createElement('label');
+        nameLabel.className = 'skill-name';
+        nameLabel.textContent = skillName;
+        
+        const linkedLabel = document.createElement('span');
+        linkedLabel.className = 'skill-linked';
+        linkedLabel.textContent = `(${linkedAttribute})`;
+        
+        const valueDisplay = document.createElement('span');
+        valueDisplay.className = 'skill-value';
+        valueDisplay.textContent = value || 'd4-2';
+        
+        const controls = document.createElement('div');
+        controls.className = 'skill-controls';
+        
+        const decreaseBtn = document.createElement('button');
+        decreaseBtn.className = 'skill-btn decrease';
+        decreaseBtn.textContent = '-';
+        decreaseBtn.onclick = () => onChange(skillName, -1);
+        
+        const increaseBtn = document.createElement('button');
+        increaseBtn.className = 'skill-btn increase';
+        increaseBtn.textContent = '+';
+        increaseBtn.onclick = () => onChange(skillName, 1);
+        
+        controls.appendChild(decreaseBtn);
+        controls.appendChild(valueDisplay);
+        controls.appendChild(increaseBtn);
+        
+        container.appendChild(nameLabel);
+        container.appendChild(linkedLabel);
+        container.appendChild(controls);
+        
+        return {
+            container: container,
+            valueDisplay: valueDisplay,
+            decreaseBtn: decreaseBtn,
+            increaseBtn: increaseBtn,
+            
+            updateValue: function(newValue) {
+                valueDisplay.textContent = newValue || 'd4-2';
+            },
+            
+            setEnabled: function(canIncrease, canDecrease) {
+                increaseBtn.disabled = !canIncrease;
+                decreaseBtn.disabled = !canDecrease;
+            }
+        };
+    }
+
     // Create collapsible section
     createCollapsible(title, content, isOpen = false) {
         const container = this.createElement('div', 'collapsible');
