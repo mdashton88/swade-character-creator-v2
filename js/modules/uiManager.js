@@ -201,66 +201,97 @@ export class UIManager {
         };
     }
 
+    // UPDATED: No more checkboxes - clickable containers instead
     createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
+        // Create the main container
         const container = this.createElement('div', 'checkbox-item');
         
-        if (isSelected) this.addClass(container, 'selected');
-        if (!isAvailable) this.addClass(container, 'unavailable');
-        
-        const checkbox = this.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = isSelected;
-        checkbox.disabled = !isAvailable;
-        
-        const content = this.createElement('div', 'checkbox-content');
-        const title = this.createElement('div', 'checkbox-title', name);
-        const desc = this.createElement('div', 'checkbox-description', description);
-        
-        this.appendChildren(content, [title, desc]);
-        
-        if (meta) {
-            const metaDiv = this.createElement('div', 'checkbox-meta', meta);
-            content.appendChild(metaDiv);
+        // Add state classes
+        if (isSelected) {
+            this.addClass(container, 'selected');
         }
         
-        this.appendChildren(container, [checkbox, content]);
+        if (!isAvailable) {
+            this.addClass(container, 'unavailable');
+        }
         
-        // Event handling
-        const handleChange = () => {
-            if (checkbox.checked) {
+        // Create content structure
+        const contentDiv = this.createElement('div', 'checkbox-content');
+        
+        // Create header with name
+        const headerDiv = this.createElement('div', 'checkbox-header');
+        const nameSpan = this.createElement('span', 'checkbox-name', name);
+        headerDiv.appendChild(nameSpan);
+        
+        // Add selection indicator (visual replacement for checkbox)
+        const indicator = this.createElement('div', 'selection-indicator');
+        indicator.innerHTML = isSelected ? '✓' : '';
+        headerDiv.appendChild(indicator);
+        
+        // Create description
+        const descDiv = this.createElement('div', 'checkbox-description', description);
+        
+        // Create meta info
+        let metaDiv = null;
+        if (meta) {
+            metaDiv = this.createElement('div', 'checkbox-meta', meta);
+        }
+        
+        // Assemble content
+        contentDiv.appendChild(headerDiv);
+        contentDiv.appendChild(descDiv);
+        if (metaDiv) {
+            contentDiv.appendChild(metaDiv);
+        }
+        container.appendChild(contentDiv);
+        
+        // Make the whole container clickable
+        container.style.cursor = isAvailable ? 'pointer' : 'not-allowed';
+        
+        // Add click handler
+        const handleClick = () => {
+            if (!isAvailable) return;
+            
+            const newSelected = !isSelected;
+            
+            // Update visual state
+            if (newSelected) {
                 this.addClass(container, 'selected');
+                indicator.innerHTML = '✓';
             } else {
                 this.removeClass(container, 'selected');
+                indicator.innerHTML = '';
             }
             
-            if (onChange) onChange(checkbox.checked);
+            isSelected = newSelected;
+            
+            // Call the change handler
+            if (onChange) onChange(newSelected);
         };
         
-        checkbox.addEventListener('change', handleChange);
-        container.addEventListener('click', (e) => {
-            if (e.target !== checkbox && isAvailable) {
-                checkbox.checked = !checkbox.checked;
-                handleChange();
-            }
-        });
+        container.addEventListener('click', handleClick);
         
+        // Return control object with methods for external updates
         return {
-            container,
-            checkbox,
+            container: container,
             setSelected: (selected) => {
-                checkbox.checked = selected;
+                isSelected = selected;
                 if (selected) {
                     this.addClass(container, 'selected');
+                    indicator.innerHTML = '✓';
                 } else {
                     this.removeClass(container, 'selected');
+                    indicator.innerHTML = '';
                 }
             },
             setAvailable: (available) => {
-                checkbox.disabled = !available;
+                isAvailable = available;
                 if (available) {
                     this.removeClass(container, 'unavailable');
+                    container.style.cursor = 'pointer';
                 } else {
                     this.addClass(container, 'unavailable');
+                    container.style.cursor = 'not-allowed';
                 }
             }
         };
