@@ -3,10 +3,13 @@
 
 export class UIManager {
     constructor() {
-        console.log('🎯 UIManager v9 initialized - Clean emergency version');
+        console.log('🎯 UIManager v9 initialized - Clean emergency version with smart buttons');
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
+        
+        // Initialize smart button logic after everything loads
+        setTimeout(() => this.initializeSmartButtons(), 500);
     }
 
     initializeNotifications() {
@@ -243,12 +246,25 @@ export class UIManager {
             container.appendChild(label);
             container.appendChild(controlsDiv);
 
-            incrementBtn.addEventListener('click', () => {
-                if (onIncrement) onIncrement();
+            // Enhanced event listeners with smart button state management
+            incrementBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onIncrement) {
+                    onIncrement();
+                    // Update button states after action
+                    setTimeout(() => this.updateAttributeButtonStates(), 50);
+                }
             });
 
-            decrementBtn.addEventListener('click', () => {
-                if (onDecrement) onDecrement();
+            decrementBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (onDecrement) {
+                    onDecrement();
+                    // Update button states after action
+                    setTimeout(() => this.updateAttributeButtonStates(), 50);
+                }
             });
 
             return {
@@ -257,15 +273,12 @@ export class UIManager {
                 decrementBtn: decrementBtn,
                 updateValue: function(newValue) {
                     valueDisplay.textContent = `d${newValue}`;
-                },
+                    // Update button states when value changes
+                    setTimeout(() => this.updateAttributeButtonStates(), 50);
+                }.bind(this),
                 setEnabled: function(enabled) {
-                    incrementBtn.disabled = !enabled;
-                    decrementBtn.disabled = !enabled;
-                    if (enabled) {
-                        this.removeClass(container, 'disabled');
-                    } else {
-                        this.addClass(container, 'disabled');
-                    }
+                    // Keep the old method for compatibility, but don't use it for both buttons
+                    // Individual button logic will override this
                 }.bind(this)
             };
         } catch (error) {
@@ -273,6 +286,51 @@ export class UIManager {
             const fallback = document.createElement('div');
             fallback.textContent = `${attributeName}: Error`;
             return { container: fallback, updateValue: () => {}, setEnabled: () => {} };
+        }
+    }
+
+    // Smart button state management - allows - button even at 0 points
+    updateAttributeButtonStates() {
+        try {
+            // Get character data
+            const character = window.characterCreator?.characterManager?.getCharacter();
+            if (!character) return;
+
+            // Get remaining points
+            const availablePoints = window.characterCreator?.calculationsManager?.getAvailableAttributePoints?.(character);
+            const remainingPoints = availablePoints?.remaining || 0;
+
+            // Update each attribute control
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            attributeControls.forEach(control => {
+                const incrementBtn = control.querySelector('.btn-increment');
+                const decrementBtn = control.querySelector('.btn-decrement');
+                const valueDisplay = control.querySelector('.attribute-value');
+                const label = control.querySelector('.attribute-label');
+                
+                if (incrementBtn && decrementBtn && valueDisplay && label) {
+                    // Extract current value from display (d6 -> 6)
+                    const currentValueText = valueDisplay.textContent.replace('d', '');
+                    const currentValue = parseInt(currentValueText) || 4;
+                    
+                    // Smart increment logic: disabled if no points OR at maximum
+                    const canIncrement = remainingPoints > 0 && currentValue < 12;
+                    incrementBtn.disabled = !canIncrement;
+                    incrementBtn.style.opacity = canIncrement ? '1' : '0.5';
+                    incrementBtn.style.cursor = canIncrement ? 'pointer' : 'not-allowed';
+                    
+                    // Smart decrement logic: disabled ONLY if at minimum (regardless of points)
+                    const canDecrement = currentValue > 4;
+                    decrementBtn.disabled = !canDecrement;
+                    decrementBtn.style.opacity = canDecrement ? '1' : '0.5'; 
+                    decrementBtn.style.cursor = canDecrement ? 'pointer' : 'not-allowed';
+                }
+            });
+            
+            console.log('🎯 Updated button states - remaining points:', remainingPoints);
+        } catch (error) {
+            console.error('Error updating attribute button states:', error);
         }
     }
 
@@ -473,5 +531,18 @@ export class UIManager {
             () => onChange(skillName, 1), 
             () => onChange(skillName, -1), 
             false, false);
+    }
+
+    // Initialize smart button behavior for existing controls
+    initializeSmartButtons() {
+        // Set up periodic button state updates
+        setInterval(() => {
+            this.updateAttributeButtonStates();
+        }, 1000);
+        
+        // Initial update
+        this.updateAttributeButtonStates();
+        
+        console.log('🎯 Smart button system initialized');
     }
 }
