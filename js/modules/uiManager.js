@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0045
+// SWADE Character Creator v2 - UIManager Module v1.0046
 // Final version - Complete DOM utilities + robust data handling + setSelected method + setAvailable method + createSelect method
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0045";
+        this.VERSION = "V1.0046";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added setAvailable method for hindrances!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added createSelect method for EdgesManager!`);
     }
 
     displayVersion() {
