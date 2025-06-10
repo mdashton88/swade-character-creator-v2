@@ -226,54 +226,42 @@ export class UIManager {
         }
     }
 
-    // Enhanced create attribute control with dice icons and dual info systems
+    // Enhanced create attribute control - compact vertical layout, no hover movement, no info text
     createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
         console.log('🎯 Enhanced createAttributeControl called for:', attributeName);
         try {
             const container = document.createElement('div');
             container.className = 'attribute-control enhanced';
 
-            // Enhanced styling with dice icon and better layout
+            // Compact vertical styling - no hover movement
             container.style.cssText = `
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 12px;
-                margin: 8px 0;
+                padding: 8px 12px;
+                margin: 4px 0;
                 background: linear-gradient(145deg, #f8f9fa, #e9ecef);
                 border: 1px solid #dee2e6;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                transition: all 0.2s ease;
-                position: relative;
+                border-radius: 6px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                min-height: 40px;
             `;
-
-            // Add hover effect
-            container.addEventListener('mouseenter', () => {
-                container.style.transform = 'translateY(-1px)';
-                container.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-            });
-
-            container.addEventListener('mouseleave', () => {
-                container.style.transform = 'translateY(0)';
-                container.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-            });
 
             // Left side: Dice icon + Attribute name
             const leftSide = document.createElement('div');
             leftSide.style.cssText = 'display: flex; align-items: center; flex: 1; justify-content: flex-start;';
 
-            // Dice icon with 3D effect
+            // Dice icon with 3D effect (smaller for compact layout)
             const diceIcon = document.createElement('div');
             diceIcon.innerHTML = this.getDiceIcon(currentValue);
             diceIcon.style.cssText = `
-                margin-right: 12px;
+                margin-right: 10px;
                 color: #6c757d;
-                filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
-                transition: all 0.2s ease;
+                filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+                transform: scale(0.9);
             `;
 
-            // Enhanced attribute label
+            // Compact attribute label
             const label = document.createElement('span');
             label.className = 'attribute-label';
             label.textContent = this.capitalizeFirstLetter(attributeName);
@@ -287,7 +275,7 @@ export class UIManager {
             leftSide.appendChild(diceIcon);
             leftSide.appendChild(label);
 
-            // Center: Enhanced value display with dice
+            // Center: Compact value display
             const valueContainer = document.createElement('div');
             valueContainer.style.cssText = 'display: flex; align-items: center; flex: 0 0 auto;';
 
@@ -296,38 +284,38 @@ export class UIManager {
             valueDisplay.textContent = `d${currentValue}`;
             valueDisplay.style.cssText = `
                 font-weight: bold;
-                font-size: 16px;
+                font-size: 14px;
                 color: #495057;
-                min-width: 40px;
+                min-width: 35px;
                 text-align: center;
                 background: rgba(255,255,255,0.8);
-                padding: 4px 8px;
-                border-radius: 4px;
-                margin: 0 8px;
+                padding: 3px 6px;
+                border-radius: 3px;
+                margin: 0 6px;
             `;
 
             valueContainer.appendChild(valueDisplay);
 
-            // Right side: Enhanced +/- buttons (50% wider as requested)
+            // Right side: Compact +/- buttons (50% wider, no hover movement)
             const controlsDiv = document.createElement('div');
             controlsDiv.className = 'attribute-controls';
-            controlsDiv.style.cssText = 'display: flex; gap: 4px; flex: 0 0 auto;';
+            controlsDiv.style.cssText = 'display: flex; gap: 3px; flex: 0 0 auto;';
 
             const decrementBtn = document.createElement('button');
             decrementBtn.className = 'btn btn-small btn-decrement';
             decrementBtn.textContent = '−';
             decrementBtn.type = 'button';
             decrementBtn.style.cssText = `
-                width: 36px;
-                height: 28px;
+                width: 32px;
+                height: 24px;
                 background: linear-gradient(145deg, #dc3545, #c82333);
                 color: white;
                 border: none;
-                border-radius: 4px;
+                border-radius: 3px;
                 font-weight: bold;
                 cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(220,53,69,0.3);
+                transition: background 0.2s ease;
+                box-shadow: 0 1px 2px rgba(220,53,69,0.3);
             `;
 
             const incrementBtn = document.createElement('button');
@@ -335,32 +323,31 @@ export class UIManager {
             incrementBtn.textContent = '+';
             incrementBtn.type = 'button';
             incrementBtn.style.cssText = `
-                width: 36px;
-                height: 28px;
+                width: 32px;
+                height: 24px;
                 background: linear-gradient(145deg, #28a745, #218838);
                 color: white;
                 border: none;
-                border-radius: 4px;
+                border-radius: 3px;
                 font-weight: bold;
                 cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+                transition: background 0.2s ease;
+                box-shadow: 0 1px 2px rgba(40,167,69,0.3);
             `;
 
-            // Button hover effects
-            [decrementBtn, incrementBtn].forEach(btn => {
-                btn.addEventListener('mouseenter', () => {
-                    btn.style.transform = 'translateY(-1px)';
-                    btn.style.boxShadow = btn === decrementBtn ? 
-                        '0 4px 8px rgba(220,53,69,0.4)' : 
-                        '0 4px 8px rgba(40,167,69,0.4)';
-                });
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = 'translateY(0)';
-                    btn.style.boxShadow = btn === decrementBtn ? 
-                        '0 2px 4px rgba(220,53,69,0.3)' : 
-                        '0 2px 4px rgba(40,167,69,0.3)';
-                });
+            // Button hover effects (no movement, just color change)
+            decrementBtn.addEventListener('mouseenter', () => {
+                decrementBtn.style.background = 'linear-gradient(145deg, #c82333, #bd2130)';
+            });
+            decrementBtn.addEventListener('mouseleave', () => {
+                decrementBtn.style.background = 'linear-gradient(145deg, #dc3545, #c82333)';
+            });
+
+            incrementBtn.addEventListener('mouseenter', () => {
+                incrementBtn.style.background = 'linear-gradient(145deg, #218838, #1e7e34)';
+            });
+            incrementBtn.addEventListener('mouseleave', () => {
+                incrementBtn.style.background = 'linear-gradient(145deg, #28a745, #218838)';
             });
 
             controlsDiv.appendChild(decrementBtn);
@@ -371,17 +358,24 @@ export class UIManager {
             container.appendChild(valueContainer);
             container.appendChild(controlsDiv);
 
-            // Add event listeners
-            incrementBtn.addEventListener('click', () => {
-                if (onIncrement) onIncrement();
+            // Add event listeners with proper binding
+            incrementBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎯 Increment clicked for:', attributeName);
+                if (onIncrement) {
+                    onIncrement();
+                }
             });
 
-            decrementBtn.addEventListener('click', () => {
-                if (onDecrement) onDecrement();
+            decrementBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎯 Decrement clicked for:', attributeName);
+                if (onDecrement) {
+                    onDecrement();
+                }
             });
-
-            // Enhanced info systems - both small text and identical tooltip
-            this.addDualInfoSystems(container, attributeName, currentValue);
 
             // Return object with enhanced methods
             return {
@@ -393,8 +387,6 @@ export class UIManager {
                     valueDisplay.textContent = `d${newValue}`;
                     // Update dice icon
                     diceIcon.innerHTML = this.getDiceIcon(newValue);
-                    // Update info systems with new calculations
-                    this.updateDualInfoSystems(container, attributeName, newValue);
                 }.bind(this),
                 setEnabled: function(enabled) {
                     incrementBtn.disabled = !enabled;
@@ -411,69 +403,6 @@ export class UIManager {
             const fallback = document.createElement('div');
             fallback.textContent = `${attributeName}: Error`;
             return { container: fallback, updateValue: () => {}, setEnabled: () => {} };
-        }
-    }
-
-    // Add dual info systems (small text + identical tooltip)
-    addDualInfoSystems(container, attributeName, value) {
-        const infoText = this.getAttributeInfoText(attributeName, value);
-        
-        // Always-visible small text
-        const smallInfo = document.createElement('div');
-        smallInfo.className = 'attribute-info-small';
-        smallInfo.textContent = infoText;
-        smallInfo.style.cssText = `
-            position: absolute;
-            bottom: -18px;
-            left: 0;
-            font-size: 11px;
-            color: #6c757d;
-            font-style: italic;
-        `;
-
-        // Identical hover tooltip
-        container.title = infoText; // Simple tooltip
-        
-        container.appendChild(smallInfo);
-        container.setAttribute('data-info-text', infoText);
-    }
-
-    // Update both info systems when value changes
-    updateDualInfoSystems(container, attributeName, newValue) {
-        const newInfoText = this.getAttributeInfoText(attributeName, newValue);
-        
-        // Update small text
-        const smallInfo = container.querySelector('.attribute-info-small');
-        if (smallInfo) {
-            smallInfo.textContent = newInfoText;
-        }
-        
-        // Update tooltip
-        container.title = newInfoText;
-        container.setAttribute('data-info-text', newInfoText);
-    }
-
-    // Generate info text for attributes (used by both systems)
-    getAttributeInfoText(attributeName, value) {
-        const name = attributeName.toLowerCase();
-        
-        // Mock calculations - replace with real calculation manager calls
-        switch (name) {
-            case 'agility':
-                const pace = Math.max(6, value - 2);
-                return `Pace: ${pace} (from Agility d${value})`;
-            case 'vigor':
-                const toughness = Math.floor(value / 2) + 2;
-                return `Toughness: ${toughness} (Vigor d${value}/2 + 2)`;
-            case 'spirit':
-                return `Mental resistance d${value}, Healing rolls`;
-            case 'strength':
-                const carry = value * 5;
-                return `Carry: ${carry} lbs, Melee damage`;
-            case 'smarts':
-                return `Skill points, Knowledge, Notice`;
-            default:
-                return `d${value} die for ${this.capitalizeFirstLetter(name)} checks`;
         }
     }
 
@@ -686,5 +615,153 @@ export class UIManager {
             () => onChange(skillName, 1), 
             () => onChange(skillName, -1), 
             false, false);
+    }
+
+    // Create simple attribute points display (2 lines, no extra text)
+    createAttributePointsDisplay(totalPoints, standardPoints, hindrancePoints, spentPoints) {
+        try {
+            const container = document.createElement('div');
+            container.className = 'attribute-points-display';
+            container.style.cssText = `
+                background: linear-gradient(145deg, #e3f2fd, #f8f9fa);
+                border: 1px solid #90caf9;
+                border-radius: 6px;
+                padding: 12px;
+                margin: 8px 0;
+                font-size: 14px;
+                line-height: 1.4;
+            `;
+
+            // Line 1: Simple available points
+            const availableLine = document.createElement('div');
+            availableLine.style.cssText = 'font-weight: 600; color: #1976d2; margin-bottom: 4px;';
+            availableLine.textContent = `You have ${totalPoints} Attribute points.`;
+
+            // Line 2: Spent points
+            const spentLine = document.createElement('div');
+            spentLine.style.cssText = 'color: #555; font-weight: 500;';
+            spentLine.textContent = `Spent: ${spentPoints} points`;
+
+            container.appendChild(availableLine);
+            container.appendChild(spentLine);
+
+            return {
+                container: container,
+                availableLine: availableLine,
+                spentLine: spentLine,
+                updateDisplay: function(newTotalPoints, newStandardPoints, newHindrancePoints, newSpentPoints) {
+                    // Update available points line (simple)
+                    availableLine.textContent = `You have ${newTotalPoints} Attribute points.`;
+                    
+                    // Update spent points line
+                    spentLine.textContent = `Spent: ${newSpentPoints} points`;
+                    
+                    // Color coding based on remaining points
+                    const remaining = newTotalPoints - newSpentPoints;
+                    if (remaining < 0) {
+                        container.style.borderColor = '#f44336';
+                        container.style.background = 'linear-gradient(145deg, #ffebee, #f8f9fa)';
+                        availableLine.style.color = '#d32f2f';
+                    } else if (remaining === 0) {
+                        container.style.borderColor = '#ff9800';
+                        container.style.background = 'linear-gradient(145deg, #fff3e0, #f8f9fa)';
+                        availableLine.style.color = '#f57c00';
+                    } else {
+                        container.style.borderColor = '#90caf9';
+                        container.style.background = 'linear-gradient(145deg, #e3f2fd, #f8f9fa)';
+                        availableLine.style.color = '#1976d2';
+                    }
+                }
+            };
+        } catch (error) {
+            console.error('Error creating attribute points display:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = 'Error creating points display';
+            return { container: fallback, updateDisplay: () => {} };
+        }
+    }
+
+    // Create enhanced skill points display (similar pattern for skills)
+    createSkillPointsDisplay(totalPoints, standardPoints, attributeBonus, hindranceBonus, spentPoints) {
+        try {
+            const container = document.createElement('div');
+            container.className = 'skill-points-display';
+            container.style.cssText = `
+                background: linear-gradient(145deg, #e8f5e8, #f8f9fa);
+                border: 1px solid #81c784;
+                border-radius: 6px;
+                padding: 12px;
+                margin: 8px 0;
+                font-size: 14px;
+                line-height: 1.4;
+            `;
+
+            // Line 1: Available points with conditional bonuses
+            const availableLine = document.createElement('div');
+            availableLine.style.cssText = 'font-weight: 600; color: #388e3c; margin-bottom: 4px;';
+            
+            let availableText = `You have ${totalPoints} Skill points`;
+            
+            // Build breakdown if there are bonus points
+            const bonuses = [];
+            if (attributeBonus > 0) bonuses.push(`${attributeBonus} from Smarts`);
+            if (hindranceBonus > 0) bonuses.push(`${hindranceBonus} from Hindrances`);
+            
+            if (bonuses.length > 0) {
+                availableText += ` (${standardPoints} standard plus ${bonuses.join(', ')})`;
+            }
+            
+            availableLine.textContent = availableText;
+
+            // Line 2: Spent points
+            const spentLine = document.createElement('div');
+            spentLine.style.cssText = 'color: #555; font-weight: 500;';
+            spentLine.textContent = `Spent: ${spentPoints} points`;
+
+            container.appendChild(availableLine);
+            container.appendChild(spentLine);
+
+            return {
+                container: container,
+                availableLine: availableLine,
+                spentLine: spentLine,
+                updateDisplay: function(newTotalPoints, newStandardPoints, newAttributeBonus, newHindranceBonus, newSpentPoints) {
+                    // Update available points line
+                    let updatedText = `You have ${newTotalPoints} Skill points`;
+                    
+                    const newBonuses = [];
+                    if (newAttributeBonus > 0) newBonuses.push(`${newAttributeBonus} from Smarts`);
+                    if (newHindranceBonus > 0) newBonuses.push(`${newHindranceBonus} from Hindrances`);
+                    
+                    if (newBonuses.length > 0) {
+                        updatedText += ` (${newStandardPoints} standard plus ${newBonuses.join(', ')})`;
+                    }
+                    
+                    availableLine.textContent = updatedText;
+                    spentLine.textContent = `Spent: ${newSpentPoints} points`;
+                    
+                    // Color coding
+                    const remaining = newTotalPoints - newSpentPoints;
+                    if (remaining < 0) {
+                        container.style.borderColor = '#f44336';
+                        container.style.background = 'linear-gradient(145deg, #ffebee, #f8f9fa)';
+                        availableLine.style.color = '#d32f2f';
+                    } else if (remaining === 0) {
+                        container.style.borderColor = '#ff9800';
+                        container.style.background = 'linear-gradient(145deg, #fff3e0, #f8f9fa)';
+                        availableLine.style.color = '#f57c00';
+                    } else {
+                        container.style.borderColor = '#81c784';
+                        container.style.background = 'linear-gradient(145deg, #e8f5e8, #f8f9fa)';
+                        availableLine.style.color = '#388e3c';
+                    }
+                }
+            };
+        } catch (error) {
+            console.error('Error creating skill points display:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = 'Error creating skill points display';
+            return { container: fallback, updateDisplay: () => {} };
+        }
     }
 }
