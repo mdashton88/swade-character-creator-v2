@@ -3,10 +3,12 @@
 
 export class UIManager {
     constructor() {
-        console.log('🎯 UIManager v9 initialized - Clean emergency version with smart buttons');
+        this.version = 'V1.0023'; // Version tracker for debugging
+        console.log(`🎯 UIManager ${this.version} initialized - Clean emergency version with smart buttons`);
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
+        this.addVersionDisplay();
         
         // Initialize smart button logic after everything loads
         setTimeout(() => this.initializeSmartButtons(), 500);
@@ -27,6 +29,69 @@ export class UIManager {
         } else {
             this.notificationContainer = document.querySelector('.notification-container');
         }
+    }
+
+    // Add version display to header for debugging
+    addVersionDisplay() {
+        setTimeout(() => {
+            // Look for the header area
+            const header = document.querySelector('.header') || 
+                          document.querySelector('header') || 
+                          document.querySelector('[class*="header"]') ||
+                          document.querySelector('h1') ||
+                          document.querySelector('.title');
+            
+            if (header) {
+                // Create version display
+                const versionDisplay = document.createElement('div');
+                versionDisplay.id = 'version-display';
+                versionDisplay.textContent = this.version;
+                versionDisplay.style.cssText = `
+                    position: absolute;
+                    top: 10px;
+                    right: 20px;
+                    color: white;
+                    font-size: 14px;
+                    font-weight: bold;
+                    background: rgba(0,0,0,0.3);
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    z-index: 1000;
+                    font-family: monospace;
+                `;
+                
+                // Make header relative if it's not already positioned
+                const headerStyle = window.getComputedStyle(header);
+                if (headerStyle.position === 'static') {
+                    header.style.position = 'relative';
+                }
+                
+                header.appendChild(versionDisplay);
+                console.log(`✅ Version ${this.version} displayed in header`);
+            } else {
+                // Fallback: add to body top-right
+                const versionDisplay = document.createElement('div');
+                versionDisplay.id = 'version-display';
+                versionDisplay.textContent = this.version;
+                versionDisplay.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 20px;
+                    color: white;
+                    font-size: 14px;
+                    font-weight: bold;
+                    background: rgba(139, 0, 0, 0.8);
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                    z-index: 10000;
+                    font-family: monospace;
+                    border: 1px solid rgba(255,255,255,0.3);
+                `;
+                
+                document.body.appendChild(versionDisplay);
+                console.log(`✅ Version ${this.version} displayed as overlay`);
+            }
+        }, 100);
     }
 
     loadDiceIcons() {
