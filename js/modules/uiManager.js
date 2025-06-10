@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0043
-// Clean version - Complete DOM utility methods + createCheckboxItem for hindrances/edges
+// SWADE Character Creator v2 - UIManager Module v1.0044
+// Final version - Complete DOM utilities + robust data handling + setSelected method
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0043";
+        this.VERSION = "V1.0044";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added createCheckboxItem method!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added setSelected method & robust data handling!`);
     }
 
     displayVersion() {
@@ -462,9 +462,13 @@ export class UIManager {
     }
 
     createCheckboxItem(item, type = 'hindrance') {
-        console.log(`🔧 createCheckboxItem called: ${item.name} (${type})`);
+        console.log(`🔧 createCheckboxItem called: ${item.name || 'undefined'} (${item.description || item.effect || 'no description'})`);
         
         try {
+            // Handle different data structures - some items might not have a 'name' property
+            const itemName = item.name || item.title || item.id || `${type}-item-${Math.random().toString(36).substr(2, 9)}`;
+            const itemDescription = item.description || item.effect || item.text || 'No description available';
+            
             const container = this.createElement('div', {
                 className: `${type}-item`,
                 style: {
@@ -481,9 +485,9 @@ export class UIManager {
             const checkbox = this.createElement('input', {
                 attributes: {
                     type: 'checkbox',
-                    id: `${type}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
+                    id: `${type}-${itemName.toString().replace(/\s+/g, '-').toLowerCase()}`,
                     name: type,
-                    value: item.name
+                    value: itemName
                 },
                 style: {
                     marginRight: '10px',
@@ -510,9 +514,9 @@ export class UIManager {
 
             // Set label text based on item structure
             if (item.type) {
-                label.textContent = `${item.name} (${item.type})`;
+                label.textContent = `${itemName} (${item.type})`;
             } else {
-                label.textContent = item.name;
+                label.textContent = itemName;
             }
 
             const description = this.createElement('div', {
@@ -526,13 +530,7 @@ export class UIManager {
             });
 
             // Set description text
-            if (item.description) {
-                description.textContent = item.description;
-            } else if (item.effect) {
-                description.textContent = item.effect;
-            } else {
-                description.textContent = 'No description available.';
-            }
+            description.textContent = itemDescription;
 
             // Show point value if available
             if (item.points || item.value) {
@@ -566,7 +564,7 @@ export class UIManager {
                 
                 setChecked: function(checked) {
                     checkbox.checked = checked;
-                    console.log(`🔧 ${item.name} setChecked: ${checked}`);
+                    console.log(`🔧 ${itemName} setChecked: ${checked}`);
                 },
                 
                 setEnabled: function(enabled) {
@@ -575,6 +573,18 @@ export class UIManager {
                         container.style.opacity = '1';
                     } else {
                         container.style.opacity = '0.6';
+                    }
+                },
+                
+                setSelected: function(selected) {
+                    checkbox.checked = selected;
+                    console.log(`🔧 ${itemName} setSelected: ${selected}`);
+                    if (selected) {
+                        container.style.borderColor = '#8B0000';
+                        container.style.backgroundColor = '#fff5f5';
+                    } else {
+                        container.style.borderColor = '#ddd';
+                        container.style.backgroundColor = 'white';
                     }
                 },
                 
@@ -587,13 +597,14 @@ export class UIManager {
                 }
             };
 
-            console.log(`✅ Successfully created checkbox item for: ${item.name}`, checkboxItem);
+            console.log(`✅ Successfully created checkbox item for: ${itemName}`, checkboxItem);
             return checkboxItem;
 
         } catch (error) {
-            console.error(`❌ Error creating checkbox item for ${item.name}:`, error);
+            console.error(`❌ Error creating checkbox item for ${item?.name || 'unknown item'}:`, error);
             
             // Return a fallback object
+            const fallbackName = `fallback-${Math.random().toString(36).substr(2, 9)}`;
             return {
                 container: this.createElement('div'),
                 checkbox: this.createElement('input'),
@@ -602,6 +613,7 @@ export class UIManager {
                 isChecked: function() { return false; },
                 setChecked: function() { console.log('Fallback setChecked'); },
                 setEnabled: function() { console.log('Fallback setEnabled'); },
+                setSelected: function() { console.log('Fallback setSelected'); },
                 getValue: function() { return 0; },
                 getItem: function() { return item; }
             };
