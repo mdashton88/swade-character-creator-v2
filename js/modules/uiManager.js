@@ -3,10 +3,104 @@
 
 export class UIManager {
     constructor() {
-        console.log('🎯 UIManager v9 initialized - Enhanced with dice icons & dual info!');
+        console.log('🎯 UIManager v9 initialized - Enhanced with dice icons & two-column layout!');
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
+        this.injectVerticalAttributesCSS();
+        this.hideOldAttributePointsDisplay();
+        this.setupTwoColumnLayout();
+    }
+
+    // Inject CSS to force two-column layout and half-width attributes
+    injectVerticalAttributesCSS() {
+        const styleId = 'uimanager-two-column-attributes';
+        
+        // Don't inject twice
+        if (document.getElementById(styleId)) return;
+        
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            /* Two-column layout: Attributes + Derived Stats */
+            .attributes-section-content {
+                display: flex !important;
+                gap: 20px !important;
+                align-items: flex-start !important;
+                flex-wrap: wrap !important;
+            }
+            
+            /* Attributes column (left) */
+            .attributes-column {
+                flex: 1 !important;
+                max-width: 500px !important;
+                min-width: 400px !important;
+            }
+            
+            /* Derived stats column (right) */
+            .derived-stats-column {
+                flex: 0 0 200px !important;
+                margin-top: 0 !important;
+            }
+            
+            /* Force attributes container to be 2-column grid */
+            #attributesList,
+            .attributes-list,
+            .attribute-container,
+            [id*="attribute"]:not(.attribute-points-display) {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+            
+            /* Half-width attribute controls */
+            .attribute-control {
+                width: calc(50% - 4px) !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Hide old attribute points display */
+            .attribute-points:not(.attribute-points-display),
+            .points-info,
+            [class*="info"]:not(.notification-container):not(.attribute-points-display) {
+                display: none !important;
+            }
+            
+            /* Show only our new display */
+            .attribute-points-display {
+                display: block !important;
+                margin-bottom: 16px !important;
+            }
+            
+            /* Move derived stats to right column */
+            #derivedStats,
+            .derived-statistics,
+            [id*="derived"] {
+                margin-top: 0 !important;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        console.log('🎯 Injected two-column attributes CSS');
+    }
+
+    // Hide/remove old attribute points display
+    hideOldAttributePointsDisplay() {
+        // Use a delayed search to catch dynamically created elements
+        setTimeout(() => {
+            const oldDisplays = document.querySelectorAll('*');
+            oldDisplays.forEach(element => {
+                if (element.textContent && 
+                    element.textContent.includes('Attributes start at d4') &&
+                    !element.classList.contains('attribute-points-display')) {
+                    element.style.display = 'none';
+                    console.log('🎯 Hidden old attribute points display:', element);
+                }
+            });
+        }, 100);
     }
 
     initializeNotifications() {
@@ -27,15 +121,15 @@ export class UIManager {
         }
     }
 
-    // Load high-quality dice icons from Iconduck (Material Design)
+    // Load high-quality dice icons from Iconduck (Material Design) - 32px size
     loadDiceIcons() {
         this.diceIcons = {
-            d4: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d4: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L3 22H21L12 2Z" fill="currentColor" opacity="0.8"/>
                 <path d="M12 6L6 18H18L12 6Z" fill="currentColor" opacity="0.6"/>
                 <text x="12" y="15" text-anchor="middle" font-size="6" fill="white" font-weight="bold">4</text>
             </svg>`,
-            d6: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d6: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor" opacity="0.8"/>
                 <rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" opacity="0.6"/>
                 <circle cx="8" cy="8" r="1.5" fill="white"/>
@@ -45,22 +139,22 @@ export class UIManager {
                 <circle cx="8" cy="16" r="1.5" fill="white"/>
                 <circle cx="16" cy="16" r="1.5" fill="white"/>
             </svg>`,
-            d8: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d8: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L22 12L12 22L2 12L12 2Z" fill="currentColor" opacity="0.8"/>
                 <path d="M12 4L19 12L12 20L5 12L12 4Z" fill="currentColor" opacity="0.6"/>
                 <text x="12" y="15" text-anchor="middle" font-size="6" fill="white" font-weight="bold">8</text>
             </svg>`,
-            d10: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d10: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L20 8L16 22H8L4 8L12 2Z" fill="currentColor" opacity="0.8"/>
                 <path d="M12 4L18 9L15 20H9L6 9L12 4Z" fill="currentColor" opacity="0.6"/>
                 <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">10</text>
             </svg>`,
-            d12: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d12: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L18 6L22 12L18 18L12 22L6 18L2 12L6 6L12 2Z" fill="currentColor" opacity="0.8"/>
                 <path d="M12 4L16 7L19 12L16 17L12 20L8 17L5 12L8 7L12 4Z" fill="currentColor" opacity="0.6"/>
                 <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">12</text>
             </svg>`,
-            d20: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            d20: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L20 7L22 15L12 22L2 15L4 7L12 2Z" fill="currentColor" opacity="0.8"/>
                 <path d="M12 4L18 8L19 14L12 20L5 14L6 8L12 4Z" fill="currentColor" opacity="0.6"/>
                 <text x="12" y="15" text-anchor="middle" font-size="5" fill="white" font-weight="bold">20</text>
@@ -226,96 +320,104 @@ export class UIManager {
         }
     }
 
-    // Enhanced create attribute control - compact vertical layout, no hover movement, no info text
+    // Enhanced create attribute control - two-column layout with existing styling
     createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
         console.log('🎯 Enhanced createAttributeControl called for:', attributeName);
         try {
             const container = document.createElement('div');
             container.className = 'attribute-control enhanced';
 
-            // Compact vertical styling - no hover movement
+            // Half-width, compact styling matching existing interface
             container.style.cssText = `
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 8px 12px;
-                margin: 4px 0;
-                background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+                padding: 6px 10px;
+                margin: 0;
+                background: #f8f9fa;
                 border: 1px solid #dee2e6;
-                border-radius: 6px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                min-height: 40px;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                width: calc(50% - 4px);
+                height: 32px;
+                min-height: 32px;
+                box-sizing: border-box;
             `;
 
-            // Left side: Dice icon + Attribute name
+            // Left side: Big dice icon + Attribute name
             const leftSide = document.createElement('div');
             leftSide.style.cssText = 'display: flex; align-items: center; flex: 1; justify-content: flex-start;';
 
-            // Dice icon with 3D effect (smaller for compact layout)
+            // Big dice icon (32px) with existing styling
             const diceIcon = document.createElement('div');
             diceIcon.innerHTML = this.getDiceIcon(currentValue);
             diceIcon.style.cssText = `
-                margin-right: 10px;
+                margin-right: 8px;
                 color: #6c757d;
-                filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
-                transform: scale(0.9);
+                filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.15));
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             `;
 
-            // Compact attribute label
+            // Update dice icon HTML to be 32px
+            const currentIcon = this.getDiceIcon(currentValue);
+            diceIcon.innerHTML = currentIcon.replace('width="24" height="24"', 'width="32" height="32"');
+
+            // Compact attribute label with existing font styling
             const label = document.createElement('span');
             label.className = 'attribute-label';
             label.textContent = this.capitalizeFirstLetter(attributeName);
             label.style.cssText = `
                 font-weight: 600;
-                font-size: 14px;
-                color: #343a40;
+                font-size: 13px;
+                color: #495057;
                 text-align: left;
+                flex: 1;
             `;
 
             leftSide.appendChild(diceIcon);
             leftSide.appendChild(label);
 
-            // Center: Compact value display
+            // Right side: **- d6 +** layout with existing button styling
             const valueContainer = document.createElement('div');
-            valueContainer.style.cssText = 'display: flex; align-items: center; flex: 0 0 auto;';
-
-            const valueDisplay = document.createElement('span');
-            valueDisplay.className = 'attribute-value';
-            valueDisplay.textContent = `d${currentValue}`;
-            valueDisplay.style.cssText = `
-                font-weight: bold;
-                font-size: 14px;
-                color: #495057;
-                min-width: 35px;
-                text-align: center;
-                background: rgba(255,255,255,0.8);
-                padding: 3px 6px;
-                border-radius: 3px;
-                margin: 0 6px;
-            `;
-
-            valueContainer.appendChild(valueDisplay);
-
-            // Right side: Compact +/- buttons (50% wider, no hover movement)
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'attribute-controls';
-            controlsDiv.style.cssText = 'display: flex; gap: 3px; flex: 0 0 auto;';
+            valueContainer.style.cssText = 'display: flex; align-items: center; gap: 3px; flex: 0 0 auto;';
 
             const decrementBtn = document.createElement('button');
             decrementBtn.className = 'btn btn-small btn-decrement';
             decrementBtn.textContent = '−';
             decrementBtn.type = 'button';
             decrementBtn.style.cssText = `
-                width: 32px;
-                height: 24px;
-                background: linear-gradient(145deg, #dc3545, #c82333);
+                width: 17px;
+                height: 20px;
+                background: #dc3545;
                 color: white;
                 border: none;
-                border-radius: 3px;
+                border-radius: 2px;
                 font-weight: bold;
                 cursor: pointer;
                 transition: background 0.2s ease;
-                box-shadow: 0 1px 2px rgba(220,53,69,0.3);
+                font-size: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+
+            const valueDisplay = document.createElement('span');
+            valueDisplay.className = 'attribute-value';
+            valueDisplay.textContent = `d${currentValue}`;
+            valueDisplay.style.cssText = `
+                font-weight: bold;
+                font-size: 13px;
+                color: #495057;
+                min-width: 25px;
+                text-align: center;
+                background: #fff;
+                padding: 2px 4px;
+                border-radius: 2px;
+                border: 1px solid #dee2e6;
             `;
 
             const incrementBtn = document.createElement('button');
@@ -323,40 +425,43 @@ export class UIManager {
             incrementBtn.textContent = '+';
             incrementBtn.type = 'button';
             incrementBtn.style.cssText = `
-                width: 32px;
-                height: 24px;
-                background: linear-gradient(145deg, #28a745, #218838);
+                width: 17px;
+                height: 20px;
+                background: #28a745;
                 color: white;
                 border: none;
-                border-radius: 3px;
+                border-radius: 2px;
                 font-weight: bold;
                 cursor: pointer;
                 transition: background 0.2s ease;
-                box-shadow: 0 1px 2px rgba(40,167,69,0.3);
+                font-size: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             `;
 
-            // Button hover effects (no movement, just color change)
+            // Button hover effects (subtle, matching existing interface)
             decrementBtn.addEventListener('mouseenter', () => {
-                decrementBtn.style.background = 'linear-gradient(145deg, #c82333, #bd2130)';
+                decrementBtn.style.background = '#c82333';
             });
             decrementBtn.addEventListener('mouseleave', () => {
-                decrementBtn.style.background = 'linear-gradient(145deg, #dc3545, #c82333)';
+                decrementBtn.style.background = '#dc3545';
             });
 
             incrementBtn.addEventListener('mouseenter', () => {
-                incrementBtn.style.background = 'linear-gradient(145deg, #218838, #1e7e34)';
+                incrementBtn.style.background = '#218838';
             });
             incrementBtn.addEventListener('mouseleave', () => {
-                incrementBtn.style.background = 'linear-gradient(145deg, #28a745, #218838)';
+                incrementBtn.style.background = '#28a745';
             });
 
-            controlsDiv.appendChild(decrementBtn);
-            controlsDiv.appendChild(incrementBtn);
+            valueContainer.appendChild(decrementBtn);
+            valueContainer.appendChild(valueDisplay);
+            valueContainer.appendChild(incrementBtn);
 
             // Assemble the container
             container.appendChild(leftSide);
             container.appendChild(valueContainer);
-            container.appendChild(controlsDiv);
 
             // Add event listeners with proper binding
             incrementBtn.addEventListener('click', (e) => {
@@ -385,8 +490,9 @@ export class UIManager {
                 diceIcon: diceIcon,
                 updateValue: function(newValue) {
                     valueDisplay.textContent = `d${newValue}`;
-                    // Update dice icon
-                    diceIcon.innerHTML = this.getDiceIcon(newValue);
+                    // Update dice icon with 32px size
+                    const newIcon = this.getDiceIcon(newValue);
+                    diceIcon.innerHTML = newIcon.replace('width="24" height="24"', 'width="32" height="32"');
                 }.bind(this),
                 setEnabled: function(enabled) {
                     incrementBtn.disabled = !enabled;
@@ -617,6 +723,39 @@ export class UIManager {
             false, false);
     }
 
+    // Create vertical attributes container (replaces horizontal layout)
+    createAttributesContainer() {
+        try {
+            const container = document.createElement('div');
+            container.className = 'attributes-container vertical';
+            container.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                width: 100%;
+                max-width: 400px;
+            `;
+            
+            return container;
+        } catch (error) {
+            console.error('Error creating attributes container:', error);
+            const fallback = document.createElement('div');
+            return fallback;
+        }
+    }
+
+    // Hide/remove old attribute points display
+    hideOldAttributePointsDisplay() {
+        // Find and hide the old blue display
+        const oldDisplays = document.querySelectorAll('.attribute-points, .points-info, [class*="attribute"][class*="info"]');
+        oldDisplays.forEach(display => {
+            if (display.textContent.includes('Attributes start at d4')) {
+                display.style.display = 'none';
+                console.log('🎯 Hidden old attribute points display');
+            }
+        });
+    }
+
     // Create simple attribute points display (2 lines, no extra text)
     createAttributePointsDisplay(totalPoints, standardPoints, hindrancePoints, spentPoints) {
         try {
@@ -763,5 +902,63 @@ export class UIManager {
             fallback.textContent = 'Error creating skill points display';
             return { container: fallback, updateDisplay: () => {} };
         }
+    }
+
+    // Setup two-column layout by moving derived stats
+    setupTwoColumnLayout() {
+        setTimeout(() => {
+            // Find derived statistics section
+            const derivedStats = document.getElementById('derivedStats') || 
+                                document.querySelector('.derived-statistics') ||
+                                document.querySelector('[id*="derived"]');
+            
+            if (derivedStats) {
+                // Find attributes section to get its parent
+                const attributesSection = document.getElementById('attributesList') || 
+                                        document.querySelector('.attributes-list') ||
+                                        document.querySelector('[id*="attribute"]');
+                
+                if (attributesSection && attributesSection.parentNode) {
+                    // Create wrapper for two-column layout
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'attributes-section-content';
+                    wrapper.style.cssText = `
+                        display: flex;
+                        gap: 20px;
+                        align-items: flex-start;
+                        flex-wrap: wrap;
+                    `;
+                    
+                    // Create left column (attributes)
+                    const leftColumn = document.createElement('div');
+                    leftColumn.className = 'attributes-column';
+                    leftColumn.style.cssText = `
+                        flex: 1;
+                        max-width: 500px;
+                        min-width: 400px;
+                    `;
+                    
+                    // Create right column (derived stats)
+                    const rightColumn = document.createElement('div');
+                    rightColumn.className = 'derived-stats-column';
+                    rightColumn.style.cssText = `
+                        flex: 0 0 200px;
+                        margin-top: 0;
+                    `;
+                    
+                    // Move elements to their columns
+                    const parent = attributesSection.parentNode;
+                    leftColumn.appendChild(attributesSection);
+                    rightColumn.appendChild(derivedStats);
+                    
+                    wrapper.appendChild(leftColumn);
+                    wrapper.appendChild(rightColumn);
+                    
+                    parent.appendChild(wrapper);
+                    
+                    console.log('🎯 Setup two-column layout');
+                }
+            }
+        }, 200);
     }
 }
