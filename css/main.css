@@ -1,4 +1,8 @@
 /* SWADE Character Creator v2 - Main Stylesheet */
+/* Updated with new Crimson Text attributes styling */
+
+/* Import Crimson Text font for attributes */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 
 /* Reset and Base Styles */
 * {
@@ -134,38 +138,41 @@ body {
 
 /* Section Styles */
 .section {
-    background: #f9f9f9;
-    border: 2px solid #dddddd;
+    background: white;
+    border: none;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
 .section h2 {
-    color: #555555;
-    border-bottom: 2px solid #555555;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    font-size: 1.3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #8B0000;
+    font-family: 'Crimson Text', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #8B0000;
 }
 
 /* Button Styles */
 .section-title-button,
+.randomize-btn,
 .action-button,
 .export-button {
-    background: linear-gradient(135deg, #8b0000, #a52a2a);
+    background: #8B0000;
     border: none;
     color: #ffffff;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-family: 'Roboto', 'Arial', sans-serif;
+    font-family: 'Crimson Text', serif;
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 14px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
@@ -178,12 +185,14 @@ body {
 .export-button {
     font-size: 0.9rem;
     padding: 10px 20px;
+    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
 }
 
 .section-title-button:hover,
+.randomize-btn:hover,
 .action-button:hover,
 .export-button:hover {
-    background: linear-gradient(135deg, #a52a2a, #dc143c);
+    background: #A52A2A;
     transform: translateY(-1px);
     box-shadow: 0 3px 6px rgba(0,0,0,0.3);
 }
@@ -234,15 +243,28 @@ input[readonly] {
 
 .points-remaining,
 .points-info {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border: 2px solid #8b0000;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
     border-radius: 6px;
     padding: 12px;
-    margin-bottom: 15px;
-    font-weight: bold;
+    margin-bottom: 20px;
     text-align: center;
-    color: #8b0000;
-    font-size: 1rem;
+    font-family: 'Crimson Text', serif;
+}
+
+.points-remaining .points-text,
+.points-info .points-text {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0 0 5px 0;
+}
+
+.points-remaining strong,
+.points-info strong {
+    font-size: 18px;
+    font-weight: 600;
+    color: #8B0000;
+    margin: 0;
 }
 
 /* Enhanced Info Bars for Edges & Hindrances */
@@ -259,62 +281,94 @@ input[readonly] {
     font-size: 14px; /* Reduced by 1 point */
 }
 
-/* Grid Layouts */
+/* ===== UPDATED ATTRIBUTES SECTION =====*/
 .attributes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 20px;
 }
 
 .attribute-item {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.attribute-item:hover {
+    border-color: #8B0000;
+    box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
 }
 
 .attribute-label {
-    font-weight: bold;
-    color: #333333;
-    text-align: center;
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    text-transform: capitalize;
+    min-width: 70px;
+    text-align: left;
 }
 
 .attribute-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .attr-button {
-    background: #8b0000;
-    color: white;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #8B0000;
+    background: white;
+    color: #8B0000;
+    border-radius: 4px;
+    font-size: 18px;
     font-weight: bold;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: 'Crimson Text', serif;
 }
 
-.attr-button:hover {
-    background: #a52a2a;
-    transform: scale(1.1);
+.attr-button:hover:not(:disabled) {
+    background: #8B0000;
+    color: white;
 }
 
 .attr-button:disabled {
-    background: #cccccc;
+    opacity: 0.4;
     cursor: not-allowed;
-    transform: none;
+    background: #f5f5f5;
+    color: #ccc;
+    border-color: #ddd;
 }
 
 .attribute-value {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #8b0000;
-    min-width: 30px;
+    font-family: 'Crimson Text', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #8B0000;
+    min-width: 32px;
     text-align: center;
+    background: #fff5f5;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #ffcccb;
+}
+
+.cost-indicator {
+    font-size: 12px;
+    color: #6c757d;
+    margin-left: 8px;
+    font-family: 'Crimson Text', serif;
 }
 
 /* Skills Grid */
@@ -630,23 +684,49 @@ input[readonly] {
 /* Derived Stats */
 .derived-stats {
     background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 15px;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 .derived-stats h4 {
-    color: #8b0000;
-    margin-bottom: 10px;
-    font-size: 1rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #8B0000;
+    margin: 0 0 15px 0;
 }
 
 .stat-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-family: 'Crimson Text', serif;
     font-weight: bold;
+}
+
+.derived-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.derived-stat {
+    text-align: center;
+}
+
+.derived-label {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+    font-family: 'Crimson Text', serif;
+}
+
+.derived-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    font-family: 'Crimson Text', serif;
 }
 
 /* Character Actions */
@@ -772,7 +852,28 @@ input[readonly] {
     }
     
     .attributes-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+    }
+    
+    .attribute-item {
+        padding: 12px;
+    }
+    
+    .attribute-label {
+        font-size: 14px;
+        min-width: 60px;
+    }
+    
+    .attr-button {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+    
+    .attribute-value {
+        font-size: 14px;
+        padding: 4px 6px;
+        min-width: 28px;
     }
     
     .skills-grid {
@@ -816,6 +917,22 @@ input[readonly] {
     
     .attributes-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .attribute-item {
+        padding: 10px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .attribute-label {
+        min-width: auto;
+        margin-bottom: 5px;
+    }
+    
+    .attribute-controls {
+        justify-content: center;
     }
 }
 
@@ -891,21 +1008,6 @@ input[readonly] {
     border-color: #a52a2a !important;
 }
 
-/* Selected items styling */
-.selected-item {
-    background: #f8f9ff;
-    border: 1px solid #d1ecf1;
-    border-radius: 4px;
-    padding: 8px;
-    margin-bottom: 8px;
-    transition: all 0.3s ease;
-}
-
-.selected-item:hover {
-    background: #e2f3ff;
-    border-color: #bee5eb;
-}
-
 /* Item content styling */
 .item-content {
     display: flex;
@@ -937,29 +1039,6 @@ input[readonly] {
     font-style: italic;
 }
 
-/* Remove button styling */
-.remove-btn {
-    background: #dc3545;
-    border: none;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 11px; /* Reduced by 1 point */
-    margin-top: 8px;
-    transition: all 0.3s ease;
-    align-self: flex-start;
-}
-
-.remove-btn:hover {
-    background: #c82333;
-    transform: scale(1.05);
-}
-
-.remove-btn:active {
-    transform: scale(0.95);
-}
-
 /* Loading state */
 .loading {
     text-align: center;
@@ -969,70 +1048,7 @@ input[readonly] {
     font-size: 13px; /* Reduced by 1 point */
 }
 
-/* Empty state styling */
-.selected-hindrances-list:empty::after {
-    content: "No hindrances selected";
-    display: block;
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    padding: 20px;
-    font-size: 13px; /* Reduced by 1 point */
-}
-
-.selected-edges-list:empty::after {
-    content: "No edges selected";
-    display: block;
-    text-align: center;
-    color: #999;
-    font-style: italic;
-    padding: 20px;
-    font-size: 13px; /* Reduced by 1 point */
-}
-
-/* Ensure containers are scrollable */
-.hindrances-list,
-.edges-list,
-.selected-hindrances-list,
-.selected-edges-list {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 10px;
-    background-color: #fafafa;
-    border-radius: 4px;
-    border: 1px solid #e0e0e0;
-}
-
-/* Available items container */
-.hindrances-list,
-.edges-list {
-    background-color: #ffffff;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .content-area {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .item-title {
-        font-size: 13px;
-    }
-    
-    .item-description {
-        font-size: 11px;
-    }
-    
-    .clickable-item,
-    .selected-item {
-        font-size: 12px;
-    }
-}
-
-
-/* ===== CLICKABLE EDGE/HINDRANCE CONTAINERS (No Checkboxes) ===== */
-
+/* ===== CHECKBOX-FREE CONTAINER STYLING ===== */
 .checkbox-item {
     border: 2px solid #8b4513;
     border-radius: 6px;
@@ -1128,42 +1144,6 @@ input[readonly] {
     color: #ccc;
 }
 
-/* Description styling */
-.checkbox-description {
-    font-size: 0.95em;
-    line-height: 1.4;
-    margin: 8px 0;
-    color: #333;
-}
-
-.checkbox-item.selected .checkbox-description {
-    color: #fff;
-}
-
-.checkbox-item.unavailable .checkbox-description {
-    color: #888;
-}
-
-/* Meta information */
-.checkbox-meta {
-    font-size: 0.85em;
-    color: #666;
-    font-style: italic;
-    margin-top: 6px;
-    border-top: 1px solid rgba(139, 69, 19, 0.2);
-    padding-top: 6px;
-}
-
-.checkbox-item.selected .checkbox-meta {
-    color: rgba(255, 255, 255, 0.9);
-    border-top-color: rgba(255, 255, 255, 0.3);
-}
-
-.checkbox-item.unavailable .checkbox-meta {
-    color: #aaa;
-    border-top-color: #ddd;
-}
-
 /* Special states */
 .checkbox-item.requirements-not-met {
     border-color: #dc3545;
@@ -1196,42 +1176,6 @@ input[readonly] {
         opacity: 1;
     }
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .checkbox-item {
-        padding: 10px;
-        margin: 6px 0;
-    }
-    
-    .checkbox-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .selection-indicator {
-        align-self: flex-end;
-        margin-left: 0;
-    }
-}
-
-/* Ensure compatibility with existing styles */
-.checkbox-item .checkbox-title {
-    /* If your existing CSS uses .checkbox-title, redirect to .checkbox-name */
-    font-weight: bold;
-    font-size: 1.1em;
-    color: #8b4513;
-}
-
-.checkbox-item.selected .checkbox-title {
-    color: #fff;
-}
-
-/* ===================================== */
-/* CHECKBOX-FREE CONTAINER STYLING       */
-/* Add this to the END of your CSS file */
-/* ===================================== */
 
 /* Main checkbox item container */
 .checkbox-item {
@@ -1286,28 +1230,6 @@ input[readonly] {
     color: #B8860B;
 }
 
-/* Item description */
-.checkbox-item .item-description {
-    color: #555;
-    font-size: 0.95em;
-    line-height: 1.4;
-}
-
-.checkbox-item.selected .item-description {
-    color: #f5f5f0;
-}
-
-/* Item metadata */
-.checkbox-item .item-meta {
-    font-size: 0.85em;
-    color: #777;
-    font-style: italic;
-}
-
-.checkbox-item.selected .item-meta {
-    color: #ccc;
-}
-
 /* Checkmark indicator */
 .checkbox-item .item-checkmark {
     position: absolute;
@@ -1347,20 +1269,4 @@ input[readonly] {
 /* Ensure cursor is correct */
 .checkbox-item[data-available="true"] {
     cursor: pointer;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .checkbox-item {
-        padding: 10px 12px;
-    }
-    
-    .checkbox-item .item-checkmark {
-        right: 10px;
-        font-size: 20px;
-    }
-    
-    .checkbox-item .item-content {
-        padding-right: 35px;
-    }
 }
