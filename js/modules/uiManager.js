@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0031
-// Fixed: Added setExpensive method for SkillsManager
+// SWADE Character Creator v2 - UIManager Module v1.0032
+// Fixed: Added setTitle method for skill tooltips
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0031";
+        this.VERSION = "V1.0032";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Added setExpensive method for skills!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Added setTitle method for skill tooltips!`);
     }
 
     displayVersion() {
@@ -704,6 +704,11 @@ export class UIManager {
                     container.style.borderColor = '#dee2e6';
                     attributeSpan.style.color = '#666';
                 }
+            },
+            setTitle: (title) => {
+                // Set tooltip title for skill control
+                container.title = title;
+                console.log(`🎯 Skill ${skillName} title set to: ${title}`);
             }
         };
     }
