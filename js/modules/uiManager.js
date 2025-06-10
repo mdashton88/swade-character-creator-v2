@@ -3,8 +3,8 @@
 
 export class UIManager {
     constructor() {
-        this.version = 'V1.0025'; // Added Clear button + capitalization fix
-        console.log(`🎯 UIManager ${this.version} initialized - Added Clear button and capitalization`);
+        this.version = 'V1.0026'; // Fixed overly broad white text CSS
+        console.log(`🎯 UIManager ${this.version} initialized - Fixed white text CSS to header only`);
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
@@ -105,55 +105,60 @@ export class UIManager {
             `;
             
             document.body.appendChild(overlayVersion);
-            console.log(`✅ Version ${this.version} overlay displayed - Clear button + capitalization added`);
+            console.log(`✅ Version ${this.version} overlay displayed - Fixed white text to header only`);
         }, 200);
     }
 
-    // Style header to make all text white
+    // Style header to make ONLY red header text white (not everything!)
     styleHeader() {
         setTimeout(() => {
-            // Inject CSS to make header text white
-            const styleId = 'header-white-text';
-            
-            if (!document.getElementById(styleId)) {
-                const style = document.createElement('style');
-                style.id = styleId;
-                style.textContent = `
-                    /* Make all header text white */
-                    header,
-                    .header,
-                    [class*="header"],
-                    [style*="background: #"] h1,
-                    [style*="background: #"] h2,
-                    [style*="background: #"] h3,
-                    [style*="background:#"] h1,
-                    [style*="background:#"] h2,
-                    [style*="background:#"] h3,
-                    [style*="background: rgb"] h1,
-                    [style*="background: rgb"] h2,
-                    [style*="background: rgb"] h3 {
-                        color: white !important;
-                    }
-                    
-                    /* Target the specific red header based on your screenshot */
-                    [style*="background: #"] *,
-                    [style*="background:#"] *,
-                    [style*="background: rgb"] * {
-                        color: white !important;
-                    }
-                    
-                    /* Fallback for any header-looking elements */
-                    body > *:first-child h1,
-                    body > *:first-child h2,
-                    body > *:first-child h3,
-                    body > *:first-child * {
-                        color: white !important;
-                    }
-                `;
-                
-                document.head.appendChild(style);
-                console.log('✅ Header styling applied - all text should be white');
+            // Remove any existing broad styles
+            const existingStyle = document.getElementById('header-white-text');
+            if (existingStyle) {
+                existingStyle.remove();
             }
+            
+            // Inject SPECIFIC CSS for just the red header block
+            const style = document.createElement('style');
+            style.id = 'header-white-text';
+            style.textContent = `
+                /* ONLY target the red header block - be very specific */
+                .header,
+                header,
+                [style*="background-color: #a72c2c"],
+                [style*="background: #a72c2c"],
+                [style*="background-color:#a72c2c"],
+                [style*="background:#a72c2c"],
+                [style*="background-color: rgb(167, 44, 44)"],
+                [style*="background: rgb(167, 44, 44)"] {
+                    color: white !important;
+                }
+                
+                /* Target children of red header specifically */
+                .header h1,
+                .header h2,
+                .header h3,
+                header h1,
+                header h2, 
+                header h3,
+                [style*="background-color: #a72c2c"] h1,
+                [style*="background-color: #a72c2c"] h2,
+                [style*="background-color: #a72c2c"] h3,
+                [style*="background: #a72c2c"] h1,
+                [style*="background: #a72c2c"] h2,
+                [style*="background: #a72c2c"] h3 {
+                    color: white !important;
+                }
+                
+                /* Be very specific - only red backgrounds */
+                [style*="background-color: #a72c2c"] *:not(button):not(input):not(select),
+                [style*="background: #a72c2c"] *:not(button):not(input):not(select) {
+                    color: white !important;
+                }
+            `;
+            
+            document.head.appendChild(style);
+            console.log('✅ Fixed header styling - ONLY red header should be white now');
         }, 100);
     }
 
