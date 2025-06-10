@@ -2,504 +2,122 @@
 
 export class UIManager {
     constructor() {
-        this.notifications = [];
-        this.modals = new Map();
-        this.debounceTimers = new Map();
+        this.notificationContainer = null;
+        this.initializeNotifications();
     }
 
-    // Element creation utilities - ALWAYS returns a valid DOM element
-    createElement(tag, className = '', content = '') {
-        const element = document.createElement(tag);
-        if (className) element.className = className;
-        if (content) element.textContent = content;
-        return element;
-    }
-
-    createButton(text, className = '', onClick = null) {
-        const button = this.createElement('button', className, text);
-        if (onClick) button.addEventListener('click', onClick);
-        return button;
-    }
-
-    createInput(type, className = '', placeholder = '') {
-        const input = this.createElement('input', className);
-        input.type = type;
-        if (placeholder) input.placeholder = placeholder;
-        return input;
-    }
-
-    createSelect(options, className = '', onChange = null) {
-        const select = this.createElement('select', className);
-        options.forEach(option => {
-            const optionElement = this.createElement('option');
-            optionElement.value = option.value;
-            optionElement.textContent = option.text;
-            select.appendChild(optionElement);
-        });
-        if (onChange) select.addEventListener('change', onChange);
-        return select;
-    }
-
-    // Clear all child elements
-    clearElement(element) {
-        if (!element) return;
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-    }
-
-    // Debounce utility
-    debounce(func, wait, id) {
-        if (this.debounceTimers.has(id)) {
-            clearTimeout(this.debounceTimers.get(id));
-        }
-        
-        const timeout = setTimeout(() => {
-            func();
-            this.debounceTimers.delete(id);
-        }, wait);
-        
-        this.debounceTimers.set(id, timeout);
-    }
-
-    // Loading states
-    showLoading(element, message = 'Loading...') {
-        this.clearElement(element);
-        const loadingDiv = this.createElement('div', 'loading');
-        loadingDiv.innerHTML = `
-            <div class="spinner"></div>
-            <p>${message}</p>
-        `;
-        element.appendChild(loadingDiv);
-    }
-
-    hideLoading(element) {
-        const loadingDiv = element.querySelector('.loading');
-        if (loadingDiv) loadingDiv.remove();
-    }
-
-    // Error display
-    showError(element, message) {
-        const errorDiv = this.createElement('div', 'error-message', message);
-        element.appendChild(errorDiv);
-        setTimeout(() => errorDiv.remove(), 5000);
-    }
-
-    // Notifications
-    showNotification(message, type = 'info', duration = 3000) {
-        const notification = {
-            id: Date.now(),
-            message,
-            type,
-            duration
-        };
-
-        this.notifications.push(notification);
-        this.renderNotification(notification);
-
-        if (duration > 0) {
-            setTimeout(() => this.removeNotification(notification.id), duration);
-        }
-
-        return notification.id;
-    }
-
-    renderNotification(notification) {
-        let container = document.getElementById('notification-container');
-        if (!container) {
-            container = this.createElement('div', 'notification-container');
-            container.id = 'notification-container';
-            document.body.appendChild(container);
-        }
-
-        const notificationElement = this.createElement('div', `notification ${notification.type}`);
-        notificationElement.dataset.notificationId = notification.id;
-        notificationElement.innerHTML = `
-            <span>${notification.message}</span>
-            <button class="close-btn" onclick="uiManager.removeNotification(${notification.id})">&times;</button>
-        `;
-
-        container.appendChild(notificationElement);
-    }
-
-    removeNotification(id) {
-        const element = document.querySelector(`[data-notification-id="${id}"]`);
-        if (element) {
-            element.classList.add('fade-out');
-            setTimeout(() => element.remove(), 300);
-        }
-        this.notifications = this.notifications.filter(n => n.id !== id);
-    }
-
-    // Modal management
-    createModal(id, title, content, options = {}) {
-        const modal = this.createElement('div', 'modal');
-        modal.id = `modal-${id}`;
-        
-        const modalContent = this.createElement('div', 'modal-content');
-        
-        const header = this.createElement('div', 'modal-header');
-        header.innerHTML = `
-            <h2>${title}</h2>
-            <button class="close-btn" onclick="uiManager.closeModal('${id}')">&times;</button>
-        `;
-        
-        const body = this.createElement('div', 'modal-body');
-        if (typeof content === 'string') {
-            body.innerHTML = content;
+    initializeNotifications() {
+        // Create notification container if it doesn't exist
+        if (!document.querySelector('.notification-container')) {
+            this.notificationContainer = document.createElement('div');
+            this.notificationContainer.className = 'notification-container';
+            this.notificationContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                max-width: 400px;
+            `;
+            document.body.appendChild(this.notificationContainer);
         } else {
-            body.appendChild(content);
-        }
-        
-        modalContent.appendChild(header);
-        modalContent.appendChild(body);
-        
-        if (options.footer) {
-            const footer = this.createElement('div', 'modal-footer');
-            footer.appendChild(options.footer);
-            modalContent.appendChild(footer);
-        }
-        
-        modal.appendChild(modalContent);
-        document.body.appendChild(modal);
-        
-        this.modals.set(id, modal);
-        
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) this.closeModal(id);
-        });
-        
-        return modal;
-    }
-
-    openModal(id) {
-        const modal = this.modals.get(id);
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            this.notificationContainer = document.querySelector('.notification-container');
         }
     }
 
-    closeModal(id) {
-        const modal = this.modals.get(id);
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
+    // Generic element creation
+    createElement(tagName, className = '', textContent = '') {
+        try {
+            const element = document.createElement(tagName);
+            if (className) {
+                element.className = className;
+            }
+            if (textContent) {
+                element.textContent = textContent;
+            }
+            return element;
+        } catch (error) {
+            console.error('Error creating element:', error);
+            // Return a fallback div
+            const fallback = document.createElement('div');
+            fallback.textContent = textContent || 'Error creating element';
+            return fallback;
         }
     }
 
-    // Create checkbox item - ROBUST VERSION
-    createCheckboxItem(name, description, meta, isSelected = false, isAvailable = true, onChange = null) {
-        // Always create valid DOM elements using basic DOM API
-        const container = document.createElement('div');
-        container.className = 'checkbox-item';
-        
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `${(name || '').toLowerCase().replace(/\s+/g, '-')}-checkbox`;
-        checkbox.checked = isSelected;
-        checkbox.disabled = !isAvailable;
-        
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'item-name';
-        nameSpan.textContent = name || '';
-        label.appendChild(nameSpan);
-        
-        if (description) {
-            const descSpan = document.createElement('span');
-            descSpan.className = 'item-description';
-            descSpan.textContent = description;
-            label.appendChild(descSpan);
-        }
-        
-        if (meta) {
-            const metaSpan = document.createElement('span');
-            metaSpan.className = 'item-meta';
-            metaSpan.textContent = meta;
-            label.appendChild(metaSpan);
-        }
-        
-        container.appendChild(checkbox);
-        container.appendChild(label);
-        
-        if (!isAvailable) {
-            container.classList.add('unavailable');
-        }
-        
-        if (onChange && typeof onChange === 'function') {
-            checkbox.addEventListener('change', (e) => {
-                onChange(e.target.checked);
+    // Create select dropdown
+    createSelect(options, className = '', selectedValue = '') {
+        try {
+            const select = document.createElement('select');
+            if (className) {
+                select.className = className;
+            }
+
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                if (option.value === selectedValue) {
+                    optionElement.selected = true;
+                }
+                select.appendChild(optionElement);
             });
+
+            return select;
+        } catch (error) {
+            console.error('Error creating select:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = 'Error creating select';
+            return fallback;
         }
-        
-        // Return an object with the expected properties - guaranteed to have valid DOM elements
-        return {
-            container: container,
-            checkbox: checkbox,
+    }
+
+    // Show notification
+    showNotification(message, type = 'info', duration = 3000) {
+        try {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
             
-            setSelected: function(selected) {
-                if (checkbox) checkbox.checked = selected;
-            },
-            
-            setAvailable: function(available) {
-                if (checkbox) checkbox.disabled = !available;
-                if (container) {
-                    if (!available) {
-                        container.classList.add('unavailable');
-                    } else {
-                        container.classList.remove('unavailable');
+            // Style the notification
+            notification.style.cssText = `
+                background: ${type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 12px 16px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+
+            this.notificationContainer.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+
+            // Auto remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
                     }
-                }
-            }
-        };
-    }
+                }, 300);
+            }, duration);
 
-    // Create attribute control - CORRECTED VERSION
-    createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
-        // Create the main container
-        const container = document.createElement('div');
-        container.className = 'attribute-control';
-        
-        // Create label
-        const label = document.createElement('label');
-        label.className = 'attribute-label';
-        label.textContent = attributeName.charAt(0).toUpperCase() + attributeName.slice(1);
-        container.appendChild(label);
-        
-        // Create control group
-        const controlGroup = document.createElement('div');
-        controlGroup.className = 'control-group';
-        
-        // Create decrease button
-        const decrementBtn = document.createElement('button');
-        decrementBtn.className = 'attribute-btn decrease';
-        decrementBtn.textContent = '-';
-        decrementBtn.onclick = onDecrement;
-        
-        // Create value display
-        const valueDisplay = document.createElement('span');
-        valueDisplay.className = 'attribute-value';
-        valueDisplay.textContent = `d${currentValue}`;
-        
-        // Create increase button
-        const incrementBtn = document.createElement('button');
-        incrementBtn.className = 'attribute-btn increase';
-        incrementBtn.textContent = '+';
-        incrementBtn.onclick = onIncrement;
-        
-        // Assemble control group
-        controlGroup.appendChild(decrementBtn);
-        controlGroup.appendChild(valueDisplay);
-        controlGroup.appendChild(incrementBtn);
-        container.appendChild(controlGroup);
-        
-        // Return an object with the expected properties and methods
-        return {
-            container: container,
-            incrementBtn: incrementBtn,
-            decrementBtn: decrementBtn,
-            
-            updateValue: function(newValue) {
-                valueDisplay.textContent = `d${newValue}`;
-            },
-            
-            setEnabled: function(canIncrement, canDecrement) {
-                incrementBtn.disabled = !canIncrement;
-                decrementBtn.disabled = !canDecrement;
-            }
-        };
-    }
-
-    // Create skill control - CORRECTED VERSION
-    createSkillControl(skillName, currentValue, linkedAttribute, onIncrement, onDecrement, isCore, isExpensive) {
-        // Create the main container
-        const container = document.createElement('div');
-        container.className = 'skill-control';
-        if (isCore) container.classList.add('core-skill');
-        if (isExpensive) container.classList.add('expensive-skill');
-        
-        // Create skill name label
-        const nameLabel = document.createElement('label');
-        nameLabel.className = 'skill-name';
-        nameLabel.textContent = skillName;
-        
-        // Create linked attribute label
-        const linkedLabel = document.createElement('span');
-        linkedLabel.className = 'skill-linked';
-        linkedLabel.textContent = `(${linkedAttribute})`;
-        
-        // Create control group
-        const controlGroup = document.createElement('div');
-        controlGroup.className = 'control-group';
-        
-        // Create decrease button
-        const decrementBtn = document.createElement('button');
-        decrementBtn.className = 'skill-btn decrease';
-        decrementBtn.textContent = '-';
-        decrementBtn.onclick = onDecrement;
-        
-        // Create value display
-        const valueDisplay = document.createElement('span');
-        valueDisplay.className = 'skill-value';
-        valueDisplay.textContent = this.formatSkillValue(currentValue);
-        
-        // Create increase button
-        const incrementBtn = document.createElement('button');
-        incrementBtn.className = 'skill-btn increase';
-        incrementBtn.textContent = '+';
-        incrementBtn.onclick = onIncrement;
-        
-        // Assemble control group
-        controlGroup.appendChild(decrementBtn);
-        controlGroup.appendChild(valueDisplay);
-        controlGroup.appendChild(incrementBtn);
-        
-        // Assemble container
-        container.appendChild(nameLabel);
-        container.appendChild(linkedLabel);
-        container.appendChild(controlGroup);
-        
-        // Return an object with the expected properties and methods
-        return {
-            container: container,
-            incrementBtn: incrementBtn,
-            decrementBtn: decrementBtn,
-            
-            updateValue: function(newValue) {
-                valueDisplay.textContent = this.formatSkillValue(newValue);
-            }.bind(this),
-            
-            setEnabled: function(canIncrement, canDecrement) {
-                incrementBtn.disabled = !canIncrement;
-                decrementBtn.disabled = !canDecrement;
-            },
-            
-            setExpensive: function(isExpensive) {
-                if (isExpensive) {
-                    container.classList.add('expensive-skill');
-                } else {
-                    container.classList.remove('expensive-skill');
-                }
-            }
-        };
-    }
-
-    // Helper method to format skill values
-    formatSkillValue(value) {
-        if (value === 0 || !value) return 'd4-2';
-        return `d${value}`;
-    }
-
-    // Create collapsible section
-    createCollapsible(title, content, isOpen = false) {
-        const container = this.createElement('div', 'collapsible');
-        
-        const header = this.createElement('div', 'collapsible-header');
-        header.innerHTML = `
-            <span>${title}</span>
-            <span class="toggle-icon">${isOpen ? '▼' : '▶'}</span>
-        `;
-        
-        const body = this.createElement('div', 'collapsible-body');
-        if (!isOpen) body.style.display = 'none';
-        
-        if (typeof content === 'string') {
-            body.innerHTML = content;
-        } else {
-            body.appendChild(content);
+        } catch (error) {
+            console.error('Error showing notification:', error);
+            // Fallback to alert
+            alert(message);
         }
-        
-        header.addEventListener('click', () => {
-            const isVisible = body.style.display !== 'none';
-            body.style.display = isVisible ? 'none' : 'block';
-            header.querySelector('.toggle-icon').textContent = isVisible ? '▶' : '▼';
-        });
-        
-        container.appendChild(header);
-        container.appendChild(body);
-        
-        return container;
     }
 
-    // Tab system
-    createTabs(tabs) {
-        const container = this.createElement('div', 'tabs-container');
-        const tabHeaders = this.createElement('div', 'tab-headers');
-        const tabContents = this.createElement('div', 'tab-contents');
-        
-        tabs.forEach((tab, index) => {
-            // Create header
-            const header = this.createElement('button', 'tab-header', tab.label);
-            if (index === 0) header.classList.add('active');
-            header.addEventListener('click', () => this.switchTab(container, index));
-            tabHeaders.appendChild(header);
-            
-            // Create content
-            const content = this.createElement('div', 'tab-content');
-            if (index === 0) content.classList.add('active');
-            if (typeof tab.content === 'string') {
-                content.innerHTML = tab.content;
-            } else {
-                content.appendChild(tab.content);
-            }
-            tabContents.appendChild(content);
-        });
-        
-        container.appendChild(tabHeaders);
-        container.appendChild(tabContents);
-        
-        return container;
-    }
-
-    switchTab(container, index) {
-        container.querySelectorAll('.tab-header').forEach((header, i) => {
-            header.classList.toggle('active', i === index);
-        });
-        container.querySelectorAll('.tab-content').forEach((content, i) => {
-            content.classList.toggle('active', i === index);
-        });
-    }
-
-    // Tooltip system
-    addTooltip(element, text) {
-        element.classList.add('has-tooltip');
-        element.setAttribute('data-tooltip', text);
-    }
-
-    // Progress bar
-    createProgressBar(value, max, label = '') {
-        const container = this.createElement('div', 'progress-container');
-        
-        if (label) {
-            const labelElement = this.createElement('div', 'progress-label', label);
-            container.appendChild(labelElement);
-        }
-        
-        const progressBar = this.createElement('div', 'progress-bar');
-        const progressFill = this.createElement('div', 'progress-fill');
-        progressFill.style.width = `${(value / max) * 100}%`;
-        
-        const progressText = this.createElement('span', 'progress-text', `${value} / ${max}`);
-        
-        progressBar.appendChild(progressFill);
-        progressBar.appendChild(progressText);
-        container.appendChild(progressBar);
-        
-        return container;
-    }
-
-    updateProgressBar(container, value, max) {
-        const fill = container.querySelector('.progress-fill');
-        const text = container.querySelector('.progress-text');
-        if (fill) fill.style.width = `${(value / max) * 100}%`;
-        if (text) text.textContent = `${value} / ${max}`;
-    }
-
-    // Helper methods for class manipulation
+    // Utility methods for adding/removing CSS classes
     addClass(element, className) {
         if (element && element.classList) {
             element.classList.add(className);
@@ -512,17 +130,279 @@ export class UIManager {
         }
     }
 
-    // Create a simple div wrapper
-    createWrapper(className = '') {
-        return this.createElement('div', className);
+    // Create attribute control - Returns object with methods
+    createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
+        try {
+            const container = document.createElement('div');
+            container.className = 'attribute-control';
+
+            const label = document.createElement('span');
+            label.className = 'attribute-label';
+            label.textContent = attributeName;
+
+            const valueDisplay = document.createElement('span');
+            valueDisplay.className = 'attribute-value';
+            valueDisplay.textContent = `d${currentValue}`;
+
+            const decrementBtn = document.createElement('button');
+            decrementBtn.className = 'btn btn-small btn-decrement';
+            decrementBtn.textContent = '-';
+            decrementBtn.type = 'button';
+
+            const incrementBtn = document.createElement('button');
+            incrementBtn.className = 'btn btn-small btn-increment';
+            incrementBtn.textContent = '+';
+            incrementBtn.type = 'button';
+
+            const controlsDiv = document.createElement('div');
+            controlsDiv.className = 'attribute-controls';
+            controlsDiv.appendChild(decrementBtn);
+            controlsDiv.appendChild(valueDisplay);
+            controlsDiv.appendChild(incrementBtn);
+
+            container.appendChild(label);
+            container.appendChild(controlsDiv);
+
+            // Add event listeners
+            incrementBtn.addEventListener('click', () => {
+                if (onIncrement) onIncrement();
+            });
+
+            decrementBtn.addEventListener('click', () => {
+                if (onDecrement) onDecrement();
+            });
+
+            // Return object with methods that AttributesManager expects
+            return {
+                container: container,
+                incrementBtn: incrementBtn,
+                decrementBtn: decrementBtn,
+                updateValue: function(newValue) {
+                    valueDisplay.textContent = `d${newValue}`;
+                },
+                setEnabled: function(enabled) {
+                    incrementBtn.disabled = !enabled;
+                    decrementBtn.disabled = !enabled;
+                    if (enabled) {
+                        this.removeClass(container, 'disabled');
+                    } else {
+                        this.addClass(container, 'disabled');
+                    }
+                }.bind(this)
+            };
+        } catch (error) {
+            console.error('Error creating attribute control:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = `${attributeName}: Error`;
+            return { container: fallback, updateValue: () => {}, setEnabled: () => {} };
+        }
     }
 
-    // Create a form group
-    createFormGroup(label, input) {
-        const group = this.createElement('div', 'form-group');
-        const labelElement = this.createElement('label', '', label);
-        group.appendChild(labelElement);
-        group.appendChild(input);
-        return group;
+    // Create skill control - Returns object with methods
+    createSkillControl(skillName, currentValue, linkedAttribute, onIncrement, onDecrement, isCore, isExpensive) {
+        try {
+            const container = document.createElement('div');
+            container.className = `skill-item ${isCore ? 'core-skill' : ''} ${isExpensive ? 'expensive-skill' : ''}`;
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'skill-name';
+            nameSpan.textContent = skillName;
+
+            const attributeSpan = document.createElement('span');
+            attributeSpan.className = 'skill-attribute';
+            attributeSpan.textContent = `(${linkedAttribute})`;
+
+            const valueDisplay = document.createElement('span');
+            valueDisplay.className = 'skill-value';
+            valueDisplay.textContent = this.formatSkillValue(currentValue);
+
+            const decrementBtn = document.createElement('button');
+            decrementBtn.className = 'btn btn-small btn-decrement';
+            decrementBtn.textContent = '-';
+            decrementBtn.type = 'button';
+
+            const incrementBtn = document.createElement('button');
+            incrementBtn.className = 'btn btn-small btn-increment';
+            incrementBtn.textContent = '+';
+            incrementBtn.type = 'button';
+
+            const controlsDiv = document.createElement('div');
+            controlsDiv.className = 'skill-controls';
+            controlsDiv.appendChild(decrementBtn);
+            controlsDiv.appendChild(valueDisplay);
+            controlsDiv.appendChild(incrementBtn);
+
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'skill-label';
+            labelDiv.appendChild(nameSpan);
+            labelDiv.appendChild(attributeSpan);
+
+            container.appendChild(labelDiv);
+            container.appendChild(controlsDiv);
+
+            // Add event listeners
+            incrementBtn.addEventListener('click', () => {
+                if (onIncrement) onIncrement();
+            });
+
+            decrementBtn.addEventListener('click', () => {
+                if (onDecrement) onDecrement();
+            });
+
+            // Return object with methods that SkillsManager expects
+            return {
+                container: container,
+                incrementBtn: incrementBtn,
+                decrementBtn: decrementBtn,
+                updateValue: function(newValue) {
+                    valueDisplay.textContent = this.formatSkillValue(newValue);
+                }.bind(this),
+                setEnabled: function(enabled) {
+                    incrementBtn.disabled = !enabled;
+                    decrementBtn.disabled = !enabled;
+                    if (enabled) {
+                        this.removeClass(container, 'disabled');
+                    } else {
+                        this.addClass(container, 'disabled');
+                    }
+                }.bind(this),
+                setExpensive: function(expensive) {
+                    if (expensive) {
+                        this.addClass(container, 'expensive-skill');
+                    } else {
+                        this.removeClass(container, 'expensive-skill');
+                    }
+                }.bind(this)
+            };
+        } catch (error) {
+            console.error('Error creating skill control:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = `${skillName}: Error`;
+            return { container: fallback, updateValue: () => {}, setEnabled: () => {}, setExpensive: () => {} };
+        }
+    }
+
+    // Helper method to format skill values
+    formatSkillValue(value) {
+        if (value === 0) {
+            return 'd4-2'; // Untrained
+        } else {
+            return `d${value}`;
+        }
+    }
+
+    // Create checkbox item - Returns object with methods (used by Hindrances and Edges)
+    createCheckboxItem(name, description, meta, isSelected, isAvailable, onChange) {
+        try {
+            const container = document.createElement('div');
+            container.className = `checkbox-item ${isSelected ? 'selected' : ''} ${!isAvailable ? 'disabled' : ''}`;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `checkbox-${name.replace(/\s+/g, '-').toLowerCase()}`;
+            checkbox.checked = isSelected;
+            checkbox.disabled = !isAvailable;
+
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.className = 'checkbox-label';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'item-name';
+            nameSpan.textContent = name;
+
+            const descSpan = document.createElement('span');
+            descSpan.className = 'item-description';
+            descSpan.textContent = description;
+
+            const metaSpan = document.createElement('span');
+            metaSpan.className = 'item-meta';
+            metaSpan.textContent = meta;
+
+            label.appendChild(nameSpan);
+            label.appendChild(descSpan);
+            if (meta) {
+                label.appendChild(metaSpan);
+            }
+
+            container.appendChild(checkbox);
+            container.appendChild(label);
+
+            // Add change event listener
+            checkbox.addEventListener('change', (e) => {
+                if (onChange) {
+                    onChange(e.target.checked);
+                }
+            });
+
+            // Return object with methods that HindrancesManager and EdgesManager expect
+            return {
+                container: container,
+                checkbox: checkbox,
+                setSelected: function(selected) {
+                    checkbox.checked = selected;
+                    if (selected) {
+                        this.addClass(container, 'selected');
+                    } else {
+                        this.removeClass(container, 'selected');
+                    }
+                }.bind(this),
+                setAvailable: function(available) {
+                    checkbox.disabled = !available;
+                    if (available) {
+                        this.removeClass(container, 'disabled');
+                    } else {
+                        this.addClass(container, 'disabled');
+                    }
+                }.bind(this)
+            };
+        } catch (error) {
+            console.error('Error creating checkbox item:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = `${name}: Error`;
+            return { 
+                container: fallback, 
+                checkbox: null,
+                setSelected: () => {}, 
+                setAvailable: () => {} 
+            };
+        }
+    }
+
+    // Create skill grid section
+    createSkillGridSection(title) {
+        try {
+            const section = document.createElement('div');
+            section.className = 'skill-section';
+
+            const header = document.createElement('h3');
+            header.className = 'skill-section-header';
+            header.textContent = title;
+
+            const container = document.createElement('div');
+            container.className = 'skill-grid';
+
+            section.appendChild(header);
+            section.appendChild(container);
+
+            return {
+                section: section,
+                container: container,
+                title: header
+            };
+        } catch (error) {
+            console.error('Error creating skill grid section:', error);
+            const fallback = document.createElement('div');
+            fallback.textContent = `${title}: Error`;
+            return { section: fallback, container: fallback, title: fallback };
+        }
+    }
+
+    // Create skill item (different from createSkillControl)
+    createSkillItem(skillName, linkedAttribute, value, onChange) {
+        return this.createSkillControl(skillName, value, linkedAttribute, 
+            () => onChange(skillName, 1), 
+            () => onChange(skillName, -1), 
+            false, false);
     }
 }
