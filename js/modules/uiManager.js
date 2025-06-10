@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0039
-// Clean version - Fixed all syntax errors
+// SWADE Character Creator v2 - UIManager Module v1.0040
+// Clean version - Fixed all syntax errors + added missing clearElement method
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0039";
+        this.VERSION = "V1.0040";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Syntax errors fixed!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added clearElement method!`);
     }
 
     displayVersion() {
@@ -68,8 +68,7 @@ export class UIManager {
         });
 
         if (foundControls === 0) {
-            console.log('⚠️ No existing controls found - will wait and try again');
-            setTimeout(() => this.patchExistingControls(), 500);
+            console.log('⚠️ No existing controls found - AttributesManager will create them');
         } else {
             console.log(`✅ Patched ${foundControls} existing controls`);
         }
@@ -392,6 +391,22 @@ export class UIManager {
                 setTitle: function() { console.log('Fallback setTitle'); }
             };
         }
+    }
+
+    clearElement(element) {
+        console.log('🔧 clearElement called');
+        
+        if (!element) {
+            console.warn('⚠️ No element provided to clear');
+            return;
+        }
+
+        // Clear all child elements
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+        
+        console.log(`✅ Cleared element: ${element.tagName}${element.id ? '#' + element.id : ''}${element.className ? '.' + element.className : ''}`);
     }
 
     addClearButton(targetElement) {
