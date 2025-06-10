@@ -10,6 +10,12 @@ export class UIManager {
         this.injectVerticalAttributesCSS();
         this.hideOldAttributePointsDisplay();
         this.setupTwoColumnLayout();
+        
+        // Make this instance globally available for button state management
+        window.uiManagerInstance = this;
+        
+        // Fix button logic after everything loads
+        this.fixAttributeButtonLogic();
     }
 
     // Inject CSS to force two-column layout and half-width attributes
@@ -495,6 +501,7 @@ export class UIManager {
                     diceIcon.innerHTML = newIcon.replace('width="24" height="24"', 'width="32" height="32"');
                 }.bind(this),
                 setEnabled: function(enabled) {
+                    // This is the old method - AttributeManager should call setIncrementEnabled/setDecrementEnabled instead
                     incrementBtn.disabled = !enabled;
                     decrementBtn.disabled = !enabled;
                     if (enabled) {
@@ -502,6 +509,35 @@ export class UIManager {
                     } else {
                         this.addClass(container, 'disabled');
                     }
+                }.bind(this),
+                // New separate methods for proper button control
+                setIncrementEnabled: function(enabled) {
+                    incrementBtn.disabled = !enabled;
+                    if (enabled) {
+                        incrementBtn.style.opacity = '1';
+                        incrementBtn.style.cursor = 'pointer';
+                    } else {
+                        incrementBtn.style.opacity = '0.5';
+                        incrementBtn.style.cursor = 'not-allowed';
+                    }
+                },
+                setDecrementEnabled: function(enabled) {
+                    decrementBtn.disabled = !enabled;
+                    if (enabled) {
+                        decrementBtn.style.opacity = '1';
+                        decrementBtn.style.cursor = 'pointer';
+                    } else {
+                        decrementBtn.style.opacity = '0.5';
+                        decrementBtn.style.cursor = 'not-allowed';
+                    }
+                },
+                // Method to set button states based on current situation
+                updateButtonStates: function(currentValue, remainingPoints, minValue = 4, maxValue = 12) {
+                    // Increment: enabled if we have points and not at maximum
+                    this.setIncrementEnabled(remainingPoints > 0 && currentValue < maxValue);
+                    
+                    // Decrement: enabled if above minimum, regardless of remaining points
+                    this.setDecrementEnabled(currentValue > minValue);
                 }.bind(this)
             };
         } catch (error) {
@@ -906,6 +942,241 @@ export class UIManager {
 
     // Setup two-column layout by moving derived stats
     setupTwoColumnLayout() {
+        setTimeout(() => {
+            // Find derived statistics section
+            const derivedStats = document.getElementById('derivedStats') || 
+                                document.querySelector('.derived-statistics') ||
+                                document.querySelector('[id*="derived"]');
+            
+            if (derivedStats) {
+                // Find attributes section to get its parent
+                const attributesSection = document.getElementById('attributesList') || 
+                                        document.querySelector('.attributes-list') ||
+                                        document.querySelector('[id*="attribute"]');
+                
+                if (attributesSection && attributesSection.parentNode) {
+                    // Create wrapper for two-column layout
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'attributes-section-content';
+                    wrapper.style.cssText = `
+                        display: flex;
+                        gap: 20px;
+                        align-items: flex-start;
+                        flex-wrap: wrap;
+                    `;
+                    
+                    // Create left column (attributes)
+                    const leftColumn = document.createElement('div');
+                    leftColumn.className = 'attributes-column';
+                    leftColumn.style.cssText = `
+                        flex: 1;
+                        max-width: 500px;
+                        min-width: 400px;
+                    `;
+                    
+                    // Create right column (derived stats)
+                    const rightColumn = document.createElement('div');
+                    rightColumn.className = 'derived-stats-column';
+                    rightColumn.style.cssText = `
+                        flex: 0 0 200px;
+                        margin-top: 0;
+                    `;
+                    
+                    // Move elements to their columns
+                    const parent = attributesSection.parentNode;
+                    leftColumn.appendChild(attributesSection);
+                    rightColumn.appendChild(derivedStats);
+                    
+                    wrapper.appendChild(leftColumn);
+                    wrapper.appendChild(rightColumn);
+                    
+                    parent.appendChild(wrapper);
+                    
+                    console.log('🎯 Setup two-column layout');
+                }
+            }
+        }, 200);
+    }
+
+    // Fix AttributeManager button logic by overriding behavior
+    fixAttributeButtonLogic() {
+        setTimeout(() => {
+            // Find all attribute controls and fix their button logic
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            attributeControls.forEach(control => {
+                const incrementBtn = control.querySelector('.btn-increment');
+                const decrementBtn = control.querySelector('.btn-decrement');
+                const valueDisplay = control.querySelector('.attribute-value');
+                
+                if (incrementBtn && decrementBtn && valueDisplay) {
+                    // Override the click handlers to include proper state management
+                    const originalIncrementHandler = incrementBtn.onclick;
+                    const originalDecrementHandler = decrementBtn.onclick;
+                    
+                    // Enhanced increment handler
+                    incrementBtn.onclick = function(e) {
+                        if (originalIncrementHandler) {
+                            originalIncrementHandler.call(this, e);
+                        }
+                        
+                        // Update button states after action
+                        setTimeout(() => {
+                            window.uiManagerInstance?.updateAllAttributeButtonStates();
+                        }, 50);
+                    };
+                    
+                    // Enhanced decrement handler  
+                    decrementBtn.onclick = function(e) {
+                        if (originalDecrementHandler) {
+                            originalDecrementHandler.call(this, e);
+                        }
+                        
+                        // Update button states after action
+                        setTimeout(() => {
+                            window.uiManagerInstance?.updateAllAttributeButtonStates();
+                        }, 50);
+                    };
+                }
+            });
+            
+            console.log('🎯 Fixed attribute button logic for', attributeControls.length, 'controls');
+        }, 300);
+    }
+
+    // Update button states for all attribute controls
+    updateAllAttributeButtonStates() {
+        try {
+            // Get character data
+            const character = window.characterCreator?.characterManager?.getCharacter();
+            if (!character) return;
+            
+            // Get remaining points
+            const availablePoints = window.characterCreator?.calculationsManager?.getAvailableAttributePoints?.(character);
+            const remainingPoints = availablePoints?.remaining || 0;
+            
+            // Update each attribute control
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            attributeControls.forEach(control => {
+                const incrementBtn = control.querySelector('.btn-increment');
+                const decrementBtn = control.querySelector('.btn-decrement');
+                const valueDisplay = control.querySelector('.attribute-value');
+                const label = control.querySelector('.attribute-label');
+                
+                if (incrementBtn && decrementBtn && valueDisplay && label) {
+                    // Extract current value from display
+                    const currentValueText = valueDisplay.textContent.replace('d', '');
+                    const currentValue = parseInt(currentValueText) || 4;
+                    
+                    // Update increment button (disabled if no points or at max)
+                    const canIncrement = remainingPoints > 0 && currentValue < 12;
+                    incrementBtn.disabled = !canIncrement;
+                    incrementBtn.style.opacity = canIncrement ? '1' : '0.5';
+                    incrementBtn.style.cursor = canIncrement ? 'pointer' : 'not-allowed';
+                    
+                    // Update decrement button (disabled only if at minimum)
+                    const canDecrement = currentValue > 4;
+                    decrementBtn.disabled = !canDecrement;
+                    decrementBtn.style.opacity = canDecrement ? '1' : '0.5'; 
+                    decrementBtn.style.cursor = canDecrement ? 'pointer' : 'not-allowed';
+                }
+            });
+            
+            console.log('🎯 Updated button states - remaining points:', remainingPoints);
+        } catch (error) {
+            console.error('Error updating attribute button states:', error);
+        }
+    }
+}
+        setTimeout(() => {
+            // Find all attribute controls and fix their button logic
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            attributeControls.forEach(control => {
+                const incrementBtn = control.querySelector('.btn-increment');
+                const decrementBtn = control.querySelector('.btn-decrement');
+                const valueDisplay = control.querySelector('.attribute-value');
+                
+                if (incrementBtn && decrementBtn && valueDisplay) {
+                    // Override the click handlers to include proper state management
+                    const originalIncrementHandler = incrementBtn.onclick;
+                    const originalDecrementHandler = decrementBtn.onclick;
+                    
+                    // Enhanced increment handler
+                    incrementBtn.onclick = function(e) {
+                        if (originalIncrementHandler) {
+                            originalIncrementHandler.call(this, e);
+                        }
+                        
+                        // Update button states after action
+                        setTimeout(() => {
+                            window.uiManagerInstance?.updateAllAttributeButtonStates();
+                        }, 50);
+                    };
+                    
+                    // Enhanced decrement handler  
+                    decrementBtn.onclick = function(e) {
+                        if (originalDecrementHandler) {
+                            originalDecrementHandler.call(this, e);
+                        }
+                        
+                        // Update button states after action
+                        setTimeout(() => {
+                            window.uiManagerInstance?.updateAllAttributeButtonStates();
+                        }, 50);
+                    };
+                }
+            });
+            
+            console.log('🎯 Fixed attribute button logic for', attributeControls.length, 'controls');
+        }, 300);
+    }
+
+    // Update button states for all attribute controls
+    updateAllAttributeButtonStates() {
+        try {
+            // Get character data
+            const character = window.characterCreator?.characterManager?.getCharacter();
+            if (!character) return;
+            
+            // Get remaining points
+            const availablePoints = window.characterCreator?.calculationsManager?.getAvailableAttributePoints?.(character);
+            const remainingPoints = availablePoints?.remaining || 0;
+            
+            // Update each attribute control
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            attributeControls.forEach(control => {
+                const incrementBtn = control.querySelector('.btn-increment');
+                const decrementBtn = control.querySelector('.btn-decrement');
+                const valueDisplay = control.querySelector('.attribute-value');
+                const label = control.querySelector('.attribute-label');
+                
+                if (incrementBtn && decrementBtn && valueDisplay && label) {
+                    // Extract current value from display
+                    const currentValueText = valueDisplay.textContent.replace('d', '');
+                    const currentValue = parseInt(currentValueText) || 4;
+                    
+                    // Update increment button (disabled if no points or at max)
+                    const canIncrement = remainingPoints > 0 && currentValue < 12;
+                    incrementBtn.disabled = !canIncrement;
+                    incrementBtn.style.opacity = canIncrement ? '1' : '0.5';
+                    incrementBtn.style.cursor = canIncrement ? 'pointer' : 'not-allowed';
+                    
+                    // Update decrement button (disabled only if at minimum)
+                    const canDecrement = currentValue > 4;
+                    decrementBtn.disabled = !canDecrement;
+                    decrementBtn.style.opacity = canDecrement ? '1' : '0.5'; 
+                    decrementBtn.style.cursor = canDecrement ? 'pointer' : 'not-allowed';
+                }
+            });
+            
+            console.log('🎯 Updated button states - remaining points:', remainingPoints);
+        } catch (error) {
+            console.error('Error updating attribute button states:', error);
+        }
+    }
         setTimeout(() => {
             // Find derived statistics section
             const derivedStats = document.getElementById('derivedStats') || 
