@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0042
-// Clean version - Fixed all syntax errors + added complete DOM utility methods
+// SWADE Character Creator v2 - UIManager Module v1.0043
+// Clean version - Complete DOM utility methods + createCheckboxItem for hindrances/edges
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0042";
+        this.VERSION = "V1.0043";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added createElement method!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added createCheckboxItem method!`);
     }
 
     displayVersion() {
@@ -458,6 +458,153 @@ export class UIManager {
         } else {
             // Fallback for older browsers
             return element.className.includes(className);
+        }
+    }
+
+    createCheckboxItem(item, type = 'hindrance') {
+        console.log(`🔧 createCheckboxItem called: ${item.name} (${type})`);
+        
+        try {
+            const container = this.createElement('div', {
+                className: `${type}-item`,
+                style: {
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    margin: '8px 0',
+                    padding: '8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    backgroundColor: 'white'
+                }
+            });
+
+            const checkbox = this.createElement('input', {
+                attributes: {
+                    type: 'checkbox',
+                    id: `${type}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
+                    name: type,
+                    value: item.name
+                },
+                style: {
+                    marginRight: '10px',
+                    marginTop: '2px'
+                }
+            });
+
+            const labelContainer = this.createElement('div', {
+                style: {
+                    flex: '1'
+                }
+            });
+
+            const label = this.createElement('label', {
+                attributes: {
+                    for: checkbox.id
+                },
+                style: {
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    marginRight: '10px'
+                }
+            });
+
+            // Set label text based on item structure
+            if (item.type) {
+                label.textContent = `${item.name} (${item.type})`;
+            } else {
+                label.textContent = item.name;
+            }
+
+            const description = this.createElement('div', {
+                className: `${type}-description`,
+                style: {
+                    fontSize: '13px',
+                    color: '#666',
+                    marginTop: '4px',
+                    lineHeight: '1.4'
+                }
+            });
+
+            // Set description text
+            if (item.description) {
+                description.textContent = item.description;
+            } else if (item.effect) {
+                description.textContent = item.effect;
+            } else {
+                description.textContent = 'No description available.';
+            }
+
+            // Show point value if available
+            if (item.points || item.value) {
+                const pointValue = item.points || item.value;
+                const pointsSpan = this.createElement('span', {
+                    textContent: ` (${pointValue > 0 ? '+' : ''}${pointValue} points)`,
+                    style: {
+                        fontWeight: 'bold',
+                        color: pointValue > 0 ? '#008000' : '#800000'
+                    }
+                });
+                label.appendChild(pointsSpan);
+            }
+
+            labelContainer.appendChild(label);
+            labelContainer.appendChild(description);
+
+            container.appendChild(checkbox);
+            container.appendChild(labelContainer);
+
+            // Return an object with the container and useful methods
+            const checkboxItem = {
+                container: container,
+                checkbox: checkbox,
+                label: label,
+                description: description,
+                
+                isChecked: function() {
+                    return checkbox.checked;
+                },
+                
+                setChecked: function(checked) {
+                    checkbox.checked = checked;
+                    console.log(`🔧 ${item.name} setChecked: ${checked}`);
+                },
+                
+                setEnabled: function(enabled) {
+                    checkbox.disabled = !enabled;
+                    if (enabled) {
+                        container.style.opacity = '1';
+                    } else {
+                        container.style.opacity = '0.6';
+                    }
+                },
+                
+                getValue: function() {
+                    return checkbox.checked ? (item.points || item.value || 1) : 0;
+                },
+                
+                getItem: function() {
+                    return item;
+                }
+            };
+
+            console.log(`✅ Successfully created checkbox item for: ${item.name}`, checkboxItem);
+            return checkboxItem;
+
+        } catch (error) {
+            console.error(`❌ Error creating checkbox item for ${item.name}:`, error);
+            
+            // Return a fallback object
+            return {
+                container: this.createElement('div'),
+                checkbox: this.createElement('input'),
+                label: this.createElement('label'),
+                description: this.createElement('div'),
+                isChecked: function() { return false; },
+                setChecked: function() { console.log('Fallback setChecked'); },
+                setEnabled: function() { console.log('Fallback setEnabled'); },
+                getValue: function() { return 0; },
+                getItem: function() { return item; }
+            };
         }
     }
 
