@@ -1,5 +1,7 @@
 /* SWADE Character Creator v2 - Main Stylesheet */
-/* Updated with new Crimson Text attributes styling */
+/* VERSION 2.2 - Fixed to target actual JavaScript-generated HTML structure */
+/* Last Modified: January 11, 2025 */
+/* Changes: Target real HTML elements instead of assumed class names */
 
 /* Import Crimson Text font for attributes */
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
@@ -305,14 +307,17 @@ input[readonly] {
     box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
 }
 
+/* TARGET ACTUAL HTML STRUCTURE - attribute labels */
+#attributesGrid span[style*="font-weight: bold"],
+#attributesGrid span[style*="min-width"],
 .attribute-label {
-    font-family: 'Crimson Text', serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    text-transform: uppercase;
-    min-width: 70px;
-    text-align: left;
+    font-family: 'Crimson Text', serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    text-transform: uppercase !important;
+    min-width: 70px !important;
+    text-align: left !important;
 }
 
 .attribute-controls {
@@ -321,34 +326,38 @@ input[readonly] {
     gap: 10px;
 }
 
+/* TARGET ACTUAL HTML STRUCTURE - attribute buttons */
+#attributesGrid button,
 .attr-button {
-    width: 32px;
-    height: 32px;
-    border: 2px solid #8B0000;
-    background: white;
-    color: #8B0000;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-family: 'Crimson Text', serif;
+    width: 32px !important;
+    height: 32px !important;
+    border: 2px solid #8B0000 !important;
+    background: white !important;
+    color: #8B0000 !important;
+    border-radius: 4px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    font-family: 'Crimson Text', serif !important;
 }
 
+#attributesGrid button:hover:not(:disabled),
 .attr-button:hover:not(:disabled) {
-    background: #8B0000;
-    color: white;
+    background: #8B0000 !important;
+    color: white !important;
 }
 
+#attributesGrid button:disabled,
 .attr-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #f5f5f5;
-    color: #ccc;
-    border-color: #ddd;
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    background: #f5f5f5 !important;
+    color: #ccc !important;
+    border-color: #ddd !important;
 }
 
 .attribute-value {
@@ -418,33 +427,56 @@ input[readonly] {
 }
 
 .skill-button {
-    width: 32px;
-    height: 32px;
-    border: 2px solid #8B0000;
-    background: white;
-    color: #8B0000;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-family: 'Crimson Text', serif;
+    width: 32px !important;
+    height: 32px !important;
+    border: 2px solid #8B0000 !important;
+    background: white !important;
+    color: #8B0000 !important;
+    border-radius: 4px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    font-family: 'Crimson Text', serif !important;
 }
 
-.skill-button:hover {
-    background: #8B0000;
-    color: white;
+/* TARGET ACTUAL SKILLS BUTTONS */
+#skillsGrid button,
+.skills-grid button {
+    width: 32px !important;
+    height: 32px !important;
+    border: 2px solid #8B0000 !important;
+    background: white !important;
+    color: #8B0000 !important;
+    border-radius: 4px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    font-family: 'Crimson Text', serif !important;
 }
 
-.skill-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #f5f5f5;
-    color: #ccc;
-    border-color: #ddd;
+.skill-button:hover,
+#skillsGrid button:hover,
+.skills-grid button:hover {
+    background: #8B0000 !important;
+    color: white !important;
+}
+
+.skill-button:disabled,
+#skillsGrid button:disabled,
+.skills-grid button:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    background: #f5f5f5 !important;
+    color: #ccc !important;
+    border-color: #ddd !important;
 }
 
 .skill-value {
