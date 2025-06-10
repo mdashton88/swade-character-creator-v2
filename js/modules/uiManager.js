@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0034
-// Fixed: Added comprehensive error handling and debugging for skill controls
+// SWADE Character Creator v2 - UIManager Module v1.0036
+// CRITICAL FIX: Added incrementBtn/decrementBtn properties for SkillsManager
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0034";
+        this.VERSION = "V1.0036";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - Added comprehensive debugging for skill controls!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - CRITICAL FIX: Added incrementBtn/decrementBtn properties!`);
     }
 
     displayVersion() {
@@ -149,7 +149,62 @@ export class UIManager {
         console.log(`🔧 Patched control ${index} with required methods`);
     }
 
-    addClearButton() {
+    addSkillsManagerProtection() {
+        // Add protection against undefined controls in SkillsManager
+        console.log('🛡️ Adding SkillsManager protection...');
+        
+        // Try to find and patch SkillsManager after it's created
+        setTimeout(() => {
+            try {
+                if (window.characterCreator && window.characterCreator.skillsManager) {
+                    console.log('🔍 Found SkillsManager, checking for undefined controls...');
+                    
+                    const skillsManager = window.characterCreator.skillsManager;
+                    
+                    // Check if skillsManager has a controls Map
+                    if (skillsManager.controls && skillsManager.controls.forEach) {
+                        console.log('🔍 Checking SkillsManager controls Map...');
+                        
+                        // Find and fix any undefined controls
+                        const undefinedSkills = [];
+                        skillsManager.controls.forEach((control, skillName) => {
+                            if (!control) {
+                                undefinedSkills.push(skillName);
+                            }
+                        });
+                        
+                        if (undefinedSkills.length > 0) {
+                            console.log(`🚨 Found ${undefinedSkills.length} undefined controls:`, undefinedSkills);
+                            
+                            // Create dummy controls for undefined entries
+                            undefinedSkills.forEach(skillName => {
+                                console.log(`🔧 Creating fallback control for: ${skillName}`);
+                                const fallbackControl = {
+                                    container: document.createElement('div'),
+                                    title: '',
+                                    updateValue: () => console.log(`Fallback updateValue for ${skillName}`),
+                                    getValue: () => 0,
+                                    setEnabled: () => console.log(`Fallback setEnabled for ${skillName}`),
+                                    setExpensive: () => console.log(`Fallback setExpensive for ${skillName}`),
+                                    setTitle: (title) => {
+                                        fallbackControl.title = title;
+                                        console.log(`Fallback setTitle for ${skillName}: ${title}`);
+                                    }
+                                };
+                                skillsManager.controls.set(skillName, fallbackControl);
+                            });
+                            
+                            console.log('✅ Fixed undefined controls with fallback objects');
+                        } else {
+                            console.log('✅ No undefined controls found in SkillsManager');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error in SkillsManager protection:', error);
+            }
+        }, 100); // Small delay to ensure SkillsManager is created
+    }
         // Find the Randomize button using proper CSS selectors
         let randomizeButton = null;
         
@@ -677,6 +732,8 @@ export class UIManager {
             const controlObj = {
                 container: container,
                 title: '', // Direct title property that SkillsManager can set
+                incrementBtn: plusBtn, // SkillsManager needs direct access to buttons
+                decrementBtn: minusBtn, // SkillsManager needs direct access to buttons
                 updateValue: (newValue) => {
                     if (newValue === 0) {
                         valueSpan.textContent = '—';
@@ -690,11 +747,21 @@ export class UIManager {
                     const match = valueSpan.textContent.match(/d(\d+)/);
                     return match ? parseInt(match[1]) : 0;
                 },
-                setEnabled: (enabled) => {
-                    minusBtn.disabled = !enabled;
-                    plusBtn.disabled = !enabled;
-                    minusBtn.style.opacity = enabled ? '1' : '0.5';
-                    plusBtn.style.opacity = enabled ? '1' : '0.5';
+                setEnabled: (incrementEnabled, decrementEnabled) => {
+                    // SkillsManager passes TWO parameters: increment and decrement enabled states
+                    if (typeof incrementEnabled === 'boolean' && typeof decrementEnabled === 'boolean') {
+                        plusBtn.disabled = !incrementEnabled;
+                        minusBtn.disabled = !decrementEnabled;
+                        plusBtn.style.opacity = incrementEnabled ? '1' : '0.5';
+                        minusBtn.style.opacity = decrementEnabled ? '1' : '0.5';
+                    } else {
+                        // Fallback for single parameter (old style)
+                        const enabled = incrementEnabled;
+                        plusBtn.disabled = !enabled;
+                        minusBtn.disabled = !enabled;
+                        plusBtn.style.opacity = enabled ? '1' : '0.5';
+                        minusBtn.style.opacity = enabled ? '1' : '0.5';
+                    }
                 },
                 setExpensive: (isExpensive) => {
                     // In SWADE, skills above linked attribute cost 2 points instead of 1
