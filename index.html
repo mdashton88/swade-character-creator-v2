@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWADE Character Creator v2.1</title>
+    <title>SWADE Character Creator v2.2</title>
     <!-- Updated CSS link with version tracking to force browser refresh -->
-    <link rel="stylesheet" href="css/main.css?v=2.1&debug=true">
+    <link rel="stylesheet" href="css/main.css?v=2.2&debug=true">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Debugging: Check if CSS loads -->
@@ -33,7 +33,7 @@
         <!-- DEBUG INFO BOX -->
         <div id="debugInfo" class="debug-info">
             🔍 DEBUG INFO:<br>
-            HTML: v2.1<br>
+            HTML: v2.2<br>
             CSS: Loading...<br>
             Time: <span id="debugTime"></span><br>
             <button onclick="location.reload(true)" style="margin-top:5px; padding:2px 5px;">Force Reload</button>
@@ -42,7 +42,7 @@
         <!-- Header -->
         <header class="header">
             <div class="title">SAVAGE WORLDS</div>
-            <div class="subtitle">Adventure Edition Character Creator v2.1</div>
+            <div class="subtitle">Adventure Edition Character Creator v2.2</div>
         </header>
 
         <!-- Main Content -->
@@ -298,13 +298,13 @@
     </div>
 
     <!-- Version info for debugging -->
-    <!-- HTML Version: 2.1 - Updated CSS versioning -->
+    <!-- HTML Version: 2.2 - Fixed to target actual JavaScript-generated HTML structure -->
     
     <!-- Debugging Script -->
     <script>
         // Debug info
         document.getElementById('debugTime').textContent = new Date().toLocaleTimeString();
-        console.log('🔍 HTML Version: 2.1 loaded at', new Date().toLocaleTimeString());
+        console.log('🔍 HTML Version: 2.2 loaded at', new Date().toLocaleTimeString());
         
         // Check if CSS loaded by testing a specific class
         window.addEventListener('load', function() {
@@ -326,11 +326,11 @@
                     
                     if (hasCrimsonText && hasRedColor) {
                         debugDiv.className = 'debug-info css-loaded';
-                        debugDiv.innerHTML = '✅ DEBUG INFO:<br>HTML: v2.1<br>CSS: v2.1 LOADED!<br>Font: Crimson Text ✅<br>Color: Red ✅<br>Time: ' + new Date().toLocaleTimeString();
-                        console.log('✅ CSS Version 2.1 successfully loaded!');
+                        debugDiv.innerHTML = '✅ DEBUG INFO:<br>HTML: v2.2<br>CSS: v2.2 LOADED!<br>Font: Crimson Text ✅<br>Color: Red ✅<br>Time: ' + new Date().toLocaleTimeString();
+                        console.log('✅ CSS Version 2.2 successfully loaded!');
                     } else {
-                        debugDiv.innerHTML = '❌ DEBUG INFO:<br>HTML: v2.1<br>CSS: OLD VERSION<br>Font: ' + fontFamily + '<br>Color: ' + color + '<br>Time: ' + new Date().toLocaleTimeString();
-                        console.log('❌ CSS Version 2.1 NOT loaded. Using old styles.');
+                        debugDiv.innerHTML = '❌ DEBUG INFO:<br>HTML: v2.2<br>CSS: OLD VERSION<br>Font: ' + fontFamily + '<br>Color: ' + color + '<br>Time: ' + new Date().toLocaleTimeString();
+                        console.log('❌ CSS Version 2.2 NOT loaded. Using old styles.');
                     }
                 }
                 
