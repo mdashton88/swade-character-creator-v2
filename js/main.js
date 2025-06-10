@@ -45,12 +45,28 @@ class SWADECharacterCreator {
             // Initialize UI manager
             this.uiManager = new UIManager();
             
+            // DEBUG: Check if method exists
+            console.log('=== UIManager Debug ===');
+            console.log('UIManager instance:', this.uiManager);
+            console.log('UIManager type:', typeof this.uiManager);
+            console.log('UIManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.uiManager)));
+            console.log('Has createAttributeControl?', typeof this.uiManager.createAttributeControl);
+            
+            // Make it global for debugging
+            window.uiManager = this.uiManager;
+            console.log('window.uiManager set:', window.uiManager);
+            
             // Initialize component managers
             this.attributesManager = new AttributesManager(
                 this.characterManager, 
                 this.calculationsManager, 
                 this.uiManager
             );
+            
+            // DEBUG: Check AttributesManager has uiManager
+            console.log('=== AttributesManager Debug ===');
+            console.log('AttributesManager.uiManager:', this.attributesManager.uiManager);
+            console.log('AttributesManager.uiManager.createAttributeControl:', this.attributesManager.uiManager.createAttributeControl);
             
             this.skillsManager = new SkillsManager(
                 this.dataManager,
@@ -107,6 +123,7 @@ class SWADECharacterCreator {
 
         } catch (error) {
             console.error('Failed to initialize SWADE Character Creator:', error);
+            console.error('Error stack:', error.stack);
             this.showError('Failed to load the character creator. Please refresh the page and try again.');
         }
     }
@@ -126,6 +143,8 @@ class SWADECharacterCreator {
     }
 
     async initializeUI() {
+        console.log('=== Starting UI initialization ===');
+        
         // DEBUG: Check what methods are available
         console.log('DataManager methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.dataManager)));
         
@@ -171,14 +190,23 @@ class SWADECharacterCreator {
         }
 
         // Initialize all UI components
+        console.log('=== Initializing AttributesManager UI ===');
         await this.attributesManager.initializeUI();
+        
+        console.log('=== Initializing SkillsManager UI ===');
         await this.skillsManager.initializeUI();
+        
+        console.log('=== Initializing HindrancesManager UI ===');
         await this.hindrancesManager.initializeUI();
+        
+        console.log('=== Initializing EdgesManager UI ===');
         await this.edgesManager.initializeUI();
         
         // Initialize other UI elements
         this.updateStartingFunds();
         this.initializeAncestryInfoBox();
+        
+        console.log('=== UI initialization complete ===');
     }
 
     setupEventListeners() {
