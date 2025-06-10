@@ -1,14 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0036
-// CRITICAL FIX: Added incrementBtn/decrementBtn properties for SkillsManager
+// SWADE Character Creator v2 - UIManager Module v1.0037
+// Fixed: Syntax error causing attribute controls not to display
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0036";
+        this.VERSION = "V1.0037";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - CRITICAL FIX: Added incrementBtn/decrementBtn properties!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Fixed syntax error and improved debugging!`);
     }
 
     displayVersion() {
