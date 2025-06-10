@@ -11,7 +11,7 @@ import { EdgesManager } from './modules/edgesManager.js';
 import { CalculationsManager } from './modules/calculationsManager.js';
 import { ExportManager } from './modules/exportManager.js';
 import { RandomizerManager } from './modules/randomizerManager.js';
-import EdgesHindrancesManager from './edges-hindrances-manager.js';
+// REMOVED: import EdgesHindrancesManager from './edges-hindrances-manager.js';
 
 class SWADECharacterCreator {
     constructor() {
@@ -73,15 +73,7 @@ class SWADECharacterCreator {
                 this.uiManager
             );
             
-            // Initialize the enhanced edges/hindrances manager after core managers are ready
-            console.log('About to create EdgesHindrancesManager...');
-            console.log('EdgesHindrancesManager class:', EdgesHindrancesManager);
-            try {
-                window.edgesHindrancesManager = new EdgesHindrancesManager();
-                console.log('EdgesHindrancesManager created successfully:', window.edgesHindrancesManager);
-            } catch (error) {
-                console.error('Error creating EdgesHindrancesManager:', error);
-            }
+            // REMOVED: EdgesHindrancesManager initialization code
             
             this.exportManager = new ExportManager(
                 this.dataManager,
