@@ -3,13 +3,14 @@
 
 export class UIManager {
     constructor() {
-        this.version = 'V1.0024'; // Updated version with header styling
-        console.log(`🎯 UIManager ${this.version} initialized - Clean emergency version with smart buttons`);
+        this.version = 'V1.0025'; // Added Clear button + capitalization fix
+        console.log(`🎯 UIManager ${this.version} initialized - Added Clear button and capitalization`);
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
         this.addVersionDisplay();
         this.styleHeader();
+        this.addClearButton();
         
         // Initialize smart button logic after everything loads
         setTimeout(() => this.initializeSmartButtons(), 500);
@@ -104,7 +105,7 @@ export class UIManager {
             `;
             
             document.body.appendChild(overlayVersion);
-            console.log(`✅ Version ${this.version} overlay displayed - should be very visible`);
+            console.log(`✅ Version ${this.version} overlay displayed - Clear button + capitalization added`);
         }, 200);
     }
 
@@ -154,6 +155,113 @@ export class UIManager {
                 console.log('✅ Header styling applied - all text should be white');
             }
         }, 100);
+    }
+
+    // Add Clear button next to Randomize button in Attributes section
+    addClearButton() {
+        setTimeout(() => {
+            // Find the Attributes section and its Randomize button
+            const attributesSection = document.querySelector('h2, h3, .section-title')?.closest('div') || 
+                                    document.querySelector('[id*="attribute"]') ||
+                                    document.querySelector('.attributes');
+            
+            if (attributesSection) {
+                // Look for the Randomize button
+                const randomizeBtn = attributesSection.querySelector('button:contains("Randomize")') ||
+                                   attributesSection.querySelector('[onclick*="random"]') ||
+                                   attributesSection.querySelector('.btn:contains("Randomize")') ||
+                                   [...attributesSection.querySelectorAll('button')].find(btn => 
+                                       btn.textContent.toLowerCase().includes('randomize'));
+                
+                if (randomizeBtn) {
+                    // Create Clear button with same styling as Randomize
+                    const clearBtn = document.createElement('button');
+                    clearBtn.className = randomizeBtn.className; // Copy exact classes
+                    clearBtn.textContent = '🗑️ Clear';
+                    clearBtn.type = 'button';
+                    
+                    // Copy styling from Randomize button
+                    const randomizeStyle = window.getComputedStyle(randomizeBtn);
+                    clearBtn.style.cssText = `
+                        background: ${randomizeStyle.background};
+                        color: ${randomizeStyle.color};
+                        padding: ${randomizeStyle.padding};
+                        margin: ${randomizeStyle.margin};
+                        border: ${randomizeStyle.border};
+                        border-radius: ${randomizeStyle.borderRadius};
+                        font-size: ${randomizeStyle.fontSize};
+                        font-weight: ${randomizeStyle.fontWeight};
+                        cursor: pointer;
+                        margin-right: 8px;
+                    `;
+                    
+                    // Add Clear functionality
+                    clearBtn.addEventListener('click', () => {
+                        if (window.characterCreator?.attributesManager?.clearAllAttributes) {
+                            window.characterCreator.attributesManager.clearAllAttributes();
+                            this.showNotification('All attributes cleared!', 'info');
+                        } else {
+                            // Fallback: try to reset to d4
+                            this.clearAllAttributesToD4();
+                        }
+                    });
+                    
+                    // Insert Clear button immediately before Randomize button
+                    randomizeBtn.parentNode.insertBefore(clearBtn, randomizeBtn);
+                    
+                    console.log('✅ Clear button added next to Randomize button');
+                } else {
+                    console.warn('⚠️ Could not find Randomize button to add Clear button');
+                }
+            } else {
+                console.warn('⚠️ Could not find Attributes section for Clear button');
+            }
+        }, 300);
+    }
+
+    // Fallback method to clear all attributes to d4
+    clearAllAttributesToD4() {
+        try {
+            const attributeControls = document.querySelectorAll('.attribute-control');
+            
+            // Reset all displayed values to d4
+            attributeControls.forEach(control => {
+                const valueDisplay = control.querySelector('.attribute-value');
+                if (valueDisplay) {
+                    valueDisplay.textContent = 'd4';
+                }
+            });
+            
+            // Try to update character data if available
+            if (window.characterCreator?.characterManager) {
+                const character = window.characterCreator.characterManager.getCharacter();
+                if (character && character.attributes) {
+                    // Reset all attributes to 4 (d4)
+                    Object.keys(character.attributes).forEach(attr => {
+                        character.attributes[attr] = 4;
+                    });
+                    
+                    // Trigger updates
+                    if (window.characterCreator.attributesManager?.updateDisplay) {
+                        window.characterCreator.attributesManager.updateDisplay();
+                    }
+                }
+            }
+            
+            this.showNotification('Attributes reset to d4!', 'success');
+            
+            // Update button states
+            setTimeout(() => this.updateAttributeButtonStates(), 100);
+            
+        } catch (error) {
+            console.error('Error clearing attributes:', error);
+            this.showNotification('Error clearing attributes', 'error');
+        }
+    }
+
+    // Utility method to capitalize first letter
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 
     loadDiceIcons() {
@@ -348,7 +456,7 @@ export class UIManager {
 
             const label = document.createElement('span');
             label.className = 'attribute-label';
-            label.textContent = attributeName;
+            label.textContent = this.capitalizeFirstLetter(attributeName); // Fixed capitalization
 
             const valueDisplay = document.createElement('span');
             valueDisplay.className = 'attribute-value';
