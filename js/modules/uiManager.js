@@ -3,12 +3,13 @@
 
 export class UIManager {
     constructor() {
-        this.version = 'V1.0023'; // Version tracker for debugging
+        this.version = 'V1.0024'; // Updated version with header styling
         console.log(`🎯 UIManager ${this.version} initialized - Clean emergency version with smart buttons`);
         this.notificationContainer = null;
         this.initializeNotifications();
         this.loadDiceIcons();
         this.addVersionDisplay();
+        this.styleHeader();
         
         // Initialize smart button logic after everything loads
         setTimeout(() => this.initializeSmartButtons(), 500);
@@ -34,13 +35,22 @@ export class UIManager {
     // Add version display to header for debugging
     addVersionDisplay() {
         setTimeout(() => {
-            // Look for the header area
-            const header = document.querySelector('.header') || 
-                          document.querySelector('header') || 
-                          document.querySelector('[class*="header"]') ||
-                          document.querySelector('h1') ||
-                          document.querySelector('.title');
+            // Remove any existing version display
+            const existingVersion = document.getElementById('version-display');
+            if (existingVersion) {
+                existingVersion.remove();
+            }
+
+            // Look for red header area more aggressively
+            let header = document.querySelector('[style*="background"]') || // Look for styled backgrounds
+                        document.querySelector('.header') || 
+                        document.querySelector('header') || 
+                        document.querySelector('[class*="header"]') ||
+                        document.querySelector('h1') ||
+                        document.querySelector('.title') ||
+                        document.body.children[0]; // Fallback to first element
             
+            // If we found a header, try to use it
             if (header) {
                 // Create version display
                 const versionDisplay = document.createElement('div');
@@ -50,14 +60,16 @@ export class UIManager {
                     position: absolute;
                     top: 10px;
                     right: 20px;
-                    color: white;
-                    font-size: 14px;
+                    color: white !important;
+                    font-size: 16px;
                     font-weight: bold;
-                    background: rgba(0,0,0,0.3);
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    z-index: 1000;
+                    background: rgba(0,0,0,0.4);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    z-index: 10000;
                     font-family: monospace;
+                    border: 2px solid rgba(255,255,255,0.5);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
                 `;
                 
                 // Make header relative if it's not already positioned
@@ -67,29 +79,79 @@ export class UIManager {
                 }
                 
                 header.appendChild(versionDisplay);
-                console.log(`✅ Version ${this.version} displayed in header`);
-            } else {
-                // Fallback: add to body top-right
-                const versionDisplay = document.createElement('div');
-                versionDisplay.id = 'version-display';
-                versionDisplay.textContent = this.version;
-                versionDisplay.style.cssText = `
-                    position: fixed;
-                    top: 10px;
-                    right: 20px;
-                    color: white;
-                    font-size: 14px;
-                    font-weight: bold;
-                    background: rgba(139, 0, 0, 0.8);
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                    z-index: 10000;
-                    font-family: monospace;
-                    border: 1px solid rgba(255,255,255,0.3);
+                console.log(`✅ Version ${this.version} displayed in header:`, header);
+            }
+            
+            // ALWAYS add fallback overlay version - very visible
+            const overlayVersion = document.createElement('div');
+            overlayVersion.id = 'version-display-overlay';
+            overlayVersion.textContent = this.version;
+            overlayVersion.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                color: white !important;
+                font-size: 18px;
+                font-weight: bold;
+                background: rgba(139, 0, 0, 0.9);
+                padding: 8px 16px;
+                border-radius: 8px;
+                z-index: 99999;
+                font-family: monospace;
+                border: 2px solid white;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            `;
+            
+            document.body.appendChild(overlayVersion);
+            console.log(`✅ Version ${this.version} overlay displayed - should be very visible`);
+        }, 200);
+    }
+
+    // Style header to make all text white
+    styleHeader() {
+        setTimeout(() => {
+            // Inject CSS to make header text white
+            const styleId = 'header-white-text';
+            
+            if (!document.getElementById(styleId)) {
+                const style = document.createElement('style');
+                style.id = styleId;
+                style.textContent = `
+                    /* Make all header text white */
+                    header,
+                    .header,
+                    [class*="header"],
+                    [style*="background: #"] h1,
+                    [style*="background: #"] h2,
+                    [style*="background: #"] h3,
+                    [style*="background:#"] h1,
+                    [style*="background:#"] h2,
+                    [style*="background:#"] h3,
+                    [style*="background: rgb"] h1,
+                    [style*="background: rgb"] h2,
+                    [style*="background: rgb"] h3 {
+                        color: white !important;
+                    }
+                    
+                    /* Target the specific red header based on your screenshot */
+                    [style*="background: #"] *,
+                    [style*="background:#"] *,
+                    [style*="background: rgb"] * {
+                        color: white !important;
+                    }
+                    
+                    /* Fallback for any header-looking elements */
+                    body > *:first-child h1,
+                    body > *:first-child h2,
+                    body > *:first-child h3,
+                    body > *:first-child * {
+                        color: white !important;
+                    }
                 `;
                 
-                document.body.appendChild(versionDisplay);
-                console.log(`✅ Version ${this.version} displayed as overlay`);
+                document.head.appendChild(style);
+                console.log('✅ Header styling applied - all text should be white');
             }
         }, 100);
     }
