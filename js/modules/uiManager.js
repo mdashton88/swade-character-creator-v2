@@ -1,13 +1,14 @@
-// SWADE Character Creator v2 - UIManager Module v1.0027
-// Fixed CSS selector issue
+// SWADE Character Creator v2 - UIManager Module v1.0028
+// Emergency fix: Patch existing controls instead of creating new ones
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0027";
+        this.VERSION = "V1.0028";
         this.displayVersion();
         this.setupWhiteHeaderText();
+        this.patchExistingAttributeControls();
         this.addClearButton();
-        console.log(`🎯 UIManager ${this.VERSION} initialized - CSS selector fixed!`);
+        console.log(`🎯 UIManager ${this.VERSION} initialized - Existing controls patched!`);
     }
 
     displayVersion() {
@@ -54,6 +55,98 @@ export class UIManager {
         `;
         document.head.insertAdjacentHTML('beforeend', headerCSS);
         console.log('✅ White header text CSS applied (red header only)');
+    }
+
+    patchExistingAttributeControls() {
+        // Find all existing attribute controls and add missing methods
+        console.log('🔍 Looking for existing attribute controls to patch...');
+        
+        // Try multiple selectors to find attribute controls
+        const possibleSelectors = [
+            '[data-attribute]',
+            '.attribute-control',
+            '[id*="attribute"]',
+            '.dice-control',
+            'div[data-attribute]'
+        ];
+
+        let foundControls = [];
+        
+        for (const selector of possibleSelectors) {
+            const controls = document.querySelectorAll(selector);
+            if (controls.length > 0) {
+                foundControls = Array.from(controls);
+                console.log(`✅ Found ${controls.length} controls with selector: ${selector}`);
+                break;
+            }
+        }
+
+        // If no controls found, try a delayed patch
+        if (foundControls.length === 0) {
+            console.log('⚠️ No controls found immediately, scheduling delayed patch...');
+            setTimeout(() => this.patchExistingAttributeControls(), 1000);
+            return;
+        }
+
+        // Patch each control with required methods
+        foundControls.forEach((control, index) => {
+            this.patchControl(control, index);
+        });
+
+        console.log(`🎯 Patched ${foundControls.length} existing attribute controls`);
+    }
+
+    patchControl(control, index) {
+        // Add updateValue method if it doesn't exist
+        if (!control.updateValue) {
+            control.updateValue = (newValue) => {
+                console.log(`🎯 UpdateValue called on control ${index}: ${newValue}`);
+                
+                // Try to find and update value display
+                const valueSelectors = [
+                    '.die-value',
+                    '.attribute-value', 
+                    '[data-value]',
+                    'span:contains("d")',
+                    'span'
+                ];
+                
+                for (const selector of valueSelectors) {
+                    const valueElement = control.querySelector(selector);
+                    if (valueElement && valueElement.textContent.includes('d')) {
+                        valueElement.textContent = `d${newValue}`;
+                        console.log(`✅ Updated value display to d${newValue}`);
+                        break;
+                    }
+                }
+            };
+        }
+
+        // Add getValue method if it doesn't exist
+        if (!control.getValue) {
+            control.getValue = () => {
+                const valueElement = control.querySelector('.die-value, .attribute-value, [data-value], span');
+                if (valueElement) {
+                    const match = valueElement.textContent.match(/d(\d+)/);
+                    return match ? parseInt(match[1]) : 4;
+                }
+                return 4; // Default to d4
+            };
+        }
+
+        // Add setEnabled method if it doesn't exist
+        if (!control.setEnabled) {
+            control.setEnabled = (enabled) => {
+                const buttons = control.querySelectorAll('button');
+                buttons.forEach(button => {
+                    button.disabled = !enabled;
+                    button.style.opacity = enabled ? '1' : '0.5';
+                    button.style.cursor = enabled ? 'pointer' : 'not-allowed';
+                });
+            };
+        }
+
+        console.log(`🔧 Patched control ${index} with required methods`);
     }
 
     addClearButton() {
