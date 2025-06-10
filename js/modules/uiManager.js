@@ -228,49 +228,60 @@ export class UIManager {
         return container;
     }
 
-    // Create attribute control - SIMPLIFIED VERSION
-    createAttributeControl(attribute, value, onChange) {
-        // Create container div using basic DOM methods
+    // Create attribute control - CORRECTED VERSION
+    createAttributeControl(attributeName, currentValue, onIncrement, onDecrement) {
+        // Create the main container
         const container = document.createElement('div');
         container.className = 'attribute-control';
         
         // Create label
         const label = document.createElement('label');
         label.className = 'attribute-label';
-        label.textContent = attribute;
+        label.textContent = attributeName.charAt(0).toUpperCase() + attributeName.slice(1);
+        container.appendChild(label);
         
-        // Create control group div
+        // Create control group
         const controlGroup = document.createElement('div');
         controlGroup.className = 'control-group';
         
         // Create decrease button
-        const decreaseBtn = document.createElement('button');
-        decreaseBtn.className = 'attribute-btn decrease';
-        decreaseBtn.textContent = '-';
-        decreaseBtn.onclick = () => onChange(attribute, -1);
+        const decrementBtn = document.createElement('button');
+        decrementBtn.className = 'attribute-btn decrease';
+        decrementBtn.textContent = '-';
+        decrementBtn.onclick = onDecrement;
         
         // Create value display
         const valueDisplay = document.createElement('span');
         valueDisplay.className = 'attribute-value';
-        valueDisplay.textContent = value;
+        valueDisplay.textContent = `d${currentValue}`;
         
         // Create increase button
-        const increaseBtn = document.createElement('button');
-        increaseBtn.className = 'attribute-btn increase';
-        increaseBtn.textContent = '+';
-        increaseBtn.onclick = () => onChange(attribute, 1);
+        const incrementBtn = document.createElement('button');
+        incrementBtn.className = 'attribute-btn increase';
+        incrementBtn.textContent = '+';
+        incrementBtn.onclick = onIncrement;
         
-        // Assemble the control group
-        controlGroup.appendChild(decreaseBtn);
+        // Assemble control group
+        controlGroup.appendChild(decrementBtn);
         controlGroup.appendChild(valueDisplay);
-        controlGroup.appendChild(increaseBtn);
-        
-        // Assemble the container
-        container.appendChild(label);
+        controlGroup.appendChild(incrementBtn);
         container.appendChild(controlGroup);
         
-        // Return the container (guaranteed to be a DOM element)
-        return container;
+        // Return an object with the expected properties and methods
+        return {
+            container: container,
+            incrementBtn: incrementBtn,
+            decrementBtn: decrementBtn,
+            
+            updateValue: function(newValue) {
+                valueDisplay.textContent = `d${newValue}`;
+            },
+            
+            setEnabled: function(canIncrement, canDecrement) {
+                incrementBtn.disabled = !canIncrement;
+                decrementBtn.disabled = !canDecrement;
+            }
+        };
     }
 
     // Create skill control
@@ -420,6 +431,19 @@ export class UIManager {
         const text = container.querySelector('.progress-text');
         if (fill) fill.style.width = `${(value / max) * 100}%`;
         if (text) text.textContent = `${value} / ${max}`;
+    }
+
+    // Helper methods for class manipulation
+    addClass(element, className) {
+        if (element && element.classList) {
+            element.classList.add(className);
+        }
+    }
+
+    removeClass(element, className) {
+        if (element && element.classList) {
+            element.classList.remove(className);
+        }
     }
 
     // Create a simple div wrapper
