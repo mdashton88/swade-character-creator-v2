@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0040
-// Clean version - Fixed all syntax errors + added missing clearElement method
+// SWADE Character Creator v2 - UIManager Module v1.0041
+// Clean version - Fixed all syntax errors + added missing DOM utility methods
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0040";
+        this.VERSION = "V1.0041";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added clearElement method!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added DOM utility methods!`);
     }
 
     displayVersion() {
@@ -407,6 +407,73 @@ export class UIManager {
         }
         
         console.log(`✅ Cleared element: ${element.tagName}${element.id ? '#' + element.id : ''}${element.className ? '.' + element.className : ''}`);
+    }
+
+    addClass(element, className) {
+        console.log(`🔧 addClass called: ${className}`);
+        
+        if (!element) {
+            console.warn('⚠️ No element provided to addClass');
+            return;
+        }
+
+        if (element.classList) {
+            element.classList.add(className);
+        } else {
+            // Fallback for older browsers
+            if (!element.className.includes(className)) {
+                element.className += ` ${className}`;
+            }
+        }
+        
+        console.log(`✅ Added class "${className}" to element`);
+    }
+
+    removeClass(element, className) {
+        console.log(`🔧 removeClass called: ${className}`);
+        
+        if (!element) {
+            console.warn('⚠️ No element provided to removeClass');
+            return;
+        }
+
+        if (element.classList) {
+            element.classList.remove(className);
+        } else {
+            // Fallback for older browsers
+            element.className = element.className.replace(new RegExp(`\\b${className}\\b`, 'g'), '').trim();
+        }
+        
+        console.log(`✅ Removed class "${className}" from element`);
+    }
+
+    hasClass(element, className) {
+        if (!element) {
+            console.warn('⚠️ No element provided to hasClass');
+            return false;
+        }
+
+        if (element.classList) {
+            return element.classList.contains(className);
+        } else {
+            // Fallback for older browsers
+            return element.className.includes(className);
+        }
+    }
+
+    toggleClass(element, className) {
+        console.log(`🔧 toggleClass called: ${className}`);
+        
+        if (!element) {
+            console.warn('⚠️ No element provided to toggleClass');
+            return;
+        }
+
+        if (this.hasClass(element, className)) {
+            this.removeClass(element, className);
+        } else {
+            this.addClass(element, className);
+        }
     }
 
     addClearButton(targetElement) {
