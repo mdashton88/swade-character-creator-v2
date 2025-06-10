@@ -16,12 +16,18 @@ export class AttributesManager {
     }
 
     async initializeUI() {
+        console.log('=== AttributesManager.initializeUI() called ===');
+        console.log('this.uiManager:', this.uiManager);
+        console.log('this.uiManager.createAttributeControl:', this.uiManager.createAttributeControl);
+        
         const container = document.getElementById('attributesGrid');
         this.uiManager.clearElement(container);
         
         this.attributeNames.forEach(attrName => {
             const character = this.characterManager.getCharacter();
             const currentValue = character.attributes[attrName];
+            
+            console.log(`Creating control for ${attrName} with value ${currentValue}`);
             
             const control = this.uiManager.createAttributeControl(
                 attrName,
@@ -30,8 +36,26 @@ export class AttributesManager {
                 () => this.decrementAttribute(attrName)
             );
             
+            // DEBUG
+            console.log(`Created control for ${attrName}:`, control);
+            console.log('Control type:', typeof control);
+            console.log('Control has container?', control && control.container);
+            console.log('Container is Node?', control && control.container instanceof Node);
+            
             this.attributeControls.set(attrName, control);
-            container.appendChild(control.container);
+            
+            // Safety check before appendChild
+            if (control && control.container) {
+                container.appendChild(control.container);
+                console.log(`Successfully appended ${attrName} control`);
+            } else {
+                console.error(`Failed to create control for ${attrName}:`, control);
+                // Create fallback
+                const fallback = document.createElement('div');
+                fallback.textContent = `${attrName}: d${currentValue} (ERROR)`;
+                fallback.style.color = 'red';
+                container.appendChild(fallback);
+            }
         });
         
         this.updateDisplay();
