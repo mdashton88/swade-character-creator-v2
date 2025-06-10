@@ -393,6 +393,65 @@ export class UIManager {
         }
     }
 
+    /**
+     * Creates a select dropdown element with options - THE MISSING METHOD!
+     * @param {string} id - The ID for the select element
+     * @param {Array} options - Array of option objects with {value, text} properties
+     * @param {string} defaultValue - Default selected value (optional)
+     * @param {string} className - CSS class to apply (optional)
+     * @returns {HTMLSelectElement} The created select element
+     */
+    createSelect(id, options = [], defaultValue = '', className = '') {
+        console.log(`🔧 createSelect called: ${id}`);
+        
+        try {
+            // Create the select element
+            const select = document.createElement('select');
+            select.id = id;
+            
+            if (className) {
+                select.className = className;
+            }
+            
+            // Add default styling to match your UI theme
+            select.style.cssText = `
+                padding: 5px 8px;
+                margin: 5px;
+                border: 1px solid #8B0000;
+                border-radius: 3px;
+                background: white;
+                color: #333;
+                font-family: 'Crimson Text', serif;
+                font-size: 14px;
+                cursor: pointer;
+            `;
+            
+            // Add options
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text || option.label || option.value;
+                
+                if (option.value === defaultValue) {
+                    optionElement.selected = true;
+                }
+                
+                select.appendChild(optionElement);
+            });
+            
+            console.log(`✅ Successfully created select element: ${id} with ${options.length} options`);
+            return select;
+            
+        } catch (error) {
+            console.error(`❌ Error creating select ${id}:`, error);
+            
+            // Return a fallback empty select
+            const fallbackSelect = document.createElement('select');
+            fallbackSelect.id = id;
+            return fallbackSelect;
+        }
+    }
+
     clearElement(element) {
         console.log('🔧 clearElement called');
         
