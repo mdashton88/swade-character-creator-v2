@@ -1,13 +1,13 @@
-// SWADE Character Creator v2 - UIManager Module v1.0044
-// Final version - Complete DOM utilities + robust data handling + setSelected method
+// SWADE Character Creator v2 - UIManager Module v1.0045
+// Final version - Complete DOM utilities + robust data handling + setSelected method + setAvailable method
 
 export class UIManager {
     constructor() {
-        this.VERSION = "V1.0044";
+        this.VERSION = "V1.0045";
         this.displayVersion();
         this.setupWhiteHeaderText();
         this.patchExistingControls();
-        console.log(`✅ UIManager ${this.VERSION} initialized - Added setSelected method & robust data handling!`);
+        console.log(`✅ UIManager ${this.VERSION} initialized - Added setAvailable method for hindrances!`);
     }
 
     displayVersion() {
@@ -588,6 +588,18 @@ export class UIManager {
                     }
                 },
                 
+                setAvailable: function(available) {
+                    checkbox.disabled = !available;
+                    console.log(`🔧 ${itemName} setAvailable: ${available}`);
+                    if (available) {
+                        container.style.opacity = '1';
+                        container.style.pointerEvents = 'auto';
+                    } else {
+                        container.style.opacity = '0.5';
+                        container.style.pointerEvents = 'none';
+                    }
+                },
+                
                 getValue: function() {
                     return checkbox.checked ? (item.points || item.value || 1) : 0;
                 },
@@ -614,6 +626,7 @@ export class UIManager {
                 setChecked: function() { console.log('Fallback setChecked'); },
                 setEnabled: function() { console.log('Fallback setEnabled'); },
                 setSelected: function() { console.log('Fallback setSelected'); },
+                setAvailable: function() { console.log('Fallback setAvailable'); },
                 getValue: function() { return 0; },
                 getItem: function() { return item; }
             };
