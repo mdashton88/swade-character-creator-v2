@@ -1227,3 +1227,140 @@ input[readonly] {
 .checkbox-item.selected .checkbox-title {
     color: #fff;
 }
+
+/* ===================================== */
+/* CHECKBOX-FREE CONTAINER STYLING       */
+/* Add this to the END of your CSS file */
+/* ===================================== */
+
+/* Main checkbox item container */
+.checkbox-item {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border: 2px solid #8B1A1A;
+    background: #f5f5f0;
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+/* Hover state for available items */
+.checkbox-item[data-available="true"]:hover {
+    border-color: #B8860B;
+    background: #fafaf5;
+}
+
+/* Selected state */
+.checkbox-item.selected {
+    background: #8B1A1A;
+    color: white;
+    border-color: #B8860B;
+}
+
+/* Unavailable state */
+.checkbox-item.unavailable {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    background: #e0e0e0;
+    border-color: #999;
+}
+
+/* Content wrapper */
+.checkbox-item .item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    padding-right: 40px; /* Space for checkmark */
+}
+
+/* Item name */
+.checkbox-item .item-name {
+    font-weight: 600;
+    color: #8B1A1A;
+    font-size: 1.1em;
+}
+
+.checkbox-item.selected .item-name {
+    color: #B8860B;
+}
+
+/* Item description */
+.checkbox-item .item-description {
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.checkbox-item.selected .item-description {
+    color: #f5f5f0;
+}
+
+/* Item metadata */
+.checkbox-item .item-meta {
+    font-size: 0.85em;
+    color: #777;
+    font-style: italic;
+}
+
+.checkbox-item.selected .item-meta {
+    color: #ccc;
+}
+
+/* Checkmark indicator */
+.checkbox-item .item-checkmark {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #B8860B;
+    font-weight: bold;
+    display: none;
+}
+
+/* Animation for checkmark */
+.checkbox-item.selected .item-checkmark {
+    animation: checkmark-pop 0.3s ease;
+}
+
+@keyframes checkmark-pop {
+    0% {
+        transform: translateY(-50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-50%) scale(1.2);
+    }
+    100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Remove any hover transform that might be applied by JavaScript */
+.checkbox-item[style*="transform"] {
+    transition: all 0.3s ease !important;
+}
+
+/* Ensure cursor is correct */
+.checkbox-item[data-available="true"] {
+    cursor: pointer;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .checkbox-item {
+        padding: 10px 12px;
+    }
+    
+    .checkbox-item .item-checkmark {
+        right: 10px;
+        font-size: 20px;
+    }
+    
+    .checkbox-item .item-content {
+        padding-right: 35px;
+    }
+}
