@@ -266,6 +266,28 @@ export class UIManager {
         container.appendChild(nameSpan);
         container.appendChild(controlsDiv);
 
+        // Add required updateValue method that AttributesManager expects
+        container.updateValue = (newValue) => {
+            valueSpan.textContent = `d${newValue}`;
+            // Update dice icon
+            const newDiceIcon = this.createDiceIcon(newValue);
+            container.replaceChild(newDiceIcon, diceIcon);
+            console.log(`🎯 Updated ${attributeName} to d${newValue}`);
+        };
+
+        // Add other methods AttributesManager might expect
+        container.getValue = () => {
+            const match = valueSpan.textContent.match(/d(\d+)/);
+            return match ? parseInt(match[1]) : 4;
+        };
+
+        container.setEnabled = (enabled) => {
+            minusBtn.disabled = !enabled;
+            plusBtn.disabled = !enabled;
+            minusBtn.style.opacity = enabled ? '1' : '0.5';
+            plusBtn.style.opacity = enabled ? '1' : '0.5';
+        };
+
         return container;
     }
 
